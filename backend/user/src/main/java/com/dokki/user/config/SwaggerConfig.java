@@ -29,13 +29,14 @@ public class SwaggerConfig {
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
+			.useDefaultResponseMessages(false)
 			.securityContexts(Arrays.asList(securityContext()))
 			.securitySchemes(Arrays.asList(apiKey()))
 			.consumes(getConsumeContentTypes())
 			.produces(getProduceContentTypes())
 			.select()
-			.apis(RequestHandlerSelectors.any())
-			.paths(PathSelectors.ant("/*/**"))
+			.apis(RequestHandlerSelectors.basePackage("com.dokki.user"))
+			.paths(PathSelectors.ant("/api/**"))
 			.build();
 	}
 
