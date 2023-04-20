@@ -23,6 +23,7 @@ public class SwaggerConfig {
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 			.apiInfo(apiInfo())
+			.useDefaultResponseMessages(false)
 			.consumes(getConsumeContentTypes())
 			.produces(getProduceContentTypes())
 			.select()
