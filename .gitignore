@@ -10,3 +10,4 @@ BE/chicochico/static/
 backend/.idea/
 **/.gradle/*
 **/build/*
+*.iml
