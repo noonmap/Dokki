@@ -45,7 +45,7 @@ public class SwaggerConfig {
 		return new ApiInfoBuilder()
 			.title("[ DOKKI ] USER API SERVER")
 			.version("0.0.1")
-			.description("DOKKI 앱 - USER API 서버 \nport: 5010")
+			.description("DOKKI 앱 - USER API 서버")
 			.build();
 	}
 
