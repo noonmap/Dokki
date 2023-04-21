@@ -1,4 +1,4 @@
-package com.book.book;
+package com.dokki.book;
 
 
 import org.springframework.boot.SpringApplication;
