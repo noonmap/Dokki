@@ -1,0 +1,36 @@
+server:
+  port: 5010
+spring:
+  # mysql
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWD}
+
+  #JPA
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # hibernate logging
+  logging:
+    level:
+      org.hibernate: info #${log.hibernate.level}
+
+  # SERVER AUTO RELOAD
+  devtools:
+    livereload.enabled: true
+  freemarker:
+    cache: false
