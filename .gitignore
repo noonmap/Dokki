@@ -9,3 +9,4 @@
 BE/chicochico/static/
 **/.gradle/*
 **/build/*
+*.iml
