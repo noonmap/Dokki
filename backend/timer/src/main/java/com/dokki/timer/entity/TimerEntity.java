@@ -15,8 +15,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "daily_statisics")
-public class DailyStatisticsEntity {
+@Table(name = "timer")
+public class TimerEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +26,12 @@ public class DailyStatisticsEntity {
 	@Column(nullable = false, length = 20)
 	private String bookId;
 	@Column(nullable = false)
+	private Long bookStatusId;
+	@Column(nullable = false)
 	private Integer accumTime;
 	@Column(nullable = false)
-	private LocalDate recordDate;
+	private LocalDate startTime;
+	@Column(nullable = false)
+	private LocalDate endTime;
 
 }
