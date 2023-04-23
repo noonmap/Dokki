@@ -23,16 +23,16 @@ public class HistoryController {
 	public HistoryService historyService;
 
 
-	@GetMapping("/{userId}")
-	@ApiOperation(value = "도서의 리뷰(코멘트) 목록 조회")
-	public ResponseEntity<Integer[]> getYearHistory(@PathVariable Long userId, @RequestParam int year, @RequestParam int month) {
+	@GetMapping("/time/{userId}")
+	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
+	public ResponseEntity<Integer[]> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
 		Integer[] yearHistory = historyService.getYearHistory(userId, year);
 		return ResponseEntity.ok(yearHistory);
 	}
 
 
 	@GetMapping("/{userId}")
-	@ApiOperation(value = "도서의 리뷰(코멘트) 목록 조회")
+	@ApiOperation(value = "한 달 독서 기록 조회", notes = "프로필에서 사용, 달력 형태")
 	public ResponseEntity<List<DailyStatisticsResponse>> getMonthHistory(@PathVariable Long userId, @RequestParam int year, @RequestParam int month) {
 		List<DailyStatisticsResponse> dailyStatisticsList = historyService.getDailyStatisticsList(userId, year, month);
 		return ResponseEntity.ok(dailyStatisticsList);
