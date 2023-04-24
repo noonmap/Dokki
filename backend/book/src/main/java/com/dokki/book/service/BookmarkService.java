@@ -1,10 +1,9 @@
 package com.dokki.book.service;
 
 
-import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.entity.BookEntity;
-import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
+import com.dokki.book.repository.BookmarkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -12,38 +11,43 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class BookmarkService {
 
 	private final BookRepository bookRepository;
+	private final BookmarkRepository bookmarkRepository;
 
 
 	/**
-	 * 책 검색
+	 * 찜한 책 조회
 	 *
-	 * @param search    검색어
-	 * @param queryType 검색 타입
+	 * @param userId   유저 id
 	 * @param pageable
+	 * @return 유저가 찜한 책 페이지 객체
 	 */
-	public List<Object> searchBookList(String search, @RequestParam SearchType queryType, @RequestParam Pageable pageable) {
+	public Page<BookEntity> getBookmarkList(Long userId, @RequestParam Pageable pageable) {
 		return null;
 	}
 
 
 	/**
-	 * 책 상세정보 조회
+	 * 책 찜하기 추가
 	 *
 	 * @param bookId 책 id
-	 * @return 책 정보 + 리뷰 정보
 	 */
-	public BookDetailResponseDto getBook(String bookId) {
-		return null;
+	public void createBookmark(String bookId) {
 	}
 
+
+	/**
+	 * 책 찜하기 삭제
+	 *
+	 * @param bookId 책 id
+	 */
+	public void deleteBookmark(String bookId) {
+	}
 
 }
