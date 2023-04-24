@@ -1,5 +1,58 @@
 package com.dokki.review.service;
 
 
+import com.dokki.review.dto.request.CommentRequestDto;
+import com.dokki.review.entity.CommentEntity;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+
+@Log4j2
+@Service
+@RequiredArgsConstructor
 public class CommentService {
+
+	/**
+	 * 코멘트 목록 조회
+	 *
+	 * @param bookId
+	 * @param pageable
+	 * @return
+	 */
+	public Page<CommentEntity> getCommentList(String bookId, Pageable pageable) {
+		return Page.empty();
+	}
+
+
+	/**
+	 * 코멘트 생성
+	 *
+	 * @param bookId
+	 * @param commentRequestDto
+	 */
+	public void createComment(String bookId, CommentRequestDto commentRequestDto) {
+	}
+
+
+	/**
+	 * 코멘트 수정
+	 *
+	 * @param commentId
+	 * @param commentRequestDto
+	 */
+	public void modifyComment(Long commentId, CommentRequestDto commentRequestDto) {
+	}
+
+
+	/**
+	 * 코멘트 삭제
+	 *
+	 * @param commentId
+	 */
+	public void deleteComment(Long commentId) {
+	}
+
 }
