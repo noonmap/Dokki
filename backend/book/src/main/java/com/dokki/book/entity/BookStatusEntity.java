@@ -1,5 +1,6 @@
 package com.dokki.book.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "book_status")
 public class BookStatusEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -27,10 +29,11 @@ public class BookStatusEntity {
 	@Column(nullable = false)
 	private Long userId;
 
-	@Column(nullable = false, length = 20)
-	private String bookId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "book_id", nullable = false)
+	private BookEntity bookId;
 
-	@Column(nullable = false, columnDefinition ="char", length = 1)
+	@Column(nullable = false, columnDefinition = "char", length = 1)
 	private String status;
 
 	@CreatedDate

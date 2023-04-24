@@ -13,23 +13,21 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponseDto {
+public class BookSimpleResponseDto {
 
 	private String bookId;
 	private String bookTitle;
-	private String bookAuthor;
 	private String bookCoverPath;
-	private String bookPublishYear;
 
 
-	public static BookResponseDto fromEntity(BookEntity bookEntity) {
+	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
 		// TODO : 채우기
-		return new BookResponseDto();
+		return new BookSimpleResponseDto();
 	}
 
 
-	public static Page<BookResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
-		return bookEntityPage.map(BookResponseDto::fromEntity);
+	public static Page<BookSimpleResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
+		return bookEntityPage.map(BookSimpleResponseDto::fromEntity);
 	}
 
 }
