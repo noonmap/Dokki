@@ -1,5 +1,6 @@
 package com.dokki.book.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,12 +16,16 @@ import javax.persistence.*;
 @Builder
 @Table(name = "bookmark")
 public class BookMarkEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(nullable = false)
 	private Long userId;
-	@Column(nullable = false, length = 20)
-	private String bookId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "bookId", nullable = false)
+	private BookEntity bookId;
 
 }
