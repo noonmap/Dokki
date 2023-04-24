@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TimerService {
 
-	public TimerRepository timerRepository;
-	public DailyStatisticsRepository dailyStatisticsRepository;
+	private final TimerRepository timerRepository;
+	private final DailyStatisticsRepository dailyStatisticsRepository;
 
 
 	/**
