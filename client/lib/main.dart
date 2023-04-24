@@ -1,4 +1,5 @@
 import 'package:dokki/screens/home_screen/home_screen.dart';
+import 'package:dokki/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }
