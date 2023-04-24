@@ -43,12 +43,12 @@ public class BookStatisticsEntity {
 	private Integer meanReadTime;
 
 	@CreatedDate
-	@Column(columnDefinition="DATE", updatable = false, nullable = false)
+	@Column(columnDefinition="DATETIME", updatable = false, nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime created;
 
 	@LastModifiedDate
-	@Column(columnDefinition="DATE", nullable = false)
+	@Column(columnDefinition="DATETIME", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
 
