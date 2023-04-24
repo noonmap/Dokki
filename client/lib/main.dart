@@ -1,4 +1,6 @@
+import 'package:dokki/constants/colors.dart';
 import 'package:dokki/screens/home_screen/home_screen.dart';
+import 'package:dokki/screens/login_screen/login_screen.dart';
 import 'package:dokki/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        scaffoldBackgroundColor: brandColor100,
+      ),
       debugShowCheckedModeBanner: false,
       title: _title,
-      home: SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
