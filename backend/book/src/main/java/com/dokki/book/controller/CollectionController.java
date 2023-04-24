@@ -34,7 +34,7 @@ public class CollectionController {
 
 
 	//   /books/collections/{bookId}
-	@GetMapping("/{bookId}")
+	@DeleteMapping("/{bookId}")
 	@ApiOperation(value = "다 읽은 책 컬렉션에서 삭제")
 	public ResponseEntity<HttpStatus> deleteCollection(@PathVariable String bookId) {
 		Long userId = 0L;   // TODO: userId 가져오기
