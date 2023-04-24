@@ -1,5 +1,6 @@
 package com.dokki.book.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -20,12 +20,14 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "book_statistics")
 public class BookStatisticsEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 20)
-	private String bookId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "book_id", nullable = false)
+	private BookEntity bookId;
 
 	@Column(nullable = false)
 	private Integer completedUsers;
@@ -43,12 +45,12 @@ public class BookStatisticsEntity {
 	private Integer meanReadTime;
 
 	@CreatedDate
-	@Column(columnDefinition="DATETIME", updatable = false, nullable = false)
+	@Column(columnDefinition = "DATETIME", updatable = false, nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime created;
 
 	@LastModifiedDate
-	@Column(columnDefinition="DATETIME", nullable = false)
+	@Column(columnDefinition = "DATETIME", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
 
