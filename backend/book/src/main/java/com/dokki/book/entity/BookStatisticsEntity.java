@@ -10,6 +10,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -44,11 +45,11 @@ public class BookStatisticsEntity {
 	@CreatedDate
 	@Column(columnDefinition="DATE", updatable = false, nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-	private LocalDate created;
+	private LocalDateTime created;
 
 	@LastModifiedDate
 	@Column(columnDefinition="DATE", nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-	private LocalDate updated;
+	private LocalDateTime updated;
 
 }
