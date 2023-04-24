@@ -11,6 +11,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -23,12 +24,12 @@ public class CommentEntity {
 
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
-	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-	public LocalDate createdAt;
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	public LocalDateTime createdAt;
 	@LastModifiedDate
 	@Column(nullable = false)
-	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-	public LocalDate updatedAt;
+	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
+	public LocalDateTime updatedAt;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

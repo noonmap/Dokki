@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/reviews/comment")
 @RequiredArgsConstructor
-@Api(tags = "")
+@Api(tags = "도서 코멘트 (한줄 평) API")
 public class CommentController {
 
-	public CommentService commentService;
+	private final CommentService commentService;
 
 
 	@GetMapping("/{bookId}")

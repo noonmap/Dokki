@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -27,8 +28,8 @@ public class CommentResponseDto {
 	public Integer score;
 	public String content;
 
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	public LocalDate created;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	public LocalDateTime created;
 
 
 	public static CommentResponseDto fromEntity(CommentEntity commentEntity) {

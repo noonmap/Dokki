@@ -26,7 +26,7 @@ import java.util.Map;
 @Api(tags = "감정 일기 API")
 public class DiaryController {
 
-	public DiaryService diaryService;
+	private final DiaryService diaryService;
 
 
 	@PostMapping("/{bookId}")
