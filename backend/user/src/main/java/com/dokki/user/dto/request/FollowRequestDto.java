@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProfileRequestDto {
-    private String search;
+@NoArgsConstructor
+public class FollowRequestDto {
     private int page;
     private int size;
 }
