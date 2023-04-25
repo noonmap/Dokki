@@ -1,8 +1,8 @@
 package com.dokki.book.controller;
 
 
-import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.service.BookTimerService;
+import com.dokki.util.book.dto.response.BookTimerResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
