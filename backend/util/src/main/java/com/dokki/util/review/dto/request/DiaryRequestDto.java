@@ -1,4 +1,4 @@
-package com.dokki.review.dto.request;
+package com.dokki.util.review.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryRequestDto {
+
 	private String content;
+
 }

@@ -1,4 +1,4 @@
-package com.dokki.book.dto.response;
+package com.dokki.util.book.dto.response;
 
 
 import lombok.AllArgsConstructor;
