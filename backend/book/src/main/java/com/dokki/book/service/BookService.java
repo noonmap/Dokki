@@ -1,10 +1,10 @@
 package com.dokki.book.service;
 
 
-import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
+import com.dokki.util.book.dto.response.BookDetailResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package com.dokki.book.service;
 
 
-import com.dokki.book.dto.response.DailyStatisticsResponseDto;
+import com.dokki.util.book.dto.response.DailyStatisticsResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

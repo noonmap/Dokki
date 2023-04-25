@@ -1,9 +1,9 @@
 package com.dokki.review.service;
 
 
-import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.repository.CommentRepository;
+import com.dokki.util.review.dto.request.CommentRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+
 	private final CommentRepository commentRepository;
+
 
 	/**
 	 * 코멘트 목록 조회
