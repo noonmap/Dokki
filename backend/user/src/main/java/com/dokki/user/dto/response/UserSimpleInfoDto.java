@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProfileResponseDto {
+public class UserSimpleInfoDto {
     private long userId;
     private String nickname;
     private String profileImagePath;
-    private int followingCount;
-    private int followerCount;
-    private boolean isFollowed;
 }
