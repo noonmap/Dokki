@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -35,6 +36,11 @@ public class CommentResponseDto {
 	public static CommentResponseDto fromEntity(CommentEntity commentEntity) {
 		// TODO: 채울 것
 		return new CommentResponseDto();
+	}
+
+
+	public static List<CommentResponseDto> fromEntityList(List<CommentEntity> commentEntityList) {
+		return commentEntityList.stream().map(CommentResponseDto::fromEntity).collect(Collectors.toList());
 	}
 
 
