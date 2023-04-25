@@ -1,22 +1,24 @@
 package com.dokki.book.client;
 
 
+import com.dokki.util.review.dto.response.CommentResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 
 @FeignClient(name = "review-service") // microservice name
 public interface ReviewClient {
-	/**
-	 *        @GetMapping("/reviews/comment/partial/{bookId}")
-	 *    @ApiOperation(value = "해당 도서에 대한 리뷰(Comment) 3개 조회")
-	 * 	public ResponseEntity<List<CommentResponseDto>> get3Comment(@PathVariable String bookId) {
-	 * 		List<CommentEntity> commentEntityList = commentService.get3Comment(bookId);
-	 * 		List<CommentResponseDto> commentResponseDtoList = CommentResponseDto.fromEntityList(commentEntityList);
-	 * 		return ResponseEntity.ok(commentResponseDtoList);
-	 *    }
-	 */
 
+	/**
+	 * 해당 도서에 대한 리뷰(Comment) 3개 조회
+	 *
+	 * @param bookId
+	 * @return
+	 */
 	@GetMapping("/reviews/comment/partial/{bookId}")
-	public List<CommentResponseDto>
+	public List<CommentResponseDto> get3Comment(@PathVariable String bookId);
+
 }
