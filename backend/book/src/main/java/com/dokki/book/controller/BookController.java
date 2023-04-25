@@ -46,7 +46,7 @@ public class BookController {
 
 	@GetMapping("/search")
 	@ApiOperation(value = "도서 검색")
-	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, @RequestParam Pageable pageable) {
+	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) {
 		List<Object> apiBookResponseDto = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
 		Page<BookSearchResponseDto> bookSearchResponseDtoPage = BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
 		// 테스트
@@ -60,7 +60,7 @@ public class BookController {
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
-	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(@RequestParam Pageable pageable) {
+	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = 0L;   // TODO: user id 가져오기
 		Page<BookEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
 		Page<BookSimpleResponseDto> bookResponseDtoPage = BookSimpleResponseDto.fromEntityPage(bookEntityPage);
