@@ -19,6 +19,9 @@ dependencies:
   flutter_svg: ^2.0.5
   http_mock_adapter: ^0.4.2
   dio: ^5.1.1
+  fluttertoast: ^8.2.1
+  another_flushbar: ^1.12.29
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

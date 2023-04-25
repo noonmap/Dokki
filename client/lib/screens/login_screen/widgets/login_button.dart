@@ -1,5 +1,6 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/screens/home_screen/home_screen.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
+import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,10 +16,8 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+        Navigator.pushNamed(context, RoutesName.home);
+        Utils.flushBarErrorMessage("error", context);
       },
       child: Container(
         width: 230,

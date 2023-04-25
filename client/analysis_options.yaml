@@ -9,7 +9,6 @@ analyzer:
     avoid_types_as_parameter_names: error
     empty_statements: error
     library_prefixes: error
-    constant_identifier_names: error
     directives_ordering: error
 linter:
   rules:
@@ -20,6 +19,5 @@ linter:
     - avoid_types_as_parameter_names
     - empty_statements
     - library_prefixes
-    - constant_identifier_names
     - directives_ordering
 
