@@ -1,10 +1,10 @@
 package com.dokki.review.service;
 
 
-import com.dokki.review.dto.request.AIImageRequestDto;
-import com.dokki.review.dto.request.DiaryRequestDto;
 import com.dokki.review.entity.DiaryEntity;
 import com.dokki.review.repository.DiaryRepository;
+import com.dokki.util.review.dto.request.AIImageRequestDto;
+import com.dokki.util.review.dto.request.DiaryRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class DiaryService {
 
 	private final DiaryRepository diaryRepository;
+
+
 	/**
 	 * 감정 일기 생성
 	 *

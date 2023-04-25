@@ -1,14 +1,14 @@
 package com.dokki.book.controller;
 
 
-import com.dokki.book.dto.response.BookDetailResponseDto;
-import com.dokki.book.dto.response.BookSearchResponseDto;
-import com.dokki.book.dto.response.BookSimpleResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.service.BookService;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
+import com.dokki.util.book.dto.response.BookDetailResponseDto;
+import com.dokki.util.book.dto.response.BookSearchResponseDto;
+import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,11 @@ public class BookController {
 	@ApiOperation(value = "도서 검색")
 	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) {
 		List<Object> apiBookResponseDto = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
-		Page<BookSearchResponseDto> bookSearchResponseDtoPage = BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
+		//	public static Page<BookSearchResponseDto> toPagefromApiResponse(List<Object> apiResult) {
+		//		// TODO: 구현 및 파라미터 수정
+		//		return null;
+		//	}
+		Page<BookSearchResponseDto> bookSearchResponseDtoPage = Page.empty();//BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
 		// 테스트
 		List<BookSearchResponseDto> list = new ArrayList<>();
 		list.add(BookSearchResponseDto.builder().bookId("isbn0101").bookTitle("테스트1").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
@@ -63,7 +67,17 @@ public class BookController {
 	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = 0L;   // TODO: user id 가져오기
 		Page<BookEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
-		Page<BookSimpleResponseDto> bookResponseDtoPage = BookSimpleResponseDto.fromEntityPage(bookEntityPage);
+
+		//	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
+		//		// TODO : 채우기
+		//		return new BookSimpleResponseDto();
+		//	}
+		//
+		//
+		//	public static Page<BookSimpleResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
+		//		return bookEntityPage.map(BookSimpleResponseDto::fromEntity);
+		//	}
+		Page<BookSimpleResponseDto> bookResponseDtoPage = Page.empty();//BookSimpleResponseDto.fromEntityPage(bookEntityPage);
 		return ResponseEntity.ok(bookResponseDtoPage);
 	}
 
@@ -104,7 +118,17 @@ public class BookController {
 	@ApiOperation(value = "도서 요약 정보를 조회합니다.")
 	public ResponseEntity<BookSimpleResponseDto> getBookSimple(@PathVariable String bookId) {
 		BookEntity book = bookService.getSimpleBook(bookId);
-		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.fromEntity(book);
+
+		//	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
+		//		// TODO : 채우기
+		//		return new BookSimpleResponseDto();
+		//	}
+		//
+		//
+		//	public static Page<BookSimpleResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
+		//		return bookEntityPage.map(BookSimpleResponseDto::fromEntity);
+		//	}
+		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.builder().build();//BookSimpleResponseDto.fromEntity(book);
 		return ResponseEntity.ok(bookSimpleResponseDto);
 	}
 
