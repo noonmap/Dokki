@@ -92,4 +92,13 @@ public class BookController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+
+	@GetMapping("/simple/{bookId}")
+	@ApiOperation(value = "도서 요약 정보를 조회합니다.")
+	public ResponseEntity<BookSimpleResponseDto> getBookSimple(@PathVariable String bookId) {
+		BookEntity book = bookService.getSimpleBook(bookId);
+		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.fromEntity(book);
+		return ResponseEntity.ok(bookSimpleResponseDto);
+	}
+
 }
