@@ -14,11 +14,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -47,6 +49,11 @@ public class BookController {
 	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, @RequestParam Pageable pageable) {
 		List<Object> apiBookResponseDto = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
 		Page<BookSearchResponseDto> bookSearchResponseDtoPage = BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
+		// 테스트
+		List<BookSearchResponseDto> list = new ArrayList<>();
+		list.add(BookSearchResponseDto.builder().bookId("isbn0101").bookTitle("테스트1").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
+		list.add(BookSearchResponseDto.builder().bookId("isbn0222").bookTitle("테스트2").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
+		bookSearchResponseDtoPage = new PageImpl<>(list, pageable, list.size());
 		return ResponseEntity.ok(bookSearchResponseDtoPage);
 	}
 
