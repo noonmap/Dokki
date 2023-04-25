@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class BookListViewModel with ChangeNotifier {
   late final BookRepository _bookRepository;
-
+  final size = 10;
+  final page = 0;
   List<BookModel> get items => _items;
   List<BookModel> _items = [];
 
@@ -14,6 +15,6 @@ class BookListViewModel with ChangeNotifier {
   }
 
   Future<void> _loadItems(keyword) async {
-    _items = await _bookRepository.getBookList(keyword);
+    _items = await _bookRepository.getSearchBookList(keyword, size, page);
   }
 }
