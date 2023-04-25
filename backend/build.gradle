@@ -10,7 +10,7 @@ repositories {
 bootJar.enabled = false
 
 subprojects {
-    group = 'com.example'
+    group = 'com.dokki'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '11'
 
@@ -33,7 +33,9 @@ subprojects {
 
     // 관리하는 모듈에 공통 dependencies
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
         compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
