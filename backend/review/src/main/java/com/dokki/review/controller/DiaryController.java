@@ -1,11 +1,11 @@
 package com.dokki.review.controller;
 
 
-import com.dokki.review.dto.request.AIImageRequestDto;
-import com.dokki.review.dto.request.DiaryRequestDto;
-import com.dokki.review.dto.response.DiaryResponseDto;
 import com.dokki.review.entity.DiaryEntity;
 import com.dokki.review.service.DiaryService;
+import com.dokki.util.review.dto.request.AIImageRequestDto;
+import com.dokki.util.review.dto.request.DiaryRequestDto;
+import com.dokki.util.review.dto.response.DiaryResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,17 @@ public class DiaryController {
 	@ApiOperation(value = "관련 책에 대해 작성한 감정 일기 조회", notes = "N회독 했을 시, 감정일기가 여러 개 조회될 수 있다.")
 	public ResponseEntity<Page<DiaryResponseDto>> getDiaryByBook(@PathVariable String bookId, Pageable pageable) {
 		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryByBook(bookId, pageable);
-		Page<DiaryResponseDto> diaryResponseDtoPage = DiaryResponseDto.fromEntityPage(diaryEntityPage);
+		//		public static DiaryResponseDto fromEntity(DiaryEntity diaryEntity) {
+		//			// TODO : 채우기
+		//			return new DiaryResponseDto();
+		//		}
+		//
+		//
+		//		public static Page<DiaryResponseDto> fromEntityPage(Page<DiaryEntity> diaryEntityPage) {
+		//			return diaryEntityPage.map(DiaryResponseDto::fromEntity);
+		//		}
+
+		Page<DiaryResponseDto> diaryResponseDtoPage = Page.empty();//DiaryResponseDto.fromEntityPage(diaryEntityPage);
 		return ResponseEntity.ok(diaryResponseDtoPage);
 	}
 
@@ -66,7 +76,17 @@ public class DiaryController {
 	@ApiOperation(value = "내가 작성한 모든 감정 일기 목록 조회")
 	public ResponseEntity<Page<DiaryResponseDto>> getDiaryList(Pageable pageable) {
 		Page<DiaryEntity> diaryEntityPage = diaryService.getDiaryList(pageable);
-		Page<DiaryResponseDto> diaryResponseDtoPage = DiaryResponseDto.fromEntityPage(diaryEntityPage);
+		//		public static DiaryResponseDto fromEntity(DiaryEntity diaryEntity) {
+		//			// TODO : 채우기
+		//			return new DiaryResponseDto();
+		//		}
+		//
+		//
+		//		public static Page<DiaryResponseDto> fromEntityPage(Page<DiaryEntity> diaryEntityPage) {
+		//			return diaryEntityPage.map(DiaryResponseDto::fromEntity);
+		//		}
+
+		Page<DiaryResponseDto> diaryResponseDtoPage = Page.empty();//DiaryResponseDto.fromEntityPage(diaryEntityPage);
 		return ResponseEntity.ok(diaryResponseDtoPage);
 	}
 
