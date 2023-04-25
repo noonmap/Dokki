@@ -7,3 +7,5 @@
 **/.env
 **/Key.json
 BE/chicochico/static/
+**/.gradle/
+**/build/
