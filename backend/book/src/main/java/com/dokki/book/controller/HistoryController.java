@@ -1,7 +1,7 @@
 package com.dokki.book.controller;
 
 
-import com.dokki.book.dto.response.DailyStatisticsResponse;
+import com.dokki.book.dto.response.DailyStatisticsResponseDto;
 import com.dokki.book.service.HistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,8 +33,8 @@ public class HistoryController {
 
 	@GetMapping("/{userId}")
 	@ApiOperation(value = "한 달 독서 기록 조회", notes = "프로필에서 사용, 달력 형태")
-	public ResponseEntity<List<DailyStatisticsResponse>> getMonthHistory(@PathVariable Long userId, @RequestParam int year, @RequestParam int month) {
-		List<DailyStatisticsResponse> dailyStatisticsList = historyService.getDailyStatisticsList(userId, year, month);
+	public ResponseEntity<List<DailyStatisticsResponseDto>> getMonthHistory(@PathVariable Long userId, @RequestParam int year, @RequestParam int month) {
+		List<DailyStatisticsResponseDto> dailyStatisticsList = historyService.getDailyStatisticsList(userId, year, month);
 		return ResponseEntity.ok(dailyStatisticsList);
 	}
 

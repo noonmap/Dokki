@@ -1,7 +1,7 @@
 package com.dokki.book.service;
 
 
-import com.dokki.book.dto.response.DailyStatisticsResponse;
+import com.dokki.book.dto.response.DailyStatisticsResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class HistoryService {
 	 * @param month
 	 * @return DailyStatisticsResponse
 	 */
-	public List<DailyStatisticsResponse> getDailyStatisticsList(Long userId, int year, int month) {
+	public List<DailyStatisticsResponseDto> getDailyStatisticsList(Long userId, int year, int month) {
 		/* TODO:
 		 *  1. timer 서버와 통신
 		 *  2. 책 표지정보 추가해서 리턴
