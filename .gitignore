@@ -9,5 +9,5 @@
 BE/chicochico/static/
 **/.gradle/*
 **/build/*
-**/.idea/
 *.iml
+**/.idea/

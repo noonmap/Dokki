@@ -14,11 +14,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -44,16 +46,21 @@ public class BookController {
 
 	@GetMapping("/search")
 	@ApiOperation(value = "도서 검색")
-	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, @RequestParam Pageable pageable) {
+	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) {
 		List<Object> apiBookResponseDto = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
 		Page<BookSearchResponseDto> bookSearchResponseDtoPage = BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
+		// 테스트
+		List<BookSearchResponseDto> list = new ArrayList<>();
+		list.add(BookSearchResponseDto.builder().bookId("isbn0101").bookTitle("테스트1").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
+		list.add(BookSearchResponseDto.builder().bookId("isbn0222").bookTitle("테스트2").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
+		bookSearchResponseDtoPage = new PageImpl<>(list, pageable, list.size());
 		return ResponseEntity.ok(bookSearchResponseDtoPage);
 	}
 
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
-	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(@RequestParam Pageable pageable) {
+	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = 0L;   // TODO: user id 가져오기
 		Page<BookEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
 		Page<BookSimpleResponseDto> bookResponseDtoPage = BookSimpleResponseDto.fromEntityPage(bookEntityPage);
