@@ -1,17 +1,21 @@
 package com.dokki.book.service;
 
 
+import com.dokki.book.dto.response.AladinItemResponseDto;
+import com.dokki.book.dto.response.AladinSearchResponseDto;
+import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
-import com.dokki.util.book.dto.response.BookDetailResponseDto;
+import com.dokki.book.util.AladinCaller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.io.IOException;
 
 
 @Log4j2
@@ -27,10 +31,12 @@ public class BookService {
 	 *
 	 * @param search    검색어
 	 * @param queryType 검색 타입
-	 * @param pageable
+	 * @param pageable  페이징
 	 */
-	public List<Object> searchBookList(String search, @RequestParam SearchType queryType, @RequestParam Pageable pageable) {
-		return null;
+	public Slice<AladinItemResponseDto> searchBookList(String search, SearchType queryType, Pageable pageable) throws IOException {
+		AladinSearchResponseDto result = AladinCaller.searchBook(search, queryType, pageable);
+		boolean hasNext = pageable.getPageSize() * pageable.getPageNumber() < result.getTotalResults(); // 다음 slice 있는지 확인 계산
+		return new SliceImpl<>(result.getItem(), pageable, hasNext);
 	}
 
 

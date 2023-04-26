@@ -3,7 +3,7 @@ package com.dokki.review.controller;
 
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.service.CommentService;
-import com.dokki.util.review.dto.request.CommentRequestDto;
+import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Log4j2
@@ -63,6 +66,16 @@ public class CommentController {
 	public ResponseEntity<Boolean> deleteComment(@PathVariable Long commentId) {
 		commentService.deleteComment(commentId);
 		return ResponseEntity.ok(true);
+	}
+
+
+	@GetMapping("/reviews/comment/partial/{bookId}")
+	@ApiOperation(value = "해당 도서에 대한 리뷰(Comment) 3개 조회")
+	public ResponseEntity<List<CommentResponseDto>> get3Comment(@PathVariable String bookId) {
+		List<CommentEntity> commentEntityList = commentService.get3Comment(bookId);
+		// TODO: 공통모듈 dto 이전으로 인한 비즈니스 로직 이전 필요
+		List<CommentResponseDto> commentResponseDtoList = new ArrayList<>(); //CommentResponseDto.fromEntityList(commentEntityList);
+		return ResponseEntity.ok(commentResponseDtoList);
 	}
 
 }

@@ -2,7 +2,7 @@ package com.dokki.book.controller;
 
 
 import com.dokki.book.service.CollectionService;
-import com.dokki.util.book.dto.response.CollectionResponseDto;
+import com.dokki.book.dto.response.CollectionResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

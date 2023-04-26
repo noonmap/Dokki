@@ -1,4 +1,4 @@
-package com.dokki.util.review.dto.request;
+package com.dokki.util.timer.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AIImageRequestDto {
+public class TimerSimpleResponseDto {
 
-	private String content;
+	private Long timerId;
+	private String bookId;
+	private Integer accumTime;
 
 }
