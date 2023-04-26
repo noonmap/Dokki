@@ -1,4 +1,4 @@
-package com.dokki.timer.dto.response;
+package com.dokki.util.timer.dto.response;
 
 
 import lombok.AllArgsConstructor;
