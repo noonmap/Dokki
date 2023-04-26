@@ -68,7 +68,7 @@ public class CommentController {
 	}
 
 
-	@GetMapping("/reviews/comment/partial/{bookId}")
+	@GetMapping("/comment/partial/{bookId}")
 	@ApiOperation(value = "해당 도서에 대한 리뷰(Comment) 3개 조회")
 	public ResponseEntity<List<CommentResponseDto>> get3Comment(@PathVariable String bookId) {
 		List<CommentEntity> commentEntityList = commentService.get3Comment(bookId);
