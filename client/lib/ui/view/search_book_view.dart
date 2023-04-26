@@ -12,145 +12,134 @@ class SearchBookView extends StatefulWidget {
 }
 
 class _SearchBookViewState extends State<SearchBookView> {
-  final SearchBookViewModel searchBookViewModel = SearchBookViewModel();
-
   @override
   void initState() {
-    searchBookViewModel.fetchSearchBookListApi("프로그래머", "Keyword", 0, 10);
-
     super.initState();
+    final mp = Provider.of<SearchBookViewModel>(context, listen: false);
+    mp.fetchSearchBookListApi("프로그래머", "Keyword", 0, 10);
+  }
+
+  @override
+  void dispose() {
+    print("dispose");
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ChangeNotifierProvider<SearchBookViewModel>(
-        create: (BuildContext context) => searchBookViewModel,
-        child: Consumer<SearchBookViewModel>(
-          builder: (context, res, _) {
-            switch (res.bookList.status!) {
-              case Status.LOADING:
-                return const CircularProgressIndicator();
-              case Status.ERROR:
-                return Text(res.bookList.message.toString());
-              case Status.COMPLETE:
-                return Container(
-                  padding: EdgeInsets.all(20),
-                  child: ListView.separated(
-                    itemCount: res.bookList.data!.content!.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          print("상세 페이지 이동");
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: const BoxDecoration(
-                            color: whiteColor100,
+    final mp = Provider.of<SearchBookViewModel>(context);
+
+    return mp.bookList.status == Status.LOADING
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            padding: const EdgeInsets.all(20),
+            child: ListView.separated(
+              itemCount: mp.bookList.data!.content!.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    print("상세 페이지 이동");
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    decoration: const BoxDecoration(
+                      color: whiteColor100,
+                    ),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Image.network(
+                            mp.bookList.data!.content![index].bookCoverPath!,
+                            width: 80,
+                            height: 100,
+                            fit: BoxFit.fill,
                           ),
-                          child: Row(
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                flex: 1,
-                                child: Image.network(
-                                  res.bookList.data!.content![index]
-                                      .bookCoverPath!,
-                                  width: 80,
-                                  height: 100,
-                                  fit: BoxFit.fill,
+                              Text(
+                                mp.bookList.data!.content![index].bookTitle!,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                softWrap: false,
+                                style: const TextStyle(
+                                  color: grayColor500,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                mp.bookList.data!.content![index].bookAuthor!,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                softWrap: false,
+                                style: const TextStyle(
+                                  color: grayColor300,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                "${mp.bookList.data!.content![index].bookPublisher!} • ${mp.bookList.data!.content![index].bookPublishYear}",
+                                style: const TextStyle(
+                                  color: grayColor300,
+                                  fontSize: 12,
                                 ),
                               ),
                               const SizedBox(
-                                width: 20,
+                                height: 8,
                               ),
-                              Flexible(
-                                flex: 3,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              GestureDetector(
+                                onTap: () {
+                                  print("추가");
+                                },
+                                child: const Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      res.bookList.data!.content![index]
-                                          .bookTitle!,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      style: const TextStyle(
-                                        color: grayColor500,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                    SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: Icon(
+                                        Icons.add_circle_outline,
+                                        color: brandColor400,
+                                        size: 14,
                                       ),
+                                    ),
+                                    SizedBox(
+                                      width: 4,
                                     ),
                                     Text(
-                                      res.bookList.data!.content![index]
-                                          .bookAuthor!,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      style: const TextStyle(
-                                        color: grayColor300,
-                                        fontSize: 12,
-                                      ),
+                                      "추가",
+                                      style: TextStyle(
+                                          color: brandColor400,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
                                     ),
-                                    Text(
-                                      "${res.bookList.data!.content![index].bookPublisher!} • ${res.bookList.data!.content![index].bookPublishYear}",
-                                      style: const TextStyle(
-                                        color: grayColor300,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print("추가");
-                                      },
-                                      child: const Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 12,
-                                            height: 12,
-                                            child: Icon(
-                                              Icons.add_circle_outline,
-                                              color: brandColor400,
-                                              size: 14,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            "추가",
-                                            style: TextStyle(
-                                                color: brandColor400,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                    )
                                   ],
                                 ),
                               )
                             ],
                           ),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(
-                        height: 5,
-                      );
-                    },
+                        )
+                      ],
+                    ),
                   ),
                 );
-            }
-          },
-        ),
-      ),
-    );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(
+                  height: 5,
+                );
+              },
+            ),
+          );
   }
 }

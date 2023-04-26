@@ -1,4 +1,3 @@
-import 'package:dokki/constants/colors.dart';
 import 'package:dokki/constants/image_strings.dart';
 import 'package:dokki/ui/widgets/login_button.dart';
 import 'package:flutter/material.dart';
