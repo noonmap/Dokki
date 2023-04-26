@@ -21,12 +21,25 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/users")
+@RequestMapping("users")
 @Api(tags = {"Users"},description = "유저 관련 서비스")
 @Slf4j
 public class UserController {
 
     private final UserService userService;
+    /**
+     * 로그인
+     */
+    /**
+     * 로그아웃
+     */
+    /**
+     * 엑세스 만료직전
+     */
+    /**
+     * 엑세스 만료 후 리프레시는 살아있을 때
+     */
+
     /**
      * 사용자 검색
      */
