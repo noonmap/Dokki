@@ -3,9 +3,9 @@ package com.dokki.review.controller;
 
 import com.dokki.review.entity.DiaryEntity;
 import com.dokki.review.service.DiaryService;
-import com.dokki.util.review.dto.request.AIImageRequestDto;
-import com.dokki.util.review.dto.request.DiaryRequestDto;
-import com.dokki.util.review.dto.response.DiaryResponseDto;
+import com.dokki.review.dto.request.AIImageRequestDto;
+import com.dokki.review.dto.request.DiaryRequestDto;
+import com.dokki.review.dto.response.DiaryResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

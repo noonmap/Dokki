@@ -3,7 +3,7 @@ package com.dokki.review.controller;
 
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.service.CommentService;
-import com.dokki.util.review.dto.request.CommentRequestDto;
+import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
