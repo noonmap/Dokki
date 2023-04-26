@@ -11,7 +11,6 @@ class BookRepository {
     try {
       dynamic response = await _apiServices.getGetApiResponse(
           BookApiUrl.getSearchUrl(search, queryType, page, size));
-      print(response);
       return response = BookListModel.fromJson(response);
     } catch (e) {
       rethrow;
