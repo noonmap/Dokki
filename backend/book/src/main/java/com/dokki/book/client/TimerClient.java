@@ -1,6 +1,7 @@
 package com.dokki.book.client;
 
 
+import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
