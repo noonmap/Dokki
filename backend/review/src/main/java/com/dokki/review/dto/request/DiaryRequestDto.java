@@ -1,4 +1,4 @@
-package com.dokki.util.review.dto.request;
+package com.dokki.review.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CommentRequestDto {
+@AllArgsConstructor
+public class DiaryRequestDto {
 
 	private String content;
-	private Integer score;
 
 }
