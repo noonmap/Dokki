@@ -1,19 +1,11 @@
-import 'package:dokki/api/network/BaseApiServices.dart';
-import 'package:dokki/api/network/NetworkApiService.dart';
-import 'package:dokki/constants/urls/book_api.dart';
-import 'package:dokki/data/model/book_list_model.dart';
+import "package:dokki/constants/urls/book_api.dart";
+import "package:http/http.dart" as http;
 
 class BookRepository {
-  final BaseApiServices _apiServices = NetworkApiService();
-
-  Future<BookListModel> fetchSearchBookListApi(
+  Future<dynamic> fetchSearchBookListApi(
       String search, String queryType, int page, int size) async {
-    try {
-      dynamic response = await _apiServices.getGetApiResponse(
-          BookApiUrl.getSearchUrl(search, queryType, page, size));
-      return response = BookListModel.fromJson(response);
-    } catch (e) {
-      rethrow;
-    }
+    dynamic response = await http
+        .get(Uri.parse(BookApiUrl.getSearchUrl(search, queryType, page, size)));
+    return response;
   }
 }
