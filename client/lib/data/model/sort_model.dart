@@ -1,21 +1,23 @@
 class Sort {
-  bool? empty;
-  bool? sorted;
-  bool? unsorted;
+  Sort({
+    required this.sorted,
+    required this.unsorted,
+    required this.empty,
+  });
 
-  Sort({this.empty, this.sorted, this.unsorted});
+  final bool sorted;
+  final bool unsorted;
+  final bool empty;
 
-  Sort.fromJson(Map<String, dynamic> json) {
-    empty = json['empty'];
-    sorted = json['sorted'];
-    unsorted = json['unsorted'];
-  }
+  factory Sort.fromJson(Map<String, dynamic> json) => Sort(
+        sorted: json["sorted"],
+        unsorted: json["unsorted"],
+        empty: json["empty"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['empty'] = empty;
-    data['sorted'] = sorted;
-    data['unsorted'] = unsorted;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "sorted": sorted,
+        "unsorted": unsorted,
+        "empty": empty,
+      };
 }

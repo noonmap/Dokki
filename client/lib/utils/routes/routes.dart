@@ -1,37 +1,37 @@
-import 'package:dokki/ui/screens/dokki_grass_screen.dart';
-import 'package:dokki/ui/screens/home_screen.dart';
-import 'package:dokki/ui/screens/library_screen.dart';
-import 'package:dokki/ui/screens/login_screen.dart';
-import 'package:dokki/ui/screens/profile_screen.dart';
-import 'package:dokki/ui/screens/router_screen.dart';
-import 'package:dokki/ui/screens/search_book_screen.dart';
+import 'package:dokki/ui/pages/dokki_grass_page.dart';
+import 'package:dokki/ui/pages/home_page.dart';
+import 'package:dokki/ui/pages/library_page.dart';
+import 'package:dokki/ui/pages/login_page.dart';
+import 'package:dokki/ui/pages/main_page.dart';
+import 'package:dokki/ui/pages/profile_page.dart';
+import 'package:dokki/ui/pages/search_book_page.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RoutesName.common:
+      case RoutesName.main:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const RouterScreen());
+            builder: (BuildContext context) => const MainPage());
       case RoutesName.home:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const HomeScreen());
+            builder: (BuildContext context) => const HomePage());
       case RoutesName.login:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const LoginScreen());
+            builder: (BuildContext context) => const LoginPage());
       case RoutesName.searchBook:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const SearchBookScreen());
+            builder: (BuildContext context) => const SearchBookPage());
       case RoutesName.library:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const LibraryScreen());
+            builder: (BuildContext context) => const LibraryPage());
       case RoutesName.dokkiGrass:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const DokkiGrassScreen());
+            builder: (BuildContext context) => const DokkiGrassPage());
       case RoutesName.profile:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const ProfileScreen());
+            builder: (BuildContext context) => const ProfilePage());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

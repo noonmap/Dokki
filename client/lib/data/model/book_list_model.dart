@@ -1,108 +1,98 @@
+// To parse this JSON data, do
+//
+//     final bookListModel = bookListModelFromJson(jsonString);
+
+import 'dart:convert';
+
 import 'package:dokki/data/model/pageable_model.dart';
 import 'package:dokki/data/model/sort_model.dart';
 
+BookListModel bookListModelFromJson(String str) =>
+    BookListModel.fromJson(json.decode(str));
+
+String bookListModelToJson(BookListModel data) => json.encode(data.toJson());
+
 class BookListModel {
-  List<Content>? content;
-  Pageable? pageable;
-  bool? last;
-  int? totalPages;
-  int? totalElements;
-  int? size;
-  int? number;
-  Sort? sort;
-  bool? first;
-  int? numberOfElements;
-  bool? empty;
+  BookListModel({
+    required this.content,
+    required this.pageable,
+    required this.numberOfElements,
+    required this.sort,
+    required this.first,
+    required this.last,
+    required this.number,
+    required this.size,
+    required this.empty,
+  });
 
-  BookListModel(
-      {this.content,
-      this.pageable,
-      this.last,
-      this.totalPages,
-      this.totalElements,
-      this.size,
-      this.number,
-      this.sort,
-      this.first,
-      this.numberOfElements,
-      this.empty});
+  final List<Content> content;
+  final Pageable pageable;
+  final int numberOfElements;
+  final Sort sort;
+  final bool first;
+  final bool last;
+  final int number;
+  final int size;
+  final bool empty;
 
-  BookListModel.fromJson(Map<String, dynamic> json) {
-    if (json['content'] != null) {
-      content = <Content>[];
-      json['content'].forEach((v) {
-        content!.add(Content.fromJson(v));
-      });
-    }
-    pageable =
-        json['pageable'] != null ? Pageable.fromJson(json['pageable']) : null;
-    last = json['last'];
-    totalPages = json['totalPages'];
-    totalElements = json['totalElements'];
-    size = json['size'];
-    number = json['number'];
-    sort = json['sort'] != null ? Sort.fromJson(json['sort']) : null;
-    first = json['first'];
-    numberOfElements = json['numberOfElements'];
-    empty = json['empty'];
-  }
+  factory BookListModel.fromJson(Map<String, dynamic> json) => BookListModel(
+        content:
+            List<Content>.from(json["content"].map((x) => Content.fromJson(x))),
+        pageable: Pageable.fromJson(json["pageable"]),
+        numberOfElements: json["numberOfElements"],
+        sort: Sort.fromJson(json["sort"]),
+        first: json["first"],
+        last: json["last"],
+        number: json["number"],
+        size: json["size"],
+        empty: json["empty"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (content != null) {
-      data['content'] = content!.map((v) => v.toJson()).toList();
-    }
-    if (pageable != null) {
-      data['pageable'] = pageable!.toJson();
-    }
-    data['last'] = last;
-    data['totalPages'] = totalPages;
-    data['totalElements'] = totalElements;
-    data['size'] = size;
-    data['number'] = number;
-    if (sort != null) {
-      data['sort'] = sort!.toJson();
-    }
-    data['first'] = first;
-    data['numberOfElements'] = numberOfElements;
-    data['empty'] = empty;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "content": List<dynamic>.from(content.map((x) => x.toJson())),
+        "pageable": pageable.toJson(),
+        "numberOfElements": numberOfElements,
+        "sort": sort.toJson(),
+        "first": first,
+        "last": last,
+        "number": number,
+        "size": size,
+        "empty": empty,
+      };
 }
 
 class Content {
-  String? bookId;
-  String? bookTitle;
-  String? bookAuthor;
-  String? bookCoverPath;
-  String? bookPublishYear;
-  String? bookPublisher;
+  Content({
+    required this.bookId,
+    required this.bookTitle,
+    required this.bookAuthor,
+    required this.bookCoverPath,
+    required this.bookPublishYear,
+    required this.bookPublisher,
+  });
 
-  Content(
-      {this.bookId,
-      this.bookTitle,
-      this.bookAuthor,
-      this.bookCoverPath,
-      this.bookPublishYear,
-      this.bookPublisher});
+  final String bookId;
+  final String bookTitle;
+  final String bookAuthor;
+  final String bookCoverPath;
+  final String bookPublishYear;
+  final String bookPublisher;
 
-  Content.fromJson(Map<String, dynamic> json) {
-    bookId = json['bookId'];
-    bookTitle = json['bookTitle'];
-    bookAuthor = json['bookAuthor'];
-    bookCoverPath = json['bookCoverPath'];
-    bookPublishYear = json['bookPublishYear'];
-    bookPublisher = json['bookPublisher'];
-  }
+  factory Content.fromJson(Map<String, dynamic> json) => Content(
+        bookId: json["bookId"],
+        bookTitle: json["bookTitle"],
+        bookAuthor: json["bookAuthor"],
+        bookCoverPath: json["bookCoverPath"],
+        bookPublishYear: json["bookPublishYear"],
+        bookPublisher: json["bookPublisher"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['bookId'] = bookId;
-    data['bookTitle'] = bookTitle;
-    data['bookAuthor'] = bookAuthor;
-    data['bookCoverPath'] = bookCoverPath;
-    data['bookPublishYear'] = bookPublishYear;
-    data['bookPublisher'] = bookPublisher;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "bookId": bookId,
+        "bookTitle": bookTitle,
+        "bookAuthor": bookAuthor,
+        "bookCoverPath": bookCoverPath,
+        "bookPublishYear": bookPublishYear,
+        "bookPublisher": bookPublisher,
+      };
 }

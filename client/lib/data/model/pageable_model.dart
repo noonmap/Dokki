@@ -1,40 +1,37 @@
 import 'package:dokki/data/model/sort_model.dart';
 
 class Pageable {
-  Sort? sort;
-  int? offset;
-  int? pageNumber;
-  int? pageSize;
-  bool? paged;
-  bool? unpaged;
+  Pageable({
+    required this.sort,
+    required this.pageNumber,
+    required this.pageSize,
+    required this.offset,
+    required this.paged,
+    required this.unpaged,
+  });
 
-  Pageable(
-      {this.sort,
-      this.offset,
-      this.pageNumber,
-      this.pageSize,
-      this.paged,
-      this.unpaged});
+  final Sort sort;
+  final int pageNumber;
+  final int pageSize;
+  final int offset;
+  final bool paged;
+  final bool unpaged;
 
-  Pageable.fromJson(Map<String, dynamic> json) {
-    sort = json['sort'] != null ? Sort.fromJson(json['sort']) : null;
-    offset = json['offset'];
-    pageNumber = json['pageNumber'];
-    pageSize = json['pageSize'];
-    paged = json['paged'];
-    unpaged = json['unpaged'];
-  }
+  factory Pageable.fromJson(Map<String, dynamic> json) => Pageable(
+        sort: Sort.fromJson(json["sort"]),
+        pageNumber: json["pageNumber"],
+        pageSize: json["pageSize"],
+        offset: json["offset"],
+        paged: json["paged"],
+        unpaged: json["unpaged"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (sort != null) {
-      data['sort'] = sort!.toJson();
-    }
-    data['offset'] = offset;
-    data['pageNumber'] = pageNumber;
-    data['pageSize'] = pageSize;
-    data['paged'] = paged;
-    data['unpaged'] = unpaged;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "sort": sort.toJson(),
+        "pageNumber": pageNumber,
+        "pageSize": pageSize,
+        "offset": offset,
+        "paged": paged,
+        "unpaged": unpaged,
+      };
 }
