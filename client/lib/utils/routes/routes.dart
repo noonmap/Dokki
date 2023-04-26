@@ -1,5 +1,6 @@
-import 'package:dokki/screens/home_screen/home_screen.dart';
-import 'package:dokki/screens/login_screen/login_screen.dart';
+import 'package:dokki/ui/view/home_view.dart';
+import 'package:dokki/ui/view/login_view.dart';
+import 'package:dokki/ui/view/search_book_view.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,9 @@ class Routes {
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => const LoginScreen());
+      case RoutesName.searchBook:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SearchBookView());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

@@ -2,7 +2,6 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   errors:
-    avoid_print: error
     always_use_package_imports: error
     avoid_empty_else: error
     avoid_slow_async_io: error
@@ -12,7 +11,6 @@ analyzer:
     directives_ordering: error
 linter:
   rules:
-    - avoid_print
     - always_use_package_imports
     - avoid_empty_else
     - avoid_slow_async_io
