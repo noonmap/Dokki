@@ -1,4 +1,4 @@
-package com.dokki.util.review.dto.response;
+package com.dokki.review.dto.response;
 
 
 import lombok.AllArgsConstructor;
