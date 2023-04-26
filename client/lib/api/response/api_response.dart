@@ -1,4 +1,4 @@
-import 'package:dokki/data/response/status.dart';
+import 'package:dokki/api/response/status.dart';
 
 class ApiResponse<T> {
   Status? status;
@@ -8,8 +8,8 @@ class ApiResponse<T> {
   ApiResponse(this.status, this.data, this.message);
 
   ApiResponse.loading() : status = Status.LOADING;
-  ApiResponse.complete() : status = Status.COMPLETE;
-  ApiResponse.error() : status = Status.ERROR;
+  ApiResponse.complete(this.data) : status = Status.COMPLETE;
+  ApiResponse.error(this.message) : status = Status.ERROR;
   @override
   String toString() {
     return "Status : $status \n Message : $message \n Data : $data";

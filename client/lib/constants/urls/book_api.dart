@@ -1,47 +1,14 @@
-// User 관련 API URL
-class UserApiUrl {
-  static const baseUrl = "https://dokki.kr/api/users";
-
-  static const login = "$baseUrl/login"; // 로그인
-  static const logout = "$baseUrl/logout"; // 로그아웃
-  /*
-  * @params
-  * search : string
-  * page : int
-  * size : int
-  * @response
-  * List<UserModel>
-  */
-  static const search = baseUrl; // 사용자 검색
-
-  static const updateNickname = "$baseUrl/profile/nickname"; // 사용자 닉네임 수정
-  static const updateImage = "$baseUrl/profile/image"; // 사용자 이미지 수정
-
-  // 사용자 프로필 정보 조희
-  static String detailProfile(String userId) {
-    return "$baseUrl/profile/$userId";
-  }
-
-  // 사용자 독끼풀 상태 조회
-  static String dokkiState(String userId) {
-    return "$baseUrl/dokki/$userId";
-  }
-
-  // 팔로우 추가,취소
-  // POST : 추가
-  // DELETE : 제거
-  static String follow(String userId) {
-    return "$baseUrl/follow/$userId";
-  }
-}
-
 // Book 관련 API URL
 class BookApiUrl {
-  static const baseUrl = "https://dokki.kr/api/books";
+  static const baseUrl = "http://10.0.2.2:5010/books";
 
   static const recommend = baseUrl; // 추천 도서 검색
 
-  static const search = "$baseUrl/search"; // 도서 검색
+  // 도서 검색 URL
+  static String getSearchUrl(
+      String search, String queryType, int page, int size) {
+    return "$baseUrl/search?search=$search&queryType=$queryType&page=$page&size=$size";
+  }
 
   static const myLike = "$baseUrl/like"; // 찜한 책 조회
 

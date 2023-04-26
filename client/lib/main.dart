@@ -1,8 +1,8 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/constants/url.dart';
-import 'package:dokki/screens/home_screen/home_screen.dart';
-import 'package:dokki/screens/login_screen/login_screen.dart';
-import 'package:dokki/screens/splash_screen/splash_screen.dart';
+import 'package:dokki/constants/urls/book_api.dart';
+import 'package:dokki/ui/view/home_view.dart';
+import 'package:dokki/ui/view/login_view.dart';
+import 'package:dokki/ui/view/splash_view.dart';
 import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
