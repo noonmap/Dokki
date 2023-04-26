@@ -17,7 +17,6 @@ class LoginButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.home);
-        Utils.flushBarErrorMessage("error", context);
       },
       child: Container(
         width: 230,

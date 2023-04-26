@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dokki/data/app_exceptions.dart';
-import 'package:dokki/data/network/BaseApiServices.dart';
+import 'package:dokki/api/app_exceptions.dart';
+import 'package:dokki/api/network/BaseApiServices.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkApiService extends BaseApiServices {
@@ -10,8 +11,7 @@ class NetworkApiService extends BaseApiServices {
   Future getGetApiResponse(String url) async {
     dynamic responseJson;
     try {
-      final response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+      final response = await http.get(Uri.parse(url));
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet Connection');
@@ -73,7 +73,7 @@ class NetworkApiService extends BaseApiServices {
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        dynamic responseJson = jsonDecode(response.body);
+        dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
         return responseJson;
       case 400:
         throw BadRequestException(response.body.toString());
