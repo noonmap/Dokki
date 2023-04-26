@@ -1,4 +1,4 @@
-package com.dokki.util.book.dto.response;
+package com.dokki.book.dto.response;
 
 
 import java.util.List;

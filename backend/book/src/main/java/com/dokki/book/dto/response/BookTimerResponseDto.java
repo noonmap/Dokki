@@ -1,4 +1,4 @@
-package com.dokki.util.book.dto.response;
+package com.dokki.book.dto.response;
 
 
 public class BookTimerResponseDto {
