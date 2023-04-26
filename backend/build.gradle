@@ -56,6 +56,8 @@ project(":book") {
 
     dependencies {
         implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
     }
 }
 
@@ -64,6 +66,8 @@ project(':review') {
     jar { enabled = false }
     dependencies {
         implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
     }
 }
 project(':user') {
@@ -72,6 +76,8 @@ project(':user') {
 
     dependencies {
         implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
     }
 }
 project(':timer') {
@@ -80,5 +86,7 @@ project(':timer') {
 
     dependencies {
         implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
     }
 }
