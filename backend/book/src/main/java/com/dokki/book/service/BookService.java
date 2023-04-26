@@ -9,7 +9,7 @@ import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
 import com.dokki.book.util.AladinCaller;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookService {
