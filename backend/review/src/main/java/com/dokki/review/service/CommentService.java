@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Log4j2
 @Service
@@ -57,6 +60,17 @@ public class CommentService {
 	 * @param commentId
 	 */
 	public void deleteComment(Long commentId) {
+	}
+
+
+	/**
+	 * 코멘트 3개 조회
+	 *
+	 * @param bookId
+	 * @return
+	 */
+	public List<CommentEntity> get3Comment(String bookId) {
+		return new ArrayList<>();
 	}
 
 }
