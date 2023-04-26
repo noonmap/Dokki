@@ -1,6 +1,5 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
-import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,7 +15,7 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesName.common);
+        Navigator.pushNamed(context, RoutesName.main);
       },
       child: Container(
         width: 230,
