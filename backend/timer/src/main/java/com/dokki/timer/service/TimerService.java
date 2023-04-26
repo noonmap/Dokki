@@ -1,9 +1,9 @@
 package com.dokki.timer.service;
 
 
-import com.dokki.timer.dto.response.TimerSimpleResponseDto;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
+import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

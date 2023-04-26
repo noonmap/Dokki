@@ -1,8 +1,8 @@
 package com.dokki.timer.controller;
 
 
-import com.dokki.timer.dto.response.TimerSimpleResponseDto;
 import com.dokki.timer.service.TimerService;
+import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
