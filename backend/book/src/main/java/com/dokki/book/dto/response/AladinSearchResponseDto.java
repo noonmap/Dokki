@@ -15,11 +15,15 @@ import java.util.List;
 @ToString
 public class AladinSearchResponseDto {
 
-	private int totalResults;
-	private int startIndex;
-	private int itemsPerPage;
+	private Integer totalResults;
+	private Integer startIndex;
+	private Integer itemsPerPage;
 	private String query;
 	private String searchCategoryName;
 	private List<AladinItemResponseDto> item;
+
+	// 알라딘 api 에러 response
+	private Integer errorCode;
+	private String errorMessage;
 
 }

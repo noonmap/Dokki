@@ -5,6 +5,7 @@ import com.dokki.book.dto.response.AladinSearchResponseDto;
 import com.dokki.book.enums.SearchType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+@Slf4j
 public class AladinCaller {
 
 	private static final String ALADIN_API_KEY = "ttbtjrghks961722001";
@@ -39,6 +41,7 @@ public class AladinCaller {
 			throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 		}
 
+		// api 응답 읽기
 		BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
 		String output;
@@ -48,13 +51,21 @@ public class AladinCaller {
 		}
 		conn.disconnect();
 
+		// string -> json
 		String jsonString = sb.toString();
 		GsonBuilder gsonBuilder = new GsonBuilder()
 			.registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
 			.registerTypeAdapter(LocalDate.class, new LocalDateDeserializer());
-
 		Gson gson = gsonBuilder.setPrettyPrinting().create();
-		return gson.fromJson(jsonString, AladinSearchResponseDto.class);
+
+		AladinSearchResponseDto result = gson.fromJson(jsonString, AladinSearchResponseDto.class);
+
+		// aladin api error handle
+		if (result.getErrorCode() != null) {
+			throw new RuntimeException(result.getErrorMessage());
+		}
+
+		return result;
 	}
 
 

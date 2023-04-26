@@ -1,6 +1,7 @@
 package com.dokki.book.controller;
 
 
+import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.dto.response.BookSearchResponseDto;
@@ -10,6 +11,7 @@ import com.dokki.book.service.BookService;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
+import com.dokki.util.common.error.ErrorCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 
 @Slf4j
@@ -46,12 +47,16 @@ public class BookController {
 
 	@GetMapping("/search")
 	@ApiOperation(value = "도서 검색")
-	public ResponseEntity<Slice<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) throws IOException {
-		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
+	public ResponseEntity<Slice<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) throws CustomException {
+		// 검색어 없거나 빈 값일 경우
+		if (StringUtils.isEmpty(search.trim())) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search.trim(), SearchType.findByName(queryType), pageable);
 		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.toSliceFromApiResponse(apiBookResponseDtoSlice);
 		return ResponseEntity.ok(bookSearchResponseDtoSlice);
 	}
-	
+
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
