@@ -1,10 +1,10 @@
 package com.dokki.review.controller;
 
 
-import com.dokki.review.dto.request.CommentRequestDto;
-import com.dokki.review.dto.response.CommentResponseDto;
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.service.CommentService;
+import com.dokki.util.review.dto.request.CommentRequestDto;
+import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,15 @@ public class CommentController {
 	@ApiOperation(value = "도서의 리뷰(코멘트) 목록 조회")
 	public ResponseEntity<Page<CommentResponseDto>> getCommentList(@PathVariable String bookId, Pageable pageable) {
 		Page<CommentEntity> commentEntityPage = commentService.getCommentList(bookId, pageable);
-		Page<CommentResponseDto> commentResponseDtoPage = CommentResponseDto.fromEntityPage(commentEntityPage);
+		//	public static CommentResponseDto fromEntity(CommentEntity commentEntity) {
+		//		// TODO: 채울 것
+		//		return new CommentResponseDto();
+		//	}
+
+		//	public static Page<CommentResponseDto> fromEntityPage(Page<CommentEntity> commentEntityPage) {
+		//		return commentEntityPage.map(CommentResponseDto::fromEntity);
+		//	}
+		Page<CommentResponseDto> commentResponseDtoPage = Page.empty();//CommentResponseDto.fromEntityPage(commentEntityPage);
 		return ResponseEntity.ok(commentResponseDtoPage);
 	}
 
