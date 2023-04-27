@@ -3,7 +3,7 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = "http://10.0.2.2:5010";
+  final String _baseUrl = "http://172.30.1.42:51070";
   final Map<String, String> _headers = {
     "content-type": "application/json",
     "accept": "application/json",
@@ -14,7 +14,8 @@ class APIService {
       print(url);
       print(params.toString());
       Uri uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
-      http.Response response = await http.get(uri);
+      http.Response response =
+          await http.get(uri).timeout(Duration(seconds: 10));
       return response;
     } catch (e) {
       return http.Response({"message": e}.toString(), 400);
