@@ -4,7 +4,6 @@ package com.dokki.book.service;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.AladinSearchResponseDto;
-import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Slf4j
@@ -57,8 +57,24 @@ public class BookService {
 	 * @param bookId 책 id
 	 * @return 책 정보 + 리뷰 정보
 	 */
-	public BookDetailResponseDto getBook(String bookId) {
-		return null;
+	public BookEntity getBook(String bookId) {
+		BookEntity result;
+		Optional<BookEntity> bookEntity = bookRepository.findById(bookId);
+
+		if (bookEntity.isEmpty()) {
+			AladinItemResponseDto detailResponse = null;
+			try {
+				detailResponse = AladinCaller.getBook(bookId);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			result = AladinItemResponseDto.toEntity(detailResponse);
+			bookRepository.save(result);
+		} else {
+			result = bookEntity.get();
+		}
+
+		return result;
 	}
 
 
@@ -69,7 +85,7 @@ public class BookService {
 	 * @return
 	 */
 	public BookEntity getSimpleBook(String bookId) {
-		return BookEntity.builder().build();
+		return bookRepository.findById(bookId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 	}
 
 }

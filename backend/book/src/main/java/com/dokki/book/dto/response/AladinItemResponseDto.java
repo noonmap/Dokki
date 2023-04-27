@@ -1,6 +1,7 @@
 package com.dokki.book.dto.response;
 
 
+import com.dokki.book.entity.BookEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +32,20 @@ public class AladinItemResponseDto {
 	private int categoryId;
 	private String categoryName;
 	private String publisher;
+	private AladinSubInfoResponseDto subInfo;
+
+
+	public static BookEntity toEntity(AladinItemResponseDto detailResponse) {
+		return BookEntity.builder()
+			.id(detailResponse.getIsbn13())
+			.title(detailResponse.getTitle())
+			.coverImagePath(detailResponse.getCover())
+			.summary(detailResponse.getDescription())
+			.author(detailResponse.getAuthor())
+			.publishDate(detailResponse.pubDate)
+			.publisher(detailResponse.publisher)
+			.totalPageCount(detailResponse.getSubInfo().getItemPage())
+			.build();
+	}
 
 }

@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 
@@ -34,7 +31,12 @@ public class BookEntity {
 	private String author;
 	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate publishDate;
+	@Column(nullable = false, length = 100)
+	private String publisher;
 	@Column(nullable = false)
 	private Integer totalPageCount;
+
+	@OneToOne(mappedBy = "bookId")
+	private BookStatisticsEntity statistics;
 
 }
