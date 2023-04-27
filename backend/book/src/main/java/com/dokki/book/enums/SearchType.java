@@ -24,7 +24,7 @@ public enum SearchType {
 		return EnumSet.allOf(SearchType.class).stream()
 			.filter(e -> e.getName().equals(name))
 			.findAny()
-			.orElseThrow(IllegalArgumentException::new);
+			.orElse(SearchType.KEYWORD);
 	}
 
 }
