@@ -19,6 +19,6 @@ public interface ReviewClient {
 	 * @return
 	 */
 	@GetMapping("/reviews/comment/partial/{bookId}")
-	public List<CommentResponseDto> get3Comment(@PathVariable String bookId);
+	public List<CommentResponseDto> get3Comment(@PathVariable(value = "bookId") String bookId);
 
 }

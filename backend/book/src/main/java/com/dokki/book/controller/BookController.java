@@ -40,8 +40,16 @@ public class BookController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
-		BookDetailResponseDto bookDetail = bookService.getBook(bookId);
-		return ResponseEntity.ok(bookDetail);
+		BookEntity bookEntity = bookService.getBook(bookId);
+		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
+		if (bookEntity.getStatistics() != null) {
+			try {
+				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
+			} catch (Exception e) {
+				log.error("리뷰 조회 실패 - bookId : {}", bookId);
+			}
+		}
+		return ResponseEntity.ok(bookDetailResponseDto);
 	}
 
 
@@ -114,17 +122,11 @@ public class BookController {
 	@ApiOperation(value = "도서 요약 정보를 조회합니다.")
 	public ResponseEntity<BookSimpleResponseDto> getBookSimple(@PathVariable String bookId) {
 		BookEntity book = bookService.getSimpleBook(bookId);
-
-		//	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
-		//		// TODO : 채우기
-		//		return new BookSimpleResponseDto();
-		//	}
-		//
-		//
-		//	public static Page<BookSimpleResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
-		//		return bookEntityPage.map(BookSimpleResponseDto::fromEntity);
-		//	}
-		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.builder().build();//BookSimpleResponseDto.fromEntity(book);
+		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.builder()
+			.bookId(bookId)
+			.bookTitle(book.getTitle())
+			.bookCoverPath(book.getCoverImagePath())
+			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
 	}
 
