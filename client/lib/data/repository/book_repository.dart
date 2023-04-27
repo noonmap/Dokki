@@ -17,6 +17,7 @@ class BookRepository {
       "size": PAGE_LIMIT,
     };
     http.Response response = await _apiService.get("/books/search", params);
+    print(response.toString());
     dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     final booksData = responseJson["content"] as List;
     List<Book> bookList = booksData.map((json) => Book.fromJson(json)).toList();

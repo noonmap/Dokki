@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/constants/image_strings.dart';
 import 'package:dokki/providers/book_provider.dart';
@@ -210,7 +209,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                                 children: [
                                                                   Container(
                                                                     decoration:
-                                                                        BoxDecoration(
+                                                                        const BoxDecoration(
                                                                       borderRadius:
                                                                           BorderRadius.all(
                                                                               Radius.circular(8)),
@@ -224,7 +223,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                                       onPressed:
                                                                           () {},
                                                                       icon:
-                                                                          Icon(
+                                                                          const Icon(
                                                                         Ionicons
                                                                             .heart_sharp,
                                                                         color:
@@ -234,7 +233,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                                   ),
                                                                   Container(
                                                                     decoration:
-                                                                        BoxDecoration(
+                                                                        const BoxDecoration(
                                                                       borderRadius:
                                                                           BorderRadius.all(
                                                                               Radius.circular(8)),
@@ -246,7 +245,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                                   ),
                                                                   Container(
                                                                     decoration:
-                                                                        BoxDecoration(
+                                                                        const BoxDecoration(
                                                                       borderRadius:
                                                                           BorderRadius.all(
                                                                               Radius.circular(8)),
@@ -266,7 +265,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                                                                     () {},
                                                                 style: ElevatedButton
                                                                     .styleFrom(
-                                                                  shape: RoundedRectangleBorder(
+                                                                  shape: const RoundedRectangleBorder(
                                                                       borderRadius:
                                                                           BorderRadius.all(
                                                                               Radius.circular(20))),

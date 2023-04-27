@@ -7,6 +7,7 @@ class BookProvider extends ChangeNotifier {
   List<Book> _bookList = [];
   List<Book> get bookList => _bookList;
   Map<String, dynamic> pageData = {};
+  String error = "";
   bool isLoading = false;
 
   Future<void> getBookListSearch(
@@ -14,14 +15,19 @@ class BookProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     await Future.delayed(const Duration(seconds: 1));
-    Map<String, dynamic> returnData =
-        await _bookRepository.getSearchBookList(search, queryType, page);
+    try {
+      Map<String, dynamic> returnData =
+          await _bookRepository.getSearchBookList(search, queryType, page);
 
-    List<Book> pageBookList = returnData["bookList"];
-    pageData = returnData["pageData"];
-    _bookList = pageBookList;
-    isLoading = false;
-    notifyListeners();
+      List<Book> pageBookList = returnData["bookList"];
+      pageData = returnData["pageData"];
+      _bookList = pageBookList;
+    } catch (e) {
+      error = "error";
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   void initProvider() {
