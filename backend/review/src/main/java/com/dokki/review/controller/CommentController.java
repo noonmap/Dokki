@@ -1,9 +1,9 @@
 package com.dokki.review.controller;
 
 
+import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.service.CommentService;
-import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +70,14 @@ public class CommentController {
 	}
 
 
-	@GetMapping("/comment/partial/{bookId}")
+	@GetMapping("/partial/{bookId}")
 	@ApiOperation(value = "해당 도서에 대한 리뷰(Comment) 3개 조회")
 	public ResponseEntity<List<CommentResponseDto>> get3Comment(@PathVariable String bookId) {
 		List<CommentEntity> commentEntityList = commentService.get3Comment(bookId);
 		// TODO: 공통모듈 dto 이전으로 인한 비즈니스 로직 이전 필요
 		List<CommentResponseDto> commentResponseDtoList = new ArrayList<>(); //CommentResponseDto.fromEntityList(commentEntityList);
+		commentResponseDtoList.add(CommentResponseDto.builder().content("리뷰리뷰").created(LocalDateTime.now()).score(4).build());
+		commentResponseDtoList.add(CommentResponseDto.builder().content("리이뷰").created(LocalDateTime.now()).score(5).build());
 		return ResponseEntity.ok(commentResponseDtoList);
 	}
 
