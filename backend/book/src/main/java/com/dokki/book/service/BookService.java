@@ -38,6 +38,7 @@ public class BookService {
 	public Slice<AladinItemResponseDto> searchBookList(String search, SearchType queryType, Pageable pageable) {
 		AladinSearchResponseDto result = null;
 		try {
+			search = search.replaceAll(" ", "%20"); // url상에 공백 -> URL escape code로 대체
 			result = AladinCaller.searchBook(search, queryType, pageable);
 		} catch (RuntimeException e) {
 			log.error("BookService - 알라딘 api 에러 {}", e.getMessage());
