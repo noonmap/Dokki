@@ -42,6 +42,13 @@ public class BookController {
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
+		if (bookEntity.getStatistics() != null) {
+			try {
+				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
+			} catch (Exception e) {
+				log.error("리뷰 조회 실패 - bookId : {}", bookId);
+			}
+		}
 		return ResponseEntity.ok(bookDetailResponseDto);
 	}
 

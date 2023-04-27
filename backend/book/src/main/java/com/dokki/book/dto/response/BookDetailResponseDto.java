@@ -3,6 +3,7 @@ package com.dokki.book.dto.response;
 
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatisticsEntity;
+import com.dokki.util.review.dto.response.CommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class BookDetailResponseDto {
 	private String bookPublisher;
 	private Integer bookTotalPage;
 
-	private List<ReviewResponseDto> review;
+	private List<CommentResponseDto> review;
 	private Integer readerCount;    // 읽은 사람
 	private Float meanScore;
 	private Integer meanReadTime;
@@ -51,6 +52,11 @@ public class BookDetailResponseDto {
 			responseDto.meanReadTime = statistics.getMeanReadTime();
 		}
 		return responseDto;
+	}
+
+
+	public void setReview(List<CommentResponseDto> review) {
+		this.review = review;
 	}
 
 }

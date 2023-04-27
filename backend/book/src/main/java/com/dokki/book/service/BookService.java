@@ -1,6 +1,7 @@
 package com.dokki.book.service;
 
 
+import com.dokki.book.client.ReviewClient;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.AladinSearchResponseDto;
@@ -9,7 +10,7 @@ import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
 import com.dokki.book.util.AladinCaller;
 import com.dokki.util.common.error.ErrorCode;
-import lombok.RequiredArgsConstructor;
+import com.dokki.util.review.dto.response.CommentResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,15 +18,23 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+
 public class BookService {
 
 	private final BookRepository bookRepository;
+	private final ReviewClient reviewClient;
+
+
+	public BookService(BookRepository bookRepository, ReviewClient reviewClient) {
+		this.bookRepository = bookRepository;
+		this.reviewClient = reviewClient;
+	}
 
 
 	/**
@@ -87,6 +96,17 @@ public class BookService {
 	 */
 	public BookEntity getSimpleBook(String bookId) {
 		return bookRepository.findById(bookId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+	}
+
+
+	/**
+	 * 책 리뷰 3개 리턴
+	 *
+	 * @param bookId 책 id
+	 * @return 해당 책의 리뷰 3개
+	 */
+	public List<CommentResponseDto> get3Comment(String bookId) {
+		return reviewClient.get3Comment(bookId);
 	}
 
 }
