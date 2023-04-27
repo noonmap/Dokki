@@ -5,6 +5,7 @@ import 'package:dokki/ui/pages/login_page.dart';
 import 'package:dokki/ui/pages/main_page.dart';
 import 'package:dokki/ui/pages/profile_page.dart';
 import 'package:dokki/ui/pages/search_book_page.dart';
+import 'package:dokki/ui/pages/splash_page.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,9 @@ class Routes {
       case RoutesName.home:
         return MaterialPageRoute(
             builder: (BuildContext context) => const HomePage());
+      case RoutesName.splash:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SplashPage());
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => const LoginPage());
