@@ -1,9 +1,9 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/ui/pages/dokki_grass_page.dart';
-import 'package:dokki/ui/pages/home_page.dart';
-import 'package:dokki/ui/pages/library_page.dart';
-import 'package:dokki/ui/pages/profile_page.dart';
-import 'package:dokki/ui/pages/search_book_page.dart';
+import 'package:dokki/ui/book_search/search_book_page.dart';
+import 'package:dokki/ui/dokki_grass/dokki_grass_page.dart';
+import 'package:dokki/ui/home/home_page.dart';
+import 'package:dokki/ui/library/library_page.dart';
+import 'package:dokki/ui/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -41,6 +41,9 @@ class _MainPageState extends State<MainPage> {
         currentIndex: currentIndex,
         unselectedItemColor: grayColor200,
         selectedItemColor: brandColor300,
+        showUnselectedLabels: false,
+        selectedLabelStyle:
+            const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         elevation: 10,
         items: const [
           BottomNavigationBarItem(icon: Icon(Ionicons.home_sharp), label: "독기"),

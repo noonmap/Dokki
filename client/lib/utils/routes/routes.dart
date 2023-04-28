@@ -1,11 +1,12 @@
-import 'package:dokki/ui/pages/dokki_grass_page.dart';
-import 'package:dokki/ui/pages/home_page.dart';
-import 'package:dokki/ui/pages/library_page.dart';
-import 'package:dokki/ui/pages/login_page.dart';
-import 'package:dokki/ui/pages/main_page.dart';
-import 'package:dokki/ui/pages/profile_page.dart';
-import 'package:dokki/ui/pages/search_book_page.dart';
-import 'package:dokki/ui/pages/splash_page.dart';
+import 'package:dokki/ui/book_detail/book_detail_page.dart';
+import 'package:dokki/ui/book_search/search_book_page.dart';
+import 'package:dokki/ui/dokki_grass/dokki_grass_page.dart';
+import 'package:dokki/ui/home/home_page.dart';
+import 'package:dokki/ui/library/library_page.dart';
+import 'package:dokki/ui/login/login_page.dart';
+import 'package:dokki/ui/main/main_page.dart';
+import 'package:dokki/ui/profile/profile_page.dart';
+import 'package:dokki/ui/splash/splash_page.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +28,10 @@ class Routes {
       case RoutesName.searchBook:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SearchBookPage());
+      case RoutesName.bookDetail:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const BookDetailPage(),
+            settings: settings);
       case RoutesName.library:
         return MaterialPageRoute(
             builder: (BuildContext context) => const LibraryPage());

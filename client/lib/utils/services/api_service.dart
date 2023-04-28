@@ -1,9 +1,10 @@
 import "dart:convert";
 
+import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = "http://10.0.2.2:5010";
+  final String _baseUrl = dotenv.env["BASE_URL"] as String;
   final Map<String, String> _headers = {
     "content-type": "application/json",
     "accept": "application/json",
@@ -11,8 +12,6 @@ class APIService {
 
   Future<http.Response> get(String url, Map<String, dynamic> params) async {
     try {
-      print(url);
-      print(params.toString());
       Uri uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
       http.Response response = await http.get(uri);
       return response;
