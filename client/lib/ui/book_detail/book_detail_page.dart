@@ -1,6 +1,7 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/ui/common_widgets/thumb_image.dart';
+import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,15 +31,16 @@ class _BookDetailPageState extends State<BookDetailPage> {
     final bp = Provider.of<BookProvider>(context);
     return Scaffold(
         backgroundColor: grayColor000,
-        body: bp.isLoading
+        body: bp.isLoading || bp.book == null
             ? const Center(child: CircularProgressIndicator())
             : Container(
+                padding: Utils.getCommonPadding(),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         ThumbImage(
-                            thumbImagePath: bp.book.bookCoverPath,
+                            thumbImagePath: bp.book!.bookCoverPath,
                             width: 112,
                             height: 140),
                         const SizedBox(
@@ -48,7 +50,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             child: Column(
                           children: [
                             Text(
-                              bp.book.bookTitle,
+                              bp.book!.bookTitle,
                             )
                           ],
                         ))

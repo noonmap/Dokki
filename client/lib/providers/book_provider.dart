@@ -6,14 +6,13 @@ import 'package:flutter/foundation.dart';
 class BookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
   List<Book> _bookList = [];
-  late BookDetailModel book;
+  BookDetailModel? book;
   List<Book> get bookList => _bookList;
   Map<String, dynamic> pageData = {};
   String error = "";
   bool isLoading = false;
 
   Future<void> getBookById(String bookId) async {
-    print(bookId);
     isLoading = true;
     notifyListeners();
     try {

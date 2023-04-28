@@ -81,28 +81,23 @@ class _SearchBookPageState extends State<SearchBookPage> {
               ),
               Expanded(
                   child: bp.bookList.isNotEmpty
-                      ? Container(
-                          child: ListView.separated(
-                            itemCount: bp.bookList.length,
-                            itemBuilder: (context, index) {
-                              return BookListItem(
-                                  bookId: bp.bookList[index].bookId,
-                                  bookTitle: bp.bookList[index].bookTitle,
-                                  bookCoverPath:
-                                      bp.bookList[index].bookCoverPath,
-                                  bookAuthor: bp.bookList[index].bookAuthor,
-                                  bookPublisher:
-                                      bp.bookList[index].bookPublisher,
-                                  bookPublishYear:
-                                      bp.bookList[index].bookPublishYear);
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(
-                                height: 10,
-                              );
-                            },
-                          ),
+                      ? ListView.separated(
+                          itemCount: bp.bookList.length,
+                          itemBuilder: (context, index) {
+                            return BookListItem(
+                                bookId: bp.bookList[index].bookId,
+                                bookTitle: bp.bookList[index].bookTitle,
+                                bookCoverPath: bp.bookList[index].bookCoverPath,
+                                bookAuthor: bp.bookList[index].bookAuthor,
+                                bookPublisher: bp.bookList[index].bookPublisher,
+                                bookPublishYear:
+                                    bp.bookList[index].bookPublishYear);
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(
+                              height: 10,
+                            );
+                          },
                         )
                       : bp.pageData.isEmpty
                           ? const Center(
