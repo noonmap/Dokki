@@ -1,39 +1,43 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/ui/common_widgets/thumb_image.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
 class BookListItem extends StatelessWidget {
-  const BookListItem({
-    super.key,
-    required this.bp,
-    required this.index,
-  });
+  final String bookId;
+  final String bookTitle;
+  final String bookCoverPath;
+  final String bookAuthor;
+  final String bookPublisher;
+  final String bookPublishYear;
 
-  final BookProvider bp;
-  final int index;
+  const BookListItem(
+      {super.key,
+      required this.bookId,
+      required this.bookTitle,
+      required this.bookCoverPath,
+      required this.bookAuthor,
+      required this.bookPublisher,
+      required this.bookPublishYear});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.bookDetail,
-            arguments: {"bookId": bp.bookList[index].bookId});
+            arguments: {"bookId": bookId});
       },
       child: Container(
         decoration: const BoxDecoration(
-          color: whiteColor100,
+          color: grayColor000,
         ),
         child: Row(
           children: [
             Flexible(
-              child: Image.network(
-                bp.bookList[index].bookCoverPath,
-                width: 80,
-                height: 100,
-                fit: BoxFit.fill,
-              ),
+              child: ThumbImage(
+                  thumbImagePath: bookCoverPath, width: 80, height: 100),
             ),
             const SizedBox(
               width: 20,
@@ -44,7 +48,7 @@ class BookListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    bp.bookList[index].bookTitle,
+                    bookTitle,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     softWrap: false,
@@ -55,7 +59,7 @@ class BookListItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    bp.bookList[index].bookAuthor,
+                    bookAuthor,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     softWrap: false,
@@ -65,7 +69,7 @@ class BookListItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "${bp.bookList[index].bookPublisher} • ${bp.bookList[index].bookPublishYear}",
+                    "$bookPublisher • $bookPublishYear",
                     style: const TextStyle(
                       color: grayColor300,
                       fontSize: 12,
@@ -120,7 +124,7 @@ class BookListItem extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8)),
                                             color: brandColor300,
@@ -129,26 +133,26 @@ class BookListItem extends StatelessWidget {
                                           height: 70,
                                           child: IconButton(
                                             onPressed: () {},
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Ionicons.heart_sharp,
-                                              color: whiteColor100,
+                                              color: grayColor000,
                                             ),
                                           ),
                                         ),
                                         Container(
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8)),
-                                            color: whiteColor300,
+                                            color: grayColor400,
                                           ),
                                           width: 90,
                                           height: 70,
                                         ),
                                         Container(
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(8)),
-                                            color: whiteColor300,
+                                            color: grayColor400,
                                           ),
                                           width: 90,
                                           height: 70,
@@ -161,7 +165,7 @@ class BookListItem extends StatelessWidget {
                                     ElevatedButton(
                                       onPressed: () {},
                                       style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20))),
                                         backgroundColor: brandColor300,

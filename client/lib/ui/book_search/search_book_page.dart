@@ -38,7 +38,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
     return Stack(
       children: [
         Container(
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
+          padding: Utils.getCommonPadding(),
           child: Column(
             children: [
               TextField(
@@ -82,16 +82,24 @@ class _SearchBookPageState extends State<SearchBookPage> {
               Expanded(
                   child: bp.bookList.isNotEmpty
                       ? Container(
-                          padding: const EdgeInsets.all(20),
                           child: ListView.separated(
                             itemCount: bp.bookList.length,
                             itemBuilder: (context, index) {
-                              return BookListItem(bp: bp, index: index);
+                              return BookListItem(
+                                  bookId: bp.bookList[index].bookId,
+                                  bookTitle: bp.bookList[index].bookTitle,
+                                  bookCoverPath:
+                                      bp.bookList[index].bookCoverPath,
+                                  bookAuthor: bp.bookList[index].bookAuthor,
+                                  bookPublisher:
+                                      bp.bookList[index].bookPublisher,
+                                  bookPublishYear:
+                                      bp.bookList[index].bookPublishYear);
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return const SizedBox(
-                                height: 5,
+                                height: 10,
                               );
                             },
                           ),
@@ -99,7 +107,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                       : bp.pageData.isEmpty
                           ? const Center(
                               child: Text("검색 키워드를 입력해주세요.",
-                                  style: TextStyle(color: blackColor400)),
+                                  style: TextStyle(color: grayColor500)),
                             )
                           : const NoSearchResultUI())
             ],
