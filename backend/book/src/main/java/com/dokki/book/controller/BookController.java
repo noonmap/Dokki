@@ -6,6 +6,7 @@ import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.dto.response.BookSearchResponseDto;
 import com.dokki.book.entity.BookEntity;
+import com.dokki.book.entity.BookMarkEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.service.BookService;
 import com.dokki.book.service.BookStatusService;
@@ -16,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -68,20 +68,15 @@ public class BookController {
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
-	public ResponseEntity<Page<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
+	public ResponseEntity<Slice<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = 0L;   // TODO: user id 가져오기
-		Page<BookEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
-
-		//	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
-		//		// TODO : 채우기
-		//		return new BookSimpleResponseDto();
-		//	}
-		//
-		//
-		//	public static Page<BookSimpleResponseDto> fromEntityPage(Page<BookEntity> bookEntityPage) {
-		//		return bookEntityPage.map(BookSimpleResponseDto::fromEntity);
-		//	}
-		Page<BookSimpleResponseDto> bookResponseDtoPage = Page.empty();//BookSimpleResponseDto.fromEntityPage(bookEntityPage);
+		Slice<BookMarkEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
+		Slice<BookSimpleResponseDto> bookResponseDtoPage =
+			bookEntityPage.map(entity -> BookSimpleResponseDto.builder()
+				.bookId(entity.getBookId().getId())
+				.bookTitle(entity.getBookId().getTitle())
+				.bookCoverPath(entity.getBookId().getCoverImagePath())
+				.build());
 		return ResponseEntity.ok(bookResponseDtoPage);
 	}
 
@@ -89,7 +84,8 @@ public class BookController {
 	@PostMapping("/like/{bookId}")
 	@ApiOperation(value = "책 찜하기 추가")
 	public ResponseEntity<HttpStatus> createBookmark(@PathVariable String bookId) {
-		bookmarkService.createBookmark(bookId);
+		Long userId = 2L;   // TODO: user id 가져오기
+		bookmarkService.createBookmark(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -97,7 +93,8 @@ public class BookController {
 	@DeleteMapping("/like/{bookId}")
 	@ApiOperation(value = "책 찜하기 취소")
 	public ResponseEntity<HttpStatus> deleteBookmark(@PathVariable String bookId) {
-		bookmarkService.deleteBookmark(bookId);
+		Long userId = 0L;   // TODO: user id 가져오기
+		bookmarkService.deleteBookmark(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
