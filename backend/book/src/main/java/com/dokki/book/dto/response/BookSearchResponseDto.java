@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Slice;
 
 
 @Getter
@@ -18,10 +19,24 @@ public class BookSearchResponseDto {
 	private String bookAuthor;
 	private String bookCoverPath;
 	private String bookPublishYear;
+	private String bookPublisher;
 
-	//	public static Page<BookSearchResponseDto> toPagefromApiResponse(List<Object> apiResult) {
-	//		// TODO: 구현 및 파라미터 수정
-	//		return null;
-	//	}
+
+	private static BookSearchResponseDto fromItem(AladinItemResponseDto item) {
+		String year = Integer.toString(item.getPubDate().getYear());    // date to year (string)
+		return BookSearchResponseDto.builder()
+			.bookId(item.getIsbn13())
+			.bookTitle(item.getTitle())
+			.bookAuthor(item.getAuthor())
+			.bookCoverPath(item.getCover())
+			.bookPublishYear(year)
+			.bookPublisher(item.getPublisher())
+			.build();
+	}
+
+
+	public static Slice<BookSearchResponseDto> toSliceFromApiResponse(Slice<AladinItemResponseDto> aladinItemsSlice) {
+		return aladinItemsSlice.map(BookSearchResponseDto::fromItem);
+	}
 
 }

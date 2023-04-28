@@ -5,14 +5,14 @@ import com.dokki.book.entity.BookEntity;
 import com.dokki.book.repository.BookRepository;
 import com.dokki.book.repository.BookmarkRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookmarkService {
