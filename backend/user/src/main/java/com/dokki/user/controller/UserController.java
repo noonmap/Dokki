@@ -6,7 +6,7 @@ import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.dto.response.UserSimpleInfoDto;
 import com.dokki.user.entity.UserEntity;
 import com.dokki.user.repository.UserRepository;
-import com.dokki.user.security.filter.JwtFilter;
+//import com.dokki.user.security.filter.JwtFilter;
 import com.dokki.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +40,8 @@ public class UserController {
     public ResponseEntity<?> googleLogin(@RequestParam("code") String code) throws Exception{
         ProfileResponseDto dto = null;//userService.login(code);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
-        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
+        //httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
+        //httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
 
         return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);
     }

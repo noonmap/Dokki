@@ -1,6 +1,5 @@
 package com.dokki.user.dto;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Notnull;
 import javax.validation.constraints.Size;
 
 import lombok.*;
