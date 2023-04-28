@@ -5,13 +5,13 @@ import com.dokki.book.repository.BookRepository;
 import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.book.dto.response.CollectionResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CollectionService {
