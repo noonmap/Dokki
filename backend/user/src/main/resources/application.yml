@@ -1,6 +1,10 @@
 server:
-  port: 5010
+  port: 0 #random port
+
 spring:
+  application:
+    name: user-service
+
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -20,6 +24,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
 
   # Swagger
   mvc:
@@ -36,3 +41,43 @@ spring:
     livereload.enabled: true
   freemarker:
     cache: false
+
+  # JWT Config
+  jwt:
+    secret: bXNoLWt5bS1jY2cta2p5LWxqaC1qa2gtcGF0cGF0LWdvb2QtbG9zdGFyay13aGF0aXNnb29kLXNzYWZ5LXNsZWVwLW5ld2plYW5zLWZpZ2h0aW5n
+    access:
+      expiration: 3600000
+      header: Authorization
+
+    refresh:
+      expiration: 1209600000
+      header: Authorization-refresh
+  # OAuth
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 9d03d60cc88c7bea2a829ea7d86cd32d
+            redirect-uri: http://localhost:5010/login/oauth2/code/kakao
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+

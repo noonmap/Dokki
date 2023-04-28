@@ -1,30 +1,30 @@
 package com.dokki.book.controller;
 
 
+import com.dokki.book.dto.response.AladinItemResponseDto;
+import com.dokki.book.dto.response.BookDetailResponseDto;
+import com.dokki.book.dto.response.BookSearchResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.service.BookService;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
-import com.dokki.util.book.dto.response.BookDetailResponseDto;
-import com.dokki.util.book.dto.response.BookSearchResponseDto;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 
-@Log4j2
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/books")
@@ -46,21 +46,12 @@ public class BookController {
 
 	@GetMapping("/search")
 	@ApiOperation(value = "도서 검색")
-	public ResponseEntity<Page<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) {
-		List<Object> apiBookResponseDto = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
-		//	public static Page<BookSearchResponseDto> toPagefromApiResponse(List<Object> apiResult) {
-		//		// TODO: 구현 및 파라미터 수정
-		//		return null;
-		//	}
-		Page<BookSearchResponseDto> bookSearchResponseDtoPage = Page.empty();//BookSearchResponseDto.toPagefromApiResponse(apiBookResponseDto);
-		// 테스트
-		List<BookSearchResponseDto> list = new ArrayList<>();
-		list.add(BookSearchResponseDto.builder().bookId("isbn0101").bookTitle("테스트1").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
-		list.add(BookSearchResponseDto.builder().bookId("isbn0222").bookTitle("테스트2").bookCoverPath("./default/image.png").bookAuthor("abc").bookPublishYear("2021").build());
-		bookSearchResponseDtoPage = new PageImpl<>(list, pageable, list.size());
-		return ResponseEntity.ok(bookSearchResponseDtoPage);
+	public ResponseEntity<Slice<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) throws IOException {
+		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search, SearchType.findByName(queryType), pageable);
+		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.toSliceFromApiResponse(apiBookResponseDtoSlice);
+		return ResponseEntity.ok(bookSearchResponseDtoSlice);
 	}
-
+	
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
