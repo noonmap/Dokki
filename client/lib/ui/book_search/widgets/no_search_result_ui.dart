@@ -20,7 +20,7 @@ class NoSearchResultUI extends StatelessWidget {
         SizedBox(
           height: 5,
         ),
-        Text("검색 결과가 없습니다.", style: TextStyle(color: blackColor400)),
+        Text("검색 결과가 없습니다.", style: TextStyle(color: grayColor500)),
       ],
     );
   }

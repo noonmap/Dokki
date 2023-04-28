@@ -10,9 +10,14 @@ class APIService {
     "accept": "application/json",
   };
 
-  Future<http.Response> get(String url, Map<String, dynamic> params) async {
+  Future<http.Response> get(String url, Map<String, dynamic>? params) async {
     try {
-      Uri uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
+      late Uri uri;
+      if (params == null) {
+        uri = Uri.parse(_baseUrl + url);
+      } else {
+        uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
+      }
       http.Response response =
           await http.get(uri).timeout(Duration(seconds: 10));
       return response;

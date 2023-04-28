@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-          scaffoldBackgroundColor: brandColor100,
+          scaffoldBackgroundColor: grayColor000,
         ),
         debugShowCheckedModeBanner: false,
         initialRoute: RoutesName.splash,

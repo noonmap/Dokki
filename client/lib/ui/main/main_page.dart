@@ -33,10 +33,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[currentIndex],
-      backgroundColor: whiteColor100,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: whiteColor100,
+        backgroundColor: grayColor000,
         onTap: onTap,
         currentIndex: currentIndex,
         unselectedItemColor: grayColor200,
