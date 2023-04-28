@@ -1,5 +1,5 @@
 import 'package:dokki/constants/image_strings.dart';
-import 'package:dokki/ui/widgets/login_button.dart';
+import 'package:dokki/ui/common_widgets/login_button.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {

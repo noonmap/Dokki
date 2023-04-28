@@ -22,13 +22,13 @@ class Utils {
           padding: const EdgeInsets.all(15),
           borderRadius: BorderRadius.circular(8),
           message: message,
-          backgroundColor: brandColor400,
+          backgroundColor: brandColor300,
           messageColor: whiteColor100,
-          duration: const Duration(seconds: 3),
-          flushbarPosition: FlushbarPosition.TOP,
+          duration: const Duration(seconds: 2),
+          flushbarPosition: FlushbarPosition.BOTTOM,
           reverseAnimationCurve: Curves.easeInOut,
           positionOffset: 20,
-          icon: const Icon(Icons.error, size: 28, color: whiteColor100),
+          icon: const Icon(Icons.info_sharp, size: 28, color: whiteColor100),
         )..show(context));
   }
 
