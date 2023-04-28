@@ -13,7 +13,8 @@ class APIService {
   Future<http.Response> get(String url, Map<String, dynamic> params) async {
     try {
       Uri uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
-      http.Response response = await http.get(uri);
+      http.Response response =
+          await http.get(uri).timeout(Duration(seconds: 10));
       return response;
     } catch (e) {
       return http.Response({"message": e}.toString(), 400);
