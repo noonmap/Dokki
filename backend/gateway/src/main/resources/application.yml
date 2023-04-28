@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: gateway-service
+
+  # Routing
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+        - id: book-service
+          uri: lb://BOOK-SERVICE
+          predicates:
+            - Path=/books/**
+        - id: review-service
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/reviews/**
+        - id: timer-service
+          uri: lb://TIMER-SERVICE
+          predicates:
+            - Path=/timers/**
+# Eureka
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
