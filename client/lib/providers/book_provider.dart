@@ -1,3 +1,4 @@
+import 'package:dokki/data/model/book_detail_model.dart';
 import 'package:dokki/data/model/book_model.dart';
 import 'package:dokki/data/repository/book_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -5,19 +6,35 @@ import 'package:flutter/foundation.dart';
 class BookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
   List<Book> _bookList = [];
+  late BookDetailModel book;
   List<Book> get bookList => _bookList;
   Map<String, dynamic> pageData = {};
   String error = "";
   bool isLoading = false;
 
+  Future<void> getBookById(String bookId) async {
+    print(bookId);
+    isLoading = true;
+    notifyListeners();
+    try {
+      BookDetailModel returnData =
+          await _bookRepository.getBookByIdData(bookId);
+      book = returnData;
+    } catch (e) {
+      error = "error";
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> getBookListSearch(
       String search, String queryType, String page) async {
     isLoading = true;
     notifyListeners();
-    await Future.delayed(const Duration(seconds: 1));
     try {
       Map<String, dynamic> returnData =
-          await _bookRepository.getSearchBookList(search, queryType, page);
+          await _bookRepository.getSearchBookListData(search, queryType, page);
 
       List<Book> pageBookList = returnData["bookList"];
       pageData = returnData["pageData"];

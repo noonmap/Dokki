@@ -8,8 +8,8 @@ class Utils {
   static toastMessage(String message) {
     Fluttertoast.showToast(
       msg: message,
-      backgroundColor: blackColor400,
-      textColor: whiteColor100,
+      backgroundColor: grayColor500,
+      textColor: grayColor000,
     );
   }
 
@@ -23,12 +23,12 @@ class Utils {
           borderRadius: BorderRadius.circular(8),
           message: message,
           backgroundColor: brandColor300,
-          messageColor: whiteColor100,
+          messageColor: grayColor000,
           duration: const Duration(seconds: 2),
           flushbarPosition: FlushbarPosition.BOTTOM,
           reverseAnimationCurve: Curves.easeInOut,
           positionOffset: 20,
-          icon: const Icon(Icons.info_sharp, size: 28, color: whiteColor100),
+          icon: const Icon(Icons.info_sharp, size: 28, color: grayColor000),
         )..show(context));
   }
 
@@ -40,4 +40,7 @@ class Utils {
       ),
     );
   }
+
+  static EdgeInsets getCommonPadding() =>
+      const EdgeInsets.fromLTRB(20, 50, 20, 0);
 }

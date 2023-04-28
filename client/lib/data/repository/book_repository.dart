@@ -10,7 +10,7 @@ class BookRepository {
   final APIService _apiService = APIService();
 
   // GET : 키워드에 맞는 책 리스트 데이터
-  Future<Map<String, dynamic>> getSearchBookList(
+  Future<Map<String, dynamic>> getSearchBookListData(
       String search, String queryType, String page) async {
     Map<String, String> params = {
       "search": search,
@@ -23,6 +23,7 @@ class BookRepository {
     dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     final booksData = responseJson["content"] as List;
     List<Book> bookList = booksData.map((json) => Book.fromJson(json)).toList();
+
     final first = responseJson["first"];
     final last = responseJson["last"];
     final empty = responseJson["empty"];
@@ -41,19 +42,24 @@ class BookRepository {
   }
 
   // GET : 책 상세 데이터
-  Future<Map<String, dynamic>> getBookById(String bookId) async {
-    Map<String, String> params = {
-      "bookId": bookId,
-    };
-
-    http.Response response = await _apiService.get("/books", params);
+  Future<BookDetailModel> getBookByIdData(String bookId) async {
+    http.Response response = await _apiService.get("/books/$bookId", null);
     dynamic responseJson =
         jsonDecode(utf8.decode(response.bodyBytes)); // string으로온 데이터를 json으로 변경
-    BookDetailModel bookDetailData = BookDetailModel.fromJson(
-        responseJson); // json 데이터를 BookDetailModel 생성자로 넣어서 만든 Instance 객체
-    Map<String, dynamic> returnData = {
-      "book": bookDetailData,
-    };
-    return returnData;
+    if (responseJson["readerCount"] == null) {
+      responseJson["readerCount"] = 0;
+    }
+    if (responseJson["meanScore"] == null) {
+      responseJson["meanScore"] = 0;
+    }
+    if (responseJson["meanReadTime"] == null) {
+      responseJson["meanReadTime"] = 0;
+    }
+    if (responseJson["review"] == null) {
+      responseJson["review"] = [];
+    }
+
+    BookDetailModel bookDetailData = BookDetailModel.fromJson(responseJson);
+    return bookDetailData;
   }
 }

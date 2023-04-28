@@ -34,4 +34,9 @@ class Book {
         "bookPublishYear": bookPublishYear,
         "bookPublisher": bookPublisher,
       };
+
+  @override
+  String toString() {
+    return 'Book{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookCoverPath: $bookCoverPath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher}';
+  }
 }
