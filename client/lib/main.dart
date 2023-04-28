@@ -3,9 +3,11 @@ import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "assets/config/.env");
   runApp(const MyApp());
 }
 
