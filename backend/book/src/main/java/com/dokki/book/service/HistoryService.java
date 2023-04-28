@@ -1,15 +1,15 @@
 package com.dokki.book.service;
 
 
-import com.dokki.util.book.dto.response.DailyStatisticsResponseDto;
+import com.dokki.book.dto.response.DailyStatisticsResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HistoryService {

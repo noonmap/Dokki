@@ -11,4 +11,8 @@ dependencies {
 
     // feign client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.1'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.9.0'
+
 }

@@ -3,14 +3,13 @@ package com.dokki.user.controller;
 import com.dokki.user.dto.request.FollowRequestDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
-import com.dokki.user.dto.response.UserSimpleInfoDto;
+
 import com.dokki.user.entity.UserEntity;
 import com.dokki.user.repository.UserRepository;
-//import com.dokki.user.security.filter.JwtFilter;
+import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import com.dokki.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.SliceImpl;
@@ -112,7 +111,7 @@ public class UserController {
         ProfileResponseDto profileResponseDto = ProfileResponseDto.builder()
                 .userId(1)
                 .nickname("nickname")
-                .profileImagePath("imagePath")
+                .profileImagePath("https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png")
                 .followerCount(5)
                 .followingCount(100)
                 .isFollowed(true)

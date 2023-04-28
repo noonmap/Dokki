@@ -1,6 +1,10 @@
 server:
-  port: 5010
+  port: 0 #random port
+
 spring:
+  application:
+    name: user-service
+
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -55,7 +59,7 @@ spring:
         registration:
           kakao:
             client-id: 9d03d60cc88c7bea2a829ea7d86cd32d
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}" # http://localhost:5010/login/oauth2/code/kakao
+            redirect-uri: http://localhost:5010/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
@@ -66,3 +70,14 @@ spring:
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
