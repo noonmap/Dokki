@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: user-service
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
   # mysql
   datasource:
     url: ${DB_URL}
@@ -70,6 +65,11 @@ spring:
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
+  #Redis
+  redis:
+    host: localhost
+    port: 6379
+    password: 1234
 
 # Eureka
 eureka:
