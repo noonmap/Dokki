@@ -1,11 +1,18 @@
 package com.dokki.user.controller;
 
+import com.dokki.user.config.exception.LogoutException;
+import com.dokki.user.dto.ResponseMessage;
+import com.dokki.user.dto.TokenDto;
 import com.dokki.user.dto.request.FollowRequestDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 
 import com.dokki.user.entity.UserEntity;
+import com.dokki.user.error.ErrorCode;
+import com.dokki.user.error.ErrorDto;
 import com.dokki.user.repository.UserRepository;
+import com.dokki.user.security.filter.JwtFilter;
+import com.dokki.user.service.LoginService;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import com.dokki.user.service.UserService;
 import io.swagger.annotations.Api;
@@ -31,6 +38,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final LoginService loginService;
     /**
      * 로그인
      */
@@ -49,44 +57,42 @@ public class UserController {
      */
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) throws Exception{
-        //String accessToken = request.getHeader(JwtFilter.ACCESSTOKEN_HEADER);
-        //String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-        //TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
-        //ResponseMessage responseMessage = userService.logout(tokenDto);
+        String accessToken = request.getHeader(JwtFilter.ACCESSTOKEN_HEADER);
+        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+        TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
+        ResponseMessage responseMessage = loginService.logout(tokenDto);
         return ResponseEntity.ok("OK");
     }
     /**
      * 엑세스 만료직전
      */
     @GetMapping("/refresh")
-    public ResponseEntity<Object> refresh(HttpServletRequest request) {
-//        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-//        try{
-//            TokenDto tokenDto = userService.refresh(refreshToken);
-//            HttpHeaders httpHeaders = new HttpHeaders();
-//            httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
-//            httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
-//            return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-//        }catch (LogoutException e){
-//            ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
-//
-//            return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-//        }
-        return ResponseEntity.ok("OK");
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+        try{
+            TokenDto tokenDto = loginService.refresh(refreshToken);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
+            httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
+            return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+        }catch (LogoutException e){
+            ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
+
+            return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        }
     }
     /**
      * 엑세스 만료 후 리프레시는 살아있을 때
      */
     @GetMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request){ //throws LogoutException {
-//
-//        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-//        TokenDto tokenDto = userService.reissue(refreshToken);
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
-//        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
-//        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-        return ResponseEntity.ok("OK");
+    public ResponseEntity<?> reissue(HttpServletRequest request)throws LogoutException {
+
+        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+        TokenDto tokenDto = loginService.reissue(refreshToken);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
+        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
+        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
     }
     /**
      * 사용자 검색

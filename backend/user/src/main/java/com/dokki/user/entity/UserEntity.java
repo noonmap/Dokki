@@ -1,10 +1,7 @@
 package com.dokki.user.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -19,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 @Table(name = "users") // 예약어 때문에 user가 아니라 users로 설정
 public class UserEntity {
 
@@ -43,6 +41,9 @@ public class UserEntity {
 
 	@Column(nullable = false)
 	private Integer followingCount;
+
+	@Column(name = "password")
+	private String password;
 
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
