@@ -21,22 +21,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<BookProvider>(
-            create: (_) => BookProvider(),
-          ),
-          ChangeNotifierProvider<UserProvider>(
-            create: (context) => UserProvider(),
-          ),
-        ],
-        child: MaterialApp(
-          theme: ThemeData(
-            scaffoldBackgroundColor: grayColor000,
-          ),
-          debugShowCheckedModeBanner: false,
-          initialRoute: RoutesName.splash,
-          onGenerateRoute: Routes.generateRoute,
-          title: _title,
-        ));
+      providers: [
+        ChangeNotifierProvider<BookProvider>(
+          create: (_) => BookProvider(),
+        ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => UserProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        builder: (context, widget) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: widget!,
+          );
+        },
+        theme: ThemeData(
+          scaffoldBackgroundColor: grayColor000,
+          fontFamily: 'Koddi',
+        ),
+        debugShowCheckedModeBanner: false,
+        initialRoute: RoutesName.splash,
+        onGenerateRoute: Routes.generateRoute,
+        title: _title,
+      ),
+    );
   }
 }
