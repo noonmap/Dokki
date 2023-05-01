@@ -25,8 +25,7 @@ public class BookStatusService {
 
 
 	/**
-	 * 도서 상태 변경
-	 * ⇒ 완독(컬렉션) → 진행중(타이머)
+	 * 도서 상태 추가 (타이머에 추가하는 경우)
 	 *
 	 * @param userId 유저 id
 	 * @param bookId 책 id
