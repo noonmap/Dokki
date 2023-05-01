@@ -52,7 +52,6 @@ flutter:
     - assets/config/android/.env
     - assets/config/ios/.env
 
-
   fonts:
     - family: Koddi
       fonts:
@@ -63,8 +62,6 @@ flutter:
         - asset: assets/fonts/KoddiUDOnGothic-ExtraBold.otf
           weight: 700
 
-    #       - asset: fonts/Schyler-Italic.ttf
-    #         style: italic
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

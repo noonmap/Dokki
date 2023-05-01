@@ -4,7 +4,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = dotenv.env["BASE_URL"] as String;
+  final String _baseUrl = dotenv.env["BASE_LOCAL_URL"] as String;
   final Map<String, String> _headers = {
     "content-type": "application/json",
     "accept": "application/json",
@@ -19,7 +19,7 @@ class APIService {
         uri = Uri.parse(_baseUrl + url).replace(queryParameters: params);
       }
       http.Response response =
-          await http.get(uri).timeout(Duration(seconds: 10));
+          await http.get(uri).timeout(const Duration(seconds: 10));
       return response;
     } catch (e) {
       return http.Response({"message": e}.toString(), 400);
