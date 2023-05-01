@@ -101,9 +101,9 @@ public class UserController {
     @ApiOperation(value = "사용자 검색", notes = "사용자를 조회한다.")
     public ResponseEntity<?> getUserList(ProfileRequestDto profileRequestDto){
         List<UserSimpleInfoDto> mockUsers = Arrays.asList(
-                new UserSimpleInfoDto(1L, "user1", "imagePath"),
-                new UserSimpleInfoDto(2L, "user2", "imagePath"),
-                new UserSimpleInfoDto(3L, "user3", "imagePath")
+                new UserSimpleInfoDto(1L, "user1", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png"),
+                new UserSimpleInfoDto(2L, "user2", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png"),
+                new UserSimpleInfoDto(3L, "user3", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png")
         );
         SliceImpl<UserSimpleInfoDto> userSimpleInfoDtoSlice = new SliceImpl<>(mockUsers);
         return ResponseEntity.ok(userSimpleInfoDtoSlice);

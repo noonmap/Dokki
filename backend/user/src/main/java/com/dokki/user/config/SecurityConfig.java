@@ -70,7 +70,7 @@ public class SecurityConfig {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
-				.antMatchers("/login/**").permitAll()
+				.antMatchers("/**").permitAll()
 //                .antMatchers("/swagger-ui/**").permitAll()
 //                .antMatchers("/boards/**").permitAll()
 //                .antMatchers("/protects/**").permitAll()
