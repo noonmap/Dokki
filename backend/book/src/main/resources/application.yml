@@ -1,6 +1,9 @@
 server:
-  port: 5010
+  port: 0 #random port
 spring:
+  application:
+    name: book-service
+
   # mysql
   datasource:
     url: ${DB_URL}
@@ -32,3 +35,23 @@ spring:
     livereload.enabled: true
   freemarker:
     cache: false
+
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# Swagger path
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: /books
+    swagger:
+      v2:
+        path: /books

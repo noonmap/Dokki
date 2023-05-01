@@ -3,12 +3,15 @@ package com.dokki.review.service;
 
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.repository.CommentRepository;
-import com.dokki.util.review.dto.request.CommentRequestDto;
+import com.dokki.review.dto.request.CommentRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Log4j2
@@ -57,6 +60,17 @@ public class CommentService {
 	 * @param commentId
 	 */
 	public void deleteComment(Long commentId) {
+	}
+
+
+	/**
+	 * 코멘트 3개 조회
+	 *
+	 * @param bookId
+	 * @return
+	 */
+	public List<CommentEntity> get3Comment(String bookId) {
+		return new ArrayList<>();
 	}
 
 }
