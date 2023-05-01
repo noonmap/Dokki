@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -41,5 +40,15 @@ public class CommentEntity {
 	private String content;
 	@Column(nullable = false)
 	private Float score;
+
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+
+	public void updateScore(Float score) {
+		this.score = score;
+	}
 
 }

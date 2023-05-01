@@ -1,16 +1,17 @@
 package com.dokki.review.service;
 
 
+import com.dokki.review.config.exception.CustomException;
+import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.repository.CommentRepository;
-import com.dokki.review.dto.request.CommentRequestDto;
+import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,14 +24,15 @@ public class CommentService {
 
 
 	/**
-	 * 코멘트 목록 조회
+	 * 도서의 코멘트 목록 조회
 	 *
 	 * @param bookId
 	 * @param pageable
 	 * @return
 	 */
-	public Page<CommentEntity> getCommentList(String bookId, Pageable pageable) {
-		return Page.empty();
+	public Slice<CommentEntity> getCommentListForBook(String bookId, Pageable pageable) {
+		Slice<CommentEntity> commentEntityPage = commentRepository.findByBookIdOrderByCreatedAtDesc(bookId, pageable);
+		return commentEntityPage;
 	}
 
 
@@ -40,7 +42,14 @@ public class CommentService {
 	 * @param bookId
 	 * @param commentRequestDto
 	 */
-	public void createComment(String bookId, CommentRequestDto commentRequestDto) {
+	public void createComment(Long userId, String bookId, CommentRequestDto commentRequestDto) {
+		CommentEntity comment = CommentEntity.builder()
+			.userId(userId)
+			.bookId(bookId)
+			.content(commentRequestDto.getContent())
+			.score(commentRequestDto.getScore().floatValue())
+			.build();
+		commentRepository.save(comment);
 	}
 
 
@@ -50,7 +59,11 @@ public class CommentService {
 	 * @param commentId
 	 * @param commentRequestDto
 	 */
-	public void modifyComment(Long commentId, CommentRequestDto commentRequestDto) {
+	public void modifyComment(Long userId, Long commentId, CommentRequestDto commentRequestDto) {
+		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+		comment.updateContent(comment.getContent());
+		comment.updateScore(comment.getScore());
+		commentRepository.save(comment);
 	}
 
 
@@ -60,6 +73,10 @@ public class CommentService {
 	 * @param commentId
 	 */
 	public void deleteComment(Long commentId) {
+		if (!commentRepository.existsById(commentId)) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		}
+		commentRepository.deleteById(commentId);
 	}
 
 
@@ -70,7 +87,8 @@ public class CommentService {
 	 * @return
 	 */
 	public List<CommentEntity> get3Comment(String bookId) {
-		return new ArrayList<>();
+		List<CommentEntity> commentTop3 = commentRepository.findTop3ByBookIdOrderByCreatedAtDesc(bookId);
+		return commentTop3;
 	}
 
 }
