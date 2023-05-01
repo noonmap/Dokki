@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/ui/book_detail/widgets/book_item.dart';
 import 'package:dokki/ui/common_widgets/thumb_image.dart';
 import 'package:dokki/utils/utils.dart';
 import "package:flutter/foundation.dart" as foundation;
@@ -14,6 +17,8 @@ class BookDetailPage extends StatefulWidget {
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
+  final double _rx = 0.0;
+  double _ry = 0.0;
   @override
   void initState() {
     super.initState();
@@ -61,49 +66,65 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       ? Utils.getIosCommonPadding()
                       : Utils.getAndroidCommonPadding(),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          ThumbImage(
-                            thumbImagePath: bp.book!.bookCoverPath,
-                            width: 112,
-                            height: 140,
-                          ),
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          Flexible(
-                            child: SizedBox(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    bp.book!.bookTitle,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    bp.book!.bookAuthor,
-                                    style: const TextStyle(color: grayColor300),
-                                  ),
-                                  Text(
-                                    "${bp.book!.bookPublishYear} • ${bp.book!.bookPublisher}",
-                                    style: const TextStyle(color: grayColor300),
-                                  ),
-                                  Text(
-                                    "${bp.book!.bookTotalPage}p",
-                                    style: const TextStyle(color: grayColor300),
-                                  ),
-                                ],
+                      Center(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: grayColor200,
+                              //     blurRadius: 10.0,
+                              //     spreadRadius: 1.0,
+                              //     offset: Offset(27, 4),
+                              //   ),
+                              // ],
                               ),
-                            ),
-                          )
-                        ],
-                      )
+                          child: BookItem(
+                              imagePath: bp.book!.bookCoverPath,
+                              width: 200,
+                              height: 300,
+                              rotateY: _ry,
+                              rotateX: _rx,
+                              depth: 40.0),
+                        ),
+                      ),
+                      Slider(
+                        min: pi * -2,
+                        max: pi * 2,
+                        value: _ry,
+                        onChanged: (value) => setState(
+                          () {
+                            _ry = value;
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: Text(
+                          bp.book!.bookTitle,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: grayColor600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: Text(
+                          bp.book!.bookAuthor,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: grayColor300,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
