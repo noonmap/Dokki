@@ -13,88 +13,92 @@ class userBio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // 프로필 사진
-        ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Image.network(
-            up.userBio!.profileImagePath,
-            width: 56,
-            height: 56,
-            fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          // 프로필 사진
+          ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: Image.network(
+              up.userBio!.profileImagePath,
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        const SizedBox(width: 20),
-        Flexible(
-          fit: FlexFit.tight,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // 닉네임
-                  Paragraph(
-                    text: up.userBio!.nickname,
-                    size: 24,
-                    weightType: WeightType.semiBold,
-                  ),
-                  // 팔로우 버튼
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      width: 72,
-                      height: 28,
-                      decoration: const BoxDecoration(
-                          color: brandColor100,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Center(
-                        child: Paragraph(
-                          text: up.userBio!.isFollowed ? '팔로잉' : '팔로우',
-                          color: brandColor300,
-                          size: 16,
-                          weightType: WeightType.semiBold,
+          const SizedBox(width: 20),
+          Flexible(
+            fit: FlexFit.tight,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 닉네임
+                    Paragraph(
+                      text: up.userBio!.nickname,
+                      size: 24,
+                      weightType: WeightType.semiBold,
+                    ),
+                    // 팔로우 버튼
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 72,
+                        height: 28,
+                        decoration: const BoxDecoration(
+                            color: brandColor100,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Center(
+                          child: Paragraph(
+                            text: up.userBio!.isFollowed ? '팔로잉' : '팔로우',
+                            color: brandColor300,
+                            size: 16,
+                            weightType: WeightType.semiBold,
+                          ),
                         ),
                       ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // 팔로우
+                    const Paragraph(
+                      text: '팔로우  ',
+                      color: grayColor300,
+                      size: 16,
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // 팔로우
-                  const Paragraph(
-                    text: '팔로우  ',
-                    color: grayColor300,
-                    size: 16,
-                  ),
-                  Paragraph(
-                    text: up.userBio!.followingCount.toString(),
-                    color: grayColor300,
-                    size: 18,
-                    weightType: WeightType.semiBold,
-                  ),
-                  const SizedBox(width: 24),
-                  // 팔로워
-                  const Paragraph(
-                    text: '팔로워  ',
-                    color: grayColor300,
-                    size: 16,
-                  ),
-                  Paragraph(
-                    text: up.userBio!.followerCount.toString(),
-                    color: grayColor300,
-                    size: 18,
-                    weightType: WeightType.semiBold,
-                  ),
-                ],
-              )
-            ],
+                    Paragraph(
+                      text: up.userBio!.followingCount.toString(),
+                      color: grayColor300,
+                      size: 18,
+                      weightType: WeightType.semiBold,
+                    ),
+                    const SizedBox(width: 24),
+                    // 팔로워
+                    const Paragraph(
+                      text: '팔로워  ',
+                      color: grayColor300,
+                      size: 16,
+                    ),
+                    Paragraph(
+                      text: up.userBio!.followerCount.toString(),
+                      color: grayColor300,
+                      size: 18,
+                      weightType: WeightType.semiBold,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
