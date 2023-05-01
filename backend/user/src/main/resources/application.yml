@@ -81,3 +81,11 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
+# Swagger path
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: /users
+    swagger:
+      v2:
+        path: /users
