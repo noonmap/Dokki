@@ -8,7 +8,7 @@ class UserRepository {
   final APIService _apiService = APIService();
 
   // GET : 유저 프로필 바이오
-  Future<UserBioModel> getUserBioData(int userId) async {
+  Future<UserBioModel> getUserBioDataById(int userId) async {
     http.Response res = await _apiService.get('/users/profile/$userId', null);
 
     if (res.statusCode == 200) {

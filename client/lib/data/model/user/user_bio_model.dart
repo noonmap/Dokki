@@ -1,15 +1,18 @@
 class UserBioModel {
-  final int userId, followingCount, followerCount;
-  final String nickname, profileImagePath;
+  final int userId;
+  final String nickname;
+  final String profileImagePath;
   final bool isFollowed;
+  final int followingCount;
+  final int followerCount;
 
   UserBioModel({
     required this.userId,
-    required this.followingCount,
-    required this.followerCount,
     required this.nickname,
     required this.profileImagePath,
     required this.isFollowed,
+    required this.followingCount,
+    required this.followerCount,
   });
 
   UserBioModel.fromJson(Map<String, dynamic> json)
