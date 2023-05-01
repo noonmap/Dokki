@@ -1,10 +1,10 @@
 package com.dokki.review.service;
 
 
-import com.dokki.review.entity.DiaryEntity;
-import com.dokki.review.repository.DiaryRepository;
 import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.request.DiaryRequestDto;
+import com.dokki.review.entity.DiaryEntity;
+import com.dokki.review.repository.DiaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -56,8 +56,8 @@ public class DiaryService {
 	 * @param pageable
 	 * @return
 	 */
-	public Page<DiaryEntity> getDiaryByBook(String bookId, Pageable pageable) {
-		return Page.empty();
+	public DiaryEntity getDiaryByBook(String bookId, Pageable pageable) {
+		return DiaryEntity.builder().build();
 	}
 
 
