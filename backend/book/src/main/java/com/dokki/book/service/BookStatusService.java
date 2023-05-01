@@ -7,7 +7,10 @@ import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -76,6 +79,29 @@ public class BookStatusService {
 		// 상태 변경
 		statusEntity.setStatus(STATUS_DONE);
 		bookStatusRepository.save(statusEntity);
+	}
+
+
+	/**
+	 * 다 읽은 책 컬렉션 조회
+	 *
+	 * @param userId   유저 id
+	 * @param pageable 페이징
+	 * @return 컬렉션 리스트
+	 */
+	public Slice<BookStatusEntity> getCollectionList(Long userId, Pageable pageable) {
+		return bookStatusRepository.getByUserIdAndStatusEquals(userId, STATUS_DONE, pageable);
+	}
+
+
+	/**
+	 * 다 읽은 책 컬렉션에서 삭제
+	 *
+	 * @param bookStatusId 책 상태 id
+	 */
+	@Transactional
+	public void deleteCollection(Long userId, Long bookStatusId) {
+		bookStatusRepository.deleteByIdAndUserId(bookStatusId, userId);
 	}
 
 }
