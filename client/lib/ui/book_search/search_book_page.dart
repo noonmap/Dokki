@@ -4,6 +4,7 @@ import 'package:dokki/ui/book_search/widgets/book_list_item.dart';
 import 'package:dokki/ui/book_search/widgets/no_search_result_ui.dart';
 import 'package:dokki/ui/common_widgets/opacity_loading.dart';
 import 'package:dokki/utils/utils.dart';
+import "package:flutter/foundation.dart" as foundation;
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,10 @@ class _SearchBookPageState extends State<SearchBookPage> {
     return Stack(
       children: [
         Container(
-          padding: Utils.getCommonPadding(),
+          padding:
+              foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS
+                  ? Utils.getIosCommonPadding()
+                  : Utils.getAndroidCommonPadding(),
           child: Column(
             children: [
               TextField(
@@ -78,6 +82,9 @@ class _SearchBookPageState extends State<SearchBookPage> {
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 30,
               ),
               Expanded(
                   child: bp.bookList.isNotEmpty

@@ -1,5 +1,4 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/ui/common_widgets/thumb_image.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +69,9 @@ class BookListItem extends StatelessWidget {
                   ),
                   Text(
                     "$bookPublisher • $bookPublishYear",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                     style: const TextStyle(
                       color: grayColor300,
                       fontSize: 12,

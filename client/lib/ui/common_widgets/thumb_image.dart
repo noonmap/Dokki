@@ -1,4 +1,3 @@
-import 'package:dokki/providers/book_provider.dart';
 import 'package:flutter/material.dart';
 
 class ThumbImage extends StatelessWidget {
@@ -15,11 +14,14 @@ class ThumbImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      thumbImagePath,
-      width: width,
-      height: height,
-      fit: BoxFit.fill,
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+      child: Image.network(
+        thumbImagePath,
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
+      ),
     );
   }
 }
