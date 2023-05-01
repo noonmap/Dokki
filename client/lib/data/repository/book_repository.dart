@@ -59,6 +59,7 @@ class BookRepository {
     }
 
     BookDetailModel bookDetailData = BookDetailModel.fromJson(responseJson);
+    print(bookDetailData);
     return bookDetailData;
   }
 }
