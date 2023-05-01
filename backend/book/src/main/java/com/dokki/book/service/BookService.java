@@ -109,4 +109,18 @@ public class BookService {
 		return reviewClient.get3Comment(bookId);
 	}
 
+
+	/**
+	 * 책 존재여부 확인, 존재하지 않다면 exception
+	 * 서비스 내부에서 사용
+	 */
+	protected BookEntity getBookReferenceIfExist(String bookId) {
+		// check book exist, if not -> error
+		boolean isBookExist = bookRepository.existsById(bookId);
+		if (!isBookExist) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		}
+		return bookRepository.getReferenceById(bookId);
+	}
+
 }

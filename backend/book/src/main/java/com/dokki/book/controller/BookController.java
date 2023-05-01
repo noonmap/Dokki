@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @Slf4j
 @RestController
@@ -99,18 +101,29 @@ public class BookController {
 	}
 
 
+	@PostMapping("/status")
+	@ApiOperation(value = "유저 책 상태 추가")
+	public ResponseEntity<HttpStatus> createStatusToInprogress(@RequestBody Map<String, String> map) {
+		Long userId = 0L;   // TODO: user id 가져오기
+		bookStatusService.createStatus(userId, map.get("bookId"));
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+
 	@PutMapping("/status/{bookStatusId}/reading")
 	@ApiOperation(value = "책 상태 변경 | 완독(컬렉션) → 진행중(타이머)")
-	public ResponseEntity<HttpStatus> modifyStatusToInprogress(@PathVariable String bookId) {
-		bookStatusService.modifyStatusToInprogress(bookId);
+	public ResponseEntity<HttpStatus> modifyStatusToInprogress(@PathVariable Long bookStatusId) {
+		Long userId = 0L;   // TODO: user id 가져오기
+		bookStatusService.modifyStatusToInprogress(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
 	@PutMapping("/status/{bookStatusId}/done")
 	@ApiOperation(value = "책 상태 변경 | 진행중(타이머) → 완독(컬렉션)")
-	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable String bookId) {
-		bookStatusService.modifyStatusToDone(bookId);
+	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable Long bookStatusId) {
+		Long userId = 0L;   // TODO: user id 가져오기
+		bookStatusService.modifyStatusToDone(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
