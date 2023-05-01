@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class BookmarkService {
 
+	private final BookService bookService;
+
 	private final BookRepository bookRepository;
 	private final BookmarkRepository bookmarkRepository;
 
@@ -43,8 +45,7 @@ public class BookmarkService {
 	 * @param bookId 책 id
 	 */
 	public void createBookmark(Long userId, String bookId) {
-		isBookExist(bookId);
-		BookEntity bookEntity = bookRepository.getReferenceById(bookId);
+		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
 
 		// check bookmark already exist
 		boolean isBookmarkExist = bookmarkRepository.existsByUserIdAndBookId(userId, bookEntity);
@@ -63,22 +64,7 @@ public class BookmarkService {
 	 */
 	@Transactional
 	public void deleteBookmark(Long userId, String bookId) {
-		isBookExist(bookId);
-		BookEntity bookEntity = bookRepository.getReferenceById(bookId);
-		bookmarkRepository.deleteByUserIdAndBookId(userId, bookEntity);
-	}
-
-
-	/**
-	 * 책 존재여부 확인, 존재하지 않다면 exception
-	 * 서비스 내부에서 사용
-	 */
-	private void isBookExist(String bookId) {
-		// check book exist, if not -> error
-		boolean isBookExist = bookRepository.existsById(bookId);
-		if (!isBookExist) {
-			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
-		}
+		bookmarkRepository.deleteByUserIdAndBookId(userId, bookService.getBookReferenceIfExist(bookId));
 	}
 
 }
