@@ -1,8 +1,10 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/ui/common_widgets/paragraph.dart';
+import 'package:dokki/ui/common_widgets/pink_box.dart';
 import 'package:dokki/ui/profile/widgets/profile_menu.dart';
 import 'package:dokki/ui/profile/widgets/user_bio.dart';
+import 'package:dokki/ui/profile/widgets/user_monthly_count.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +14,9 @@ import 'package:provider/provider.dart';
 class ProfilePage extends StatefulWidget {
   // 🍇 임시 유저 ID
   final int userId = 1;
+  // 🍇 임시 year history 데이터
+  static const List<int> data = [2, 4, 0, 3, 6, 8, 0, 12, 1, 3, 4, 1];
+
   const ProfilePage({super.key});
 
   @override
@@ -24,21 +29,20 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final up = Provider.of<UserProvider>(context, listen: false);
     up.getUserBioById(1);
+    // up.getUserMonthlyCount(userId: 1, year: 2023);
   }
 
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<UserProvider>(context);
-    up.getUserBioById(1);
 
     return Scaffold(
       body: up.isLoading || up.userBio == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(28, 60, 28, 0),
+              padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),
               child: Column(
                 children: [
-                  const SizedBox(height: 36),
                   // 바이오
                   userBio(up: up),
                   const SizedBox(height: 48),
@@ -66,23 +70,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 48),
                   // 한 해 기록
-                  Container(
+                  PinkBox(
                     width: double.infinity,
-                    height: 284,
-                    padding: const EdgeInsets.all(30),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        color: brandColor100),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Paragraph(
-                          text: '한 해 기록',
-                          size: 20,
-                          weightType: WeightType.semiBold,
-                        ),
-                      ],
-                    ),
+                    height: 284.toDouble(),
+                    child: UserMonthlyCount(data: up.userMonthlyCount),
                   ),
                 ],
               ),
