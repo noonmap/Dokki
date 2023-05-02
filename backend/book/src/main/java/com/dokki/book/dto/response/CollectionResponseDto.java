@@ -28,7 +28,7 @@ public class CollectionResponseDto {
 			.bookStatusId(entity.getId())
 			.bookId(book.getId())
 			.bookTitle(book.getTitle())
-			.bookCoverPath(book.getCoverImagePath())
+			.bookCoverPath(book.getCoverFrontImagePath())
 			.build();
 	}
 

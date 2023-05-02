@@ -29,6 +29,21 @@ public class AladinCaller {
 	private static final String ALADIN_DETAIL_API_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?output=JS&Version=20131101&";
 
 
+	public static boolean isValidUrl(String imgPath) {
+		try {
+			URL url = new URL(imgPath);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			if (conn.getResponseCode() != 200) {    // 없는 이미지 경로일 경우
+				return false;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return true;
+	}
+
+
 	public static AladinSearchResponseDto searchBook(String search, SearchType queryType, Pageable pageable) throws IOException, RuntimeException {
 		// set parameter
 		Map<String, String> params = new HashMap<>();
@@ -134,6 +149,31 @@ public class AladinCaller {
 		}
 		String resultString = result.toString();
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
+	}
+
+
+	/**
+	 * 책 표지 사진으로 옆면, 뒷면 사진 경로 가져오기
+	 *
+	 * @return
+	 */
+	public static String[] getOtherCoverPath(String coverImageFullPath) {
+		String basePath = "https://image.aladin.co.kr/product/";
+		String[] splitImagePath = coverImageFullPath.replaceFirst(basePath, "").split("/");
+		String imagePath = "";
+		String fileName = "";
+
+		if (splitImagePath.length == 4) {
+			imagePath = splitImagePath[0]
+				+ '/'
+				+ splitImagePath[1];
+			fileName = splitImagePath[3];
+			fileName = fileName.split("_")[0];
+		}
+
+		String coverBackImagePath = basePath + imagePath + '/' + "letslook" + '/' + fileName + "_b.jpg";
+		String coverSideImagePath = basePath + imagePath + '/' + "spineflip" + '/' + fileName + "_d.jpg";
+		return new String[] { coverBackImagePath, coverSideImagePath };
 	}
 
 }

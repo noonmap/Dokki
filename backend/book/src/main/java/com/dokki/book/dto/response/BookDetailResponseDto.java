@@ -38,7 +38,7 @@ public class BookDetailResponseDto {
 			.bookId(item.getId())
 			.bookTitle(item.getTitle())
 			.bookAuthor(item.getAuthor())
-			.bookCoverPath(item.getCoverImagePath())
+			.bookCoverPath(item.getCoverFrontImagePath())
 			.bookPublishYear(year)
 			.bookPublisher(item.getPublisher())
 			.bookTotalPage(item.getTotalPageCount())

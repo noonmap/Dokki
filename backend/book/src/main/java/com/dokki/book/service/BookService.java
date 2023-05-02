@@ -78,7 +78,15 @@ public class BookService {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			result = AladinItemResponseDto.toEntity(detailResponse);
+			// 책 뒷면, 옆면 이미지 존재 여부 확인
+			String[] otherPath = AladinCaller.getOtherCoverPath(detailResponse.getCover());
+			System.out.println(otherPath[0]);
+			System.out.println(otherPath[1]);
+			if (AladinCaller.isValidUrl(otherPath[0])) {
+				result = AladinItemResponseDto.toEntity(detailResponse, otherPath);
+			} else {
+				result = AladinItemResponseDto.toEntity(detailResponse);
+			}
 			bookRepository.save(result);
 		} else {
 			result = bookEntity.get();
