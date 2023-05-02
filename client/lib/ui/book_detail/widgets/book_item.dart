@@ -26,14 +26,16 @@ class BookItem extends StatelessWidget {
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, depth / -2),
       child: Container(
-        decoration: const BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: grayColor200,
-            blurRadius: 12.0,
-            spreadRadius: 2.0,
-            offset: Offset(0, 14),
-          ),
-        ]),
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: grayColor200,
+              blurRadius: 12.0,
+              spreadRadius: 2.0,
+              offset: Offset(0, 14),
+            ),
+          ],
+        ),
         child: ThumbImage(
           thumbImagePath: imagePath,
           width: width,
@@ -46,14 +48,16 @@ class BookItem extends StatelessWidget {
       transform: Matrix4.translationValues(0.0, 0.0, depth / 2),
       alignment: Alignment.center,
       child: Container(
-        decoration: const BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: grayColor200,
-            blurRadius: 12.0,
-            spreadRadius: 2.0,
-            offset: Offset(0, 14),
-          ),
-        ]),
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: grayColor200,
+              blurRadius: 12.0,
+              spreadRadius: 2.0,
+              offset: Offset(0, 14),
+            ),
+          ],
+        ),
         child: ThumbImage(
           thumbImagePath: backImagePath == "" ? imagePath : backImagePath,
           width: width,

@@ -5,6 +5,7 @@ import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import "package:flutter/foundation.dart" as foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,9 @@ void main() async {
   foundation.defaultTargetPlatform == foundation.TargetPlatform.android
       ? await dotenv.load(fileName: "assets/config/android/.env")
       : await dotenv.load(fileName: "assets/config/ios/.env");
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: [SystemUiOverlay.bottom]);
   runApp(const MyApp());
 }
 

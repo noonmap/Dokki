@@ -1,11 +1,7 @@
-import 'dart:math';
-
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/ui/book_detail/widgets/book_item.dart';
-import "package:flutter/foundation.dart" as foundation;
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class BookDetailPage extends StatefulWidget {
@@ -33,6 +29,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   @override
   Widget build(BuildContext context) {
     final bp = Provider.of<BookProvider>(context);
+    print(bp.book!.bookCoverPath);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -66,14 +63,31 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(18),
-                          bottomRight: Radius.circular(18),
-                        )),
-                        padding: const EdgeInsets.fromLTRB(35, 40, 35, 30),
+                          color: brandColor100,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(18),
+                            bottomRight: Radius.circular(18),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(35, 10, 35, 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Center(
+                              child: Text(
+                                bp.book!.bookTitle,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                                softWrap: false,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
                             GestureDetector(
                               onHorizontalDragStart: (e) {
                                 setState(() {
@@ -90,15 +104,15 @@ class _BookDetailPageState extends State<BookDetailPage> {
                                 width: double.infinity,
                                 alignment: Alignment.center,
                                 decoration:
-                                    const BoxDecoration(color: brandColor000),
+                                    const BoxDecoration(color: brandColor100),
                                 child: BookItem(
                                     imagePath: bp.book!.bookCoverPath,
                                     backImagePath:
                                         bp.book!.bookCoverBackImagePath,
                                     sideImagePath:
                                         bp.book!.bookCoverSideImagePath,
-                                    width: 240,
-                                    height: 300,
+                                    width: 200,
+                                    height: 240,
                                     rotateY: _ry,
                                     depth: (bp.book!.bookTotalPage / 6 > 100
                                             ? 100
@@ -107,70 +121,24 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               ),
                             ),
                             const SizedBox(
-                              height: 65,
+                              height: 55,
                             ),
-                            Text(
-                              bp.book!.bookTitle,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              softWrap: false,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        bp.book!.bookAuthor,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: grayColor400,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 1),
-                                      Text(
-                                        "${bp.book!.bookPublisher} • ${bp.book!.bookPublishYear} • ${bp.book!.bookTotalPage}P",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: grayColor400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                MoreInfo(
+                                    icon: Icons.star_border_rounded,
+                                    text: "4.8"),
+                                SizedBox(width: 10),
+                                MoreInfo(
+                                    icon: Icons.people_outline, text: "1121"),
+                                SizedBox(width: 10),
+                                MoreInfo(
+                                    icon: Icons.av_timer_sharp, text: "4.8h"),
                               ],
                             ),
-                            const SizedBox(height: 30),
-                            StatisticInfo(
-                              title: "읽은 사람",
-                              value: "${bp.book!.readerCount}명",
-                              iconData: Ionicons.people_sharp,
-                            ),
-                            const SizedBox(height: 15),
-                            StatisticInfo(
-                              title: "평균 별점",
-                              value: "${bp.book!.meanScore}점",
-                              iconData: Ionicons.star_sharp,
-                            ),
-                            const SizedBox(height: 15),
-                            StatisticInfo(
-                              title: "평균 독서 시간",
-                              value: "${bp.book!.meanReadTime}시간",
-                              iconData: Ionicons.time_sharp,
+                            const SizedBox(
+                              height: 20,
                             ),
                           ],
                         ),
@@ -202,7 +170,7 @@ class StatisticInfo extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: const BoxDecoration(
-              color: brandColor100,
+              color: brandColor000,
               borderRadius: BorderRadius.all(Radius.circular(48))),
           child: Icon(
             iconData,
@@ -250,30 +218,27 @@ class MoreInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 2,
-        horizontal: 8,
+      padding: EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 12,
       ),
       decoration: const BoxDecoration(
-          color: brandColor100,
+          color: brandColor000,
           borderRadius: BorderRadius.all(Radius.circular(30))),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
             icon,
-            size: 18,
+            size: 20,
             color: brandColor300,
           ),
-          const SizedBox(
-            width: 4,
-          ),
+          const SizedBox(width: 8),
           Text(
             text,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           )
