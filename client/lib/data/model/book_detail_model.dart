@@ -8,6 +8,8 @@ class BookDetailModel {
     required this.bookTitle,
     required this.bookAuthor,
     required this.bookCoverPath,
+    required this.bookCoverBackImagePath,
+    required this.bookCoverSideImagePath,
     required this.bookPublishYear,
     required this.bookPublisher,
     required this.bookTotalPage,
@@ -20,6 +22,8 @@ class BookDetailModel {
   final String bookTitle;
   final String bookAuthor;
   final String bookCoverPath;
+  final String bookCoverBackImagePath;
+  final String bookCoverSideImagePath;
   final String bookPublishYear;
   final String bookPublisher;
   final int bookTotalPage;
@@ -34,6 +38,8 @@ class BookDetailModel {
         bookTitle: json["bookTitle"],
         bookAuthor: json["bookAuthor"],
         bookCoverPath: json["bookCoverPath"],
+        bookCoverBackImagePath: json["bookCoverBackImagePath"],
+        bookCoverSideImagePath: json["bookCoverSideImagePath"],
         bookPublishYear: json["bookPublishYear"],
         bookPublisher: json["bookPublisher"],
         bookTotalPage: json["bookTotalPage"],
@@ -49,6 +55,8 @@ class BookDetailModel {
         "bookTitle": bookTitle,
         "bookAuthor": bookAuthor,
         "bookCoverPath": bookCoverPath,
+        "bookCoverBackImagePath": bookCoverBackImagePath,
+        "bookCoverSideImagePath": bookCoverSideImagePath,
         "bookPublishYear": bookPublishYear,
         "bookPublisher": bookPublisher,
         "bookTotalPage": bookTotalPage,
@@ -60,6 +68,6 @@ class BookDetailModel {
 
   @override
   String toString() {
-    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookCoverPath: $bookCoverPath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime}';
+    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookCoverPath: $bookCoverPath, bookCoverBackImagePath: $bookCoverBackImagePath, bookCoverSideImagePath: $bookCoverSideImagePath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime}';
   }
 }
