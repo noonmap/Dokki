@@ -2,7 +2,6 @@ package com.dokki.review.controller;
 
 
 import com.dokki.review.dto.request.CommentRequestDto;
-import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.service.CommentService;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Log4j2
@@ -34,15 +32,7 @@ public class CommentController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서의 리뷰(코멘트) 목록 조회")
 	public ResponseEntity<Slice<CommentResponseDto>> getCommentListForBook(@PathVariable String bookId, Pageable pageable) {
-		Slice<CommentEntity> commentEntitySlice = commentService.getCommentListForBook(bookId, pageable);
-		Slice<CommentResponseDto> commentResponseDtoSlice = commentEntitySlice.map(
-			s -> CommentResponseDto.builder()
-				.userId(s.getUserId())
-				.nickname("유저닉네임")
-				.profileImagePath("유저프로필이미지")
-				.score(s.getScore().intValue())
-				.content(s.getContent())
-				.build());
+		Slice<CommentResponseDto> commentResponseDtoSlice = commentService.getCommentListForBook(bookId, pageable);
 		// 테스트
 		List<CommentResponseDto> testList = new ArrayList<>();
 		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭").profileImagePath("/default/image.png").score(10).content("아바나아바나촤촤촷").build());
@@ -60,8 +50,8 @@ public class CommentController {
 		if (testList.size() > pageable.getPageSize()) {
 			hasNext = true;
 		}
-		Slice<CommentResponseDto> commentResponseDtoPage = new SliceImpl<>(testList, pageable, hasNext);//CommentResponseDto.fromEntityPage(commentEntityPage);
-		return ResponseEntity.ok(commentResponseDtoPage);
+		commentResponseDtoSlice = new SliceImpl<>(testList, pageable, hasNext);//CommentResponseDto.fromEntityPage(commentEntityPage);
+		return ResponseEntity.ok(commentResponseDtoSlice);
 	}
 
 
@@ -86,7 +76,8 @@ public class CommentController {
 	@DeleteMapping("/{commentId}")
 	@ApiOperation(value = "코멘트 삭제")
 	public ResponseEntity<Boolean> deleteComment(@PathVariable Long commentId) {
-		commentService.deleteComment(commentId);
+		// TODO : userID를 나중에 채워야 함
+		commentService.deleteComment(1L, commentId);
 		return ResponseEntity.ok(true);
 	}
 
@@ -94,15 +85,7 @@ public class CommentController {
 	@GetMapping("/partial/{bookId}")
 	@ApiOperation(value = "해당 도서에 대한 리뷰(Comment) 3개 조회")
 	public ResponseEntity<List<CommentResponseDto>> get3Comment(@PathVariable String bookId) {
-		List<CommentEntity> commentEntityList = commentService.get3Comment(bookId);
-		List<CommentResponseDto> commentResponseDtoList = commentEntityList.stream().map(
-			s -> CommentResponseDto.builder()
-				.userId(s.getUserId())
-				.nickname("유저닉네임")
-				.profileImagePath("유저프로필이미지")
-				.score(s.getScore().intValue())
-				.content(s.getContent())
-				.build()).collect(Collectors.toList());
+		List<CommentResponseDto> commentResponseDtoList = commentService.get3Comment(bookId);
 		// test 반환값
 		commentResponseDtoList = new ArrayList<>(); //CommentResponseDto.fromEntityList(commentEntityList);
 		commentResponseDtoList.add(CommentResponseDto.builder().content("리뷰리뷰").created(LocalDateTime.now()).score(4).build());

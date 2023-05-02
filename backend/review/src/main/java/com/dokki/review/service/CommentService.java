@@ -1,26 +1,35 @@
 package com.dokki.review.service;
 
 
+import com.dokki.review.client.UserClient;
 import com.dokki.review.config.exception.CustomException;
 import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.repository.CommentRepository;
+import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.review.dto.response.CommentResponseDto;
+import com.dokki.util.user.dto.response.UserSimpleInfoDto;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
 
 	private final CommentRepository commentRepository;
+
+	private final UserClient userClient;
 
 
 	/**
@@ -30,9 +39,47 @@ public class CommentService {
 	 * @param pageable
 	 * @return
 	 */
-	public Slice<CommentEntity> getCommentListForBook(String bookId, Pageable pageable) {
+	public Slice<CommentResponseDto> getCommentListForBook(String bookId, Pageable pageable) {
+		// comment 조회
 		Slice<CommentEntity> commentEntityPage = commentRepository.findByBookIdOrderByCreatedAtDesc(bookId, pageable);
-		return commentEntityPage;
+
+		// 각 comment의 writer id를 list로 생성
+		List<Long> writerIdList = commentEntityPage.map(c -> c.getUserId()).toList();
+		Slice<CommentResponseDto> commentResponseDtoSlice;
+
+		// writer 정보 조회, writer의 정보를 comment와 연결, commentResponseDto로 매핑
+		try {
+			List<UserSimpleInfoDto> writerInfoList = userClient.getUserSimpleInfo(writerIdList);
+			AtomicInteger counter = new AtomicInteger(0); // map()에서 index 역할
+			commentResponseDtoSlice = commentEntityPage.map(
+				c -> {
+					int idx = counter.getAndIncrement();
+					return CommentResponseDto.builder()
+						.userId(c.getUserId())
+						.nickname(writerInfoList.get(idx).getNickname())
+						.profileImagePath(writerInfoList.get(idx).getProfileImagePath())
+						.commentId(c.getId())
+						.score(c.getScore().intValue())
+						.content(c.getContent())
+						.build();
+				}
+			);
+		} catch (FeignException e) {
+			log.error(e.getMessage());
+			// 조회 실패한 경우, 빈 값은 default value로 채움
+			commentResponseDtoSlice = commentEntityPage.map(
+				c -> CommentResponseDto.builder()
+					.userId(c.getUserId())
+					.nickname(DefaultEnum.USER_NICKNAME.getValue())
+					.profileImagePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue())
+					.commentId(c.getId())
+					.score(c.getScore().intValue())
+					.content(c.getContent())
+					.build()
+			);
+		}
+
+		return commentResponseDtoSlice;
 	}
 
 
@@ -61,8 +108,13 @@ public class CommentService {
 	 */
 	public void modifyComment(Long userId, Long commentId, CommentRequestDto commentRequestDto) {
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
-		comment.updateContent(comment.getContent());
-		comment.updateScore(comment.getScore());
+		// 본인이 맞는지 확인
+		if (comment.getUserId() != userId) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		// 수정
+		comment.updateContent(commentRequestDto.getContent());
+		comment.updateScore(commentRequestDto.getScore().floatValue());
 		commentRepository.save(comment);
 	}
 
@@ -72,10 +124,13 @@ public class CommentService {
 	 *
 	 * @param commentId
 	 */
-	public void deleteComment(Long commentId) {
-		if (!commentRepository.existsById(commentId)) {
-			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+	public void deleteComment(Long userId, Long commentId) {
+		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+		// 본인이 맞는지 확인
+		if (comment.getUserId() != userId) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
+		// 삭제
 		commentRepository.deleteById(commentId);
 	}
 
@@ -86,9 +141,45 @@ public class CommentService {
 	 * @param bookId
 	 * @return
 	 */
-	public List<CommentEntity> get3Comment(String bookId) {
+	public List<CommentResponseDto> get3Comment(String bookId) {
 		List<CommentEntity> commentTop3 = commentRepository.findTop3ByBookIdOrderByCreatedAtDesc(bookId);
-		return commentTop3;
+
+		// 각 comment의 writer id를 list로 생성
+		List<Long> writerIdList = commentTop3.stream().map(c -> c.getUserId()).collect(Collectors.toList());
+		List<CommentResponseDto> commentResponseDtoList;
+
+		// writer 정보 조회, writer의 정보를 comment와 연결, commentResponseDto로 매핑
+		try {
+			List<UserSimpleInfoDto> writerInfoList = userClient.getUserSimpleInfo(writerIdList);
+			AtomicInteger counter = new AtomicInteger(0); // map()에서 index 역할
+			commentResponseDtoList = commentTop3.stream().map(
+				c -> {
+					int idx = counter.getAndIncrement();
+					return CommentResponseDto.builder()
+						.userId(c.getUserId())
+						.nickname(writerInfoList.get(idx).getNickname())
+						.profileImagePath(writerInfoList.get(idx).getProfileImagePath())
+						.commentId(c.getId())
+						.score(c.getScore().intValue())
+						.content(c.getContent())
+						.build();
+				}
+			).collect(Collectors.toList());
+		} catch (FeignException e) {
+			log.error(e.getMessage());
+			// 조회 실패한 경우, 빈 값은 default value로 채움
+			commentResponseDtoList = commentTop3.stream().map(
+				c -> CommentResponseDto.builder()
+					.userId(c.getUserId())
+					.nickname(DefaultEnum.USER_NICKNAME.getValue())
+					.profileImagePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue())
+					.commentId(c.getId())
+					.score(c.getScore().intValue())
+					.content(c.getContent())
+					.build()
+			).collect(Collectors.toList());
+		}
+		return commentResponseDtoList;
 	}
 
 }
