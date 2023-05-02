@@ -6,73 +6,107 @@ import 'package:flutter/material.dart';
 
 class BookItem extends StatelessWidget {
   final String imagePath;
+  final String sideImagePath;
+  final String backImagePath;
   final double width, height, depth;
-  final double rotateX, rotateY;
+  final double rotateY;
   const BookItem({
     Key? key,
     required this.width,
     required this.height,
     required this.depth,
     required this.imagePath,
-    rotateX = 0.0,
-    rotateY = 0.0,
-  })  : rotateY = rotateY % (pi * 2),
-        rotateX = rotateX % (pi * 2),
-        super(key: key);
+    required this.sideImagePath,
+    required this.backImagePath,
+    this.rotateY = 0.0,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, depth / -2),
-      child: ThumbImage(
-        thumbImagePath: imagePath,
-        width: width,
-        height: height,
+      child: Container(
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: grayColor200,
+            blurRadius: 12.0,
+            spreadRadius: 2.0,
+            offset: Offset(0, 14),
+          ),
+        ]),
+        child: ThumbImage(
+          thumbImagePath: imagePath,
+          width: width,
+          height: height,
+        ),
       ),
     );
 
     late final back = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, depth / 2),
       alignment: Alignment.center,
-      child: ThumbImage(
-        thumbImagePath: imagePath,
-        width: width,
-        height: height,
+      child: Container(
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: grayColor200,
+            blurRadius: 12.0,
+            spreadRadius: 2.0,
+            offset: Offset(0, 14),
+          ),
+        ]),
+        child: ThumbImage(
+          thumbImagePath: backImagePath == "" ? imagePath : backImagePath,
+          width: width,
+          height: height,
+        ),
       ),
     );
-    final List<Widget> children;
-    late final top = _buildSide(side: 0);
     late final starboard = _buildSide(side: 1);
     late final bottom = _buildSide(side: 2);
     late final port = _buildSide(side: 3);
-
-    if (rotateY < pi / 4) {
-      children = [starboard, front];
-    } else if (rotateY < pi / 2) {
-      children = [front, starboard];
-    } else if (rotateY < 3 * pi / 4) {
-      children = [back, starboard];
-    } else if (rotateY < pi) {
-      children = [starboard, back];
-    } else if (rotateY < 5 * pi / 4) {
-      children = [port, back];
-    } else if (rotateY < 3 * pi / 2) {
-      children = [back, port];
-    } else if (rotateY < 7 * pi / 4) {
-      children = [front, port];
+    print(rotateY);
+    List<Widget> children = [bottom];
+    if (rotateY >= 0) {
+      if (rotateY < pi / 4) {
+        children = [starboard, front];
+      } else if (rotateY < pi / 2) {
+        children = [front, starboard];
+      } else if (rotateY < 3 * pi / 4) {
+        children = [back, starboard];
+      } else if (rotateY < pi) {
+        children = [starboard, back];
+      } else if (rotateY < 5 * pi / 4) {
+        children = [port, back];
+      } else if (rotateY < 3 * pi / 2) {
+        children = [back, port];
+      } else if (rotateY < 7 * pi / 4) {
+        children = [front, port];
+      } else {
+        children = [port, front];
+      }
     } else {
-      children = [port, front];
-    }
-
-    if (rotateX > 0.0) {
-      children.add(top);
-    } else {
-      children.add(bottom);
+      if (rotateY > pi / 4 * -1) {
+        children = [port, front];
+      } else if (rotateY > pi / 2 * -1) {
+        children = [front, port];
+      } else if (rotateY > 3 * pi / 4 * -1) {
+        children = [back, port];
+      } else if (rotateY > -pi) {
+        children = [port, back];
+      } else if (rotateY > 5 * pi / 4 * -1) {
+        children = [starboard, back];
+      } else if (rotateY > 3 * pi / 2 * -1) {
+        children = [back, starboard];
+      } else if (rotateY > 7 * pi / 4 * -1) {
+        children = [front, starboard];
+      } else {
+        children = [starboard, front];
+      }
     }
     return Transform(
       transform: Matrix4.identity()
         ..setEntry(3, 2, 0.001)
-        ..rotateX(rotateX)
+        ..rotateX(0)
         ..rotateY(rotateY),
       alignment: Alignment.center,
       child: Container(
@@ -80,9 +114,9 @@ class BookItem extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: grayColor200,
-                blurRadius: 10.0,
-                spreadRadius: 1.0,
-                offset: Offset(0, 20),
+                blurRadius: 12.0,
+                spreadRadius: 2.0,
+                offset: Offset(0, 14),
               ),
             ],
           ),
@@ -110,6 +144,8 @@ class BookItem extends StatelessWidget {
     }
 
     final topOrBottom = side == 0 || side == 2;
+    final isPort = side == 3;
+
     final Matrix4 transform;
     if (topOrBottom) {
       transform = Matrix4.identity()
@@ -125,13 +161,38 @@ class BookItem extends StatelessWidget {
         transform: transform,
         alignment: Alignment.center,
         child: Center(
-          child: Container(
-            width: topOrBottom ? width : depth,
-            height: topOrBottom ? depth : height,
-            decoration: const BoxDecoration(
-              color: grayColor100,
-            ),
-          ),
+          child: isPort
+              ? Container(
+                  decoration: const BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      color: grayColor200,
+                      blurRadius: 12.0,
+                      spreadRadius: 2.0,
+                      offset: Offset(0, 14),
+                    ),
+                  ]),
+                  child: ThumbImage(
+                    thumbImagePath:
+                        sideImagePath == "" ? imagePath : sideImagePath,
+                    width: depth,
+                    height: height,
+                  ),
+                )
+              : Container(
+                  width: topOrBottom ? width : depth,
+                  height: topOrBottom ? depth : height,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFFEFC),
+                    boxShadow: [
+                      BoxShadow(
+                        color: grayColor200,
+                        blurRadius: 12.0,
+                        spreadRadius: 2.0,
+                        offset: Offset(0, 14),
+                      ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );

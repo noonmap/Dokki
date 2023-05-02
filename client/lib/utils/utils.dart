@@ -42,8 +42,8 @@ class Utils {
   }
 
   static EdgeInsets getIosCommonPadding() =>
-      const EdgeInsets.fromLTRB(20, 40, 20, 0);
+      const EdgeInsets.fromLTRB(20, 30, 20, 0);
 
   static EdgeInsets getAndroidCommonPadding() =>
-      const EdgeInsets.fromLTRB(20, 40, 20, 0);
+      const EdgeInsets.fromLTRB(20, 30, 20, 0);
 }
