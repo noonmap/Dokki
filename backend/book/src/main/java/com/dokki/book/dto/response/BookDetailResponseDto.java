@@ -22,6 +22,8 @@ public class BookDetailResponseDto {
 	private String bookTitle;
 	private String bookAuthor;
 	private String bookCoverPath;
+	private String bookCoverBackImagePath;
+	private String bookCoverSideImagePath;
 	private String bookPublishYear;
 	private String bookPublisher;
 	private Integer bookTotalPage;
@@ -38,7 +40,9 @@ public class BookDetailResponseDto {
 			.bookId(item.getId())
 			.bookTitle(item.getTitle())
 			.bookAuthor(item.getAuthor())
-			.bookCoverPath(item.getCoverImagePath())
+			.bookCoverPath(item.getCoverFrontImagePath())
+			.bookCoverBackImagePath(item.getCoverBackImagePath())
+			.bookCoverSideImagePath(item.getCoverSideImagePath())
 			.bookPublishYear(year)
 			.bookPublisher(item.getPublisher())
 			.bookTotalPage(item.getTotalPageCount())
