@@ -20,7 +20,7 @@ class ProfileMenuItem extends StatelessWidget {
     return GestureDetector(
         onTap: () {},
         child: SizedBox(
-          width: 60,
+          width: 68,
           child: Column(
             children: [
               Icon(
