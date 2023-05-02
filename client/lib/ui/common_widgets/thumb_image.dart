@@ -15,18 +15,11 @@ class ThumbImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(4)),
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        child: Image.network(
-          thumbImagePath,
-          width: width,
-          height: height,
-          fit: BoxFit.fill,
-        ),
+      child: Image.network(
+        thumbImagePath,
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
       ),
     );
   }
