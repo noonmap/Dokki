@@ -65,7 +65,7 @@ class userBio extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 팔로우
                     const Paragraph(
