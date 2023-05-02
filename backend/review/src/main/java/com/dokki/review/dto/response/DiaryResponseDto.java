@@ -18,9 +18,10 @@ public class DiaryResponseDto {
 
 	private String bookId;
 	private String bookTitle;
+	private Long diaryId;
 	private String diaryImagePath;
 	private String diaryContent;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime created;
-	
+
 }
