@@ -77,7 +77,7 @@ public class BookController {
 			bookEntityPage.map(entity -> BookSimpleResponseDto.builder()
 				.bookId(entity.getBookId().getId())
 				.bookTitle(entity.getBookId().getTitle())
-				.bookCoverPath(entity.getBookId().getCoverImagePath())
+				.bookCoverPath(entity.getBookId().getCoverFrontImagePath())
 				.build());
 		return ResponseEntity.ok(bookResponseDtoPage);
 	}
@@ -135,7 +135,7 @@ public class BookController {
 		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.builder()
 			.bookId(bookId)
 			.bookTitle(book.getTitle())
-			.bookCoverPath(book.getCoverImagePath())
+			.bookCoverPath(book.getCoverFrontImagePath())
 			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
 	}

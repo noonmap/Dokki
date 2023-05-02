@@ -1,15 +1,13 @@
 package com.dokki.book.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor
@@ -24,7 +22,11 @@ public class BookEntity {
 	@Column(nullable = false, length = 200)
 	private String title;
 	@Column(length = 500)
-	private String coverImagePath;
+	private String coverFrontImagePath;
+	@Column(length = 500)
+	private String coverBackImagePath;
+	@Column(length = 500)
+	private String coverSideImagePath;
 	@Column(columnDefinition = "TEXT")
 	private String summary;
 	@Column(nullable = false, length = 100)
