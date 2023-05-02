@@ -25,7 +25,7 @@ public class BookStatisticsEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "book_id", nullable = false)
 	private BookEntity bookId;
 
