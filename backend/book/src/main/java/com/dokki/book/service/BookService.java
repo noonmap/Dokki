@@ -78,15 +78,17 @@ public class BookService {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			// 책 뒷면, 옆면 이미지 존재 여부 확인
+			// 책 뒷면, 옆면 이미지 url 유효 확인
 			String[] otherPath = AladinCaller.getOtherCoverPath(detailResponse.getCover());
-			System.out.println(otherPath[0]);
-			System.out.println(otherPath[1]);
-			if (AladinCaller.isValidUrl(otherPath[0])) {
-				result = AladinItemResponseDto.toEntity(detailResponse, otherPath);
-			} else {
-				result = AladinItemResponseDto.toEntity(detailResponse);
-			}
+			boolean isValidCoverBackImagePath = AladinCaller.isValidUrl(otherPath[0]);
+			boolean isValidCoverSideImagePath = AladinCaller.isValidUrl(otherPath[1]);
+
+			// 유효하지 않은 url은 null 처리
+			if(!isValidCoverBackImagePath) otherPath[0] = null;
+			if(!isValidCoverSideImagePath) otherPath[1] = null;
+
+			// 저장
+			result = AladinItemResponseDto.toEntity(detailResponse, otherPath);
 			bookRepository.save(result);
 		} else {
 			result = bookEntity.get();
