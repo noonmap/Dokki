@@ -13,6 +13,7 @@ import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import com.dokki.util.common.error.ErrorCode;
+import feign.FeignException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,9 @@ public class BookController {
 		if (bookEntity.getStatistics() != null) {
 			try {
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
-			} catch (Exception e) {
+			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
+				log.error(e.getMessage());
 			}
 		}
 		return ResponseEntity.ok(bookDetailResponseDto);
