@@ -70,31 +70,12 @@ public class BookService {
 		Optional<BookEntity> bookEntity = bookRepository.findById(bookId);
 
 		if (bookEntity.isEmpty()) {
-			AladinItemResponseDto detailResponse = null;
-			try {
-				detailResponse = AladinCaller.getBook(bookId);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			// 책 뒷면, 옆면 이미지 url 유효 확인
-			String[] otherPath = AladinCaller.getOtherCoverPath(detailResponse.getCover());
-			boolean isValidCoverBackImagePath = AladinCaller.isValidUrl(otherPath[0]);
-			boolean isValidCoverSideImagePath = AladinCaller.isValidUrl(otherPath[1]);
-
-			// 유효하지 않은 url은 null 처리
-			if (!isValidCoverBackImagePath) otherPath[0] = null;
-			if (!isValidCoverSideImagePath) otherPath[1] = null;
-
-			// 책 정보 저장
-			result = AladinItemResponseDto.toEntity(detailResponse, otherPath);
-			result = bookRepository.save(result);
-
+			result = saveBookUseAladin(bookId);
 			// 책 통계 정보 init, 저장
 			bookStatisticsRepository.save(new BookStatisticsEntity(result));
 		} else {
 			result = bookEntity.get();
 		}
-
 		return result;
 	}
 
@@ -111,6 +92,17 @@ public class BookService {
 
 
 	/**
+	 * 도서 요약 정보 리스트를 조회합니다.
+	 *
+	 * @param bookIdList 책 id 리스트
+	 * @return
+	 */
+	public List<BookEntity> getBookListByIdIn(List<String> bookIdList) {
+		return bookRepository.findByIdIn(bookIdList);
+	}
+
+
+	/**
 	 * 책 리뷰 3개 리턴
 	 *
 	 * @param bookId 책 id
@@ -122,14 +114,39 @@ public class BookService {
 
 
 	/**
-	 * 책 존재여부 확인, 존재하지 않다면 exception
+	 * 알라딘에서 책 세부정보 가져와서 저장, 저장된 정보 리턴
+	 * 서비스 내부에서 사용
+	 */
+	protected BookEntity saveBookUseAladin(String bookId) {
+		AladinItemResponseDto detailResponse;
+		try {
+			detailResponse = AladinCaller.getBook(bookId);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		// 책 뒷면, 옆면 이미지 url 유효 확인
+		String[] otherPath = AladinCaller.getOtherCoverPath(detailResponse.getCover());
+		boolean isValidCoverBackImagePath = AladinCaller.isValidUrl(otherPath[0]);
+		boolean isValidCoverSideImagePath = AladinCaller.isValidUrl(otherPath[1]);
+
+		// 유효하지 않은 url은 null 처리
+		if (!isValidCoverBackImagePath) otherPath[0] = null;
+		if (!isValidCoverSideImagePath) otherPath[1] = null;
+
+		// 책 정보 저장 후 리턴
+		return bookRepository.save(AladinItemResponseDto.toEntity(detailResponse, otherPath));
+	}
+
+
+	/**
+	 * 책 존재여부 확인, 존재하지 않다면 bookId로 검색 후 저장
 	 * 서비스 내부에서 사용
 	 */
 	protected BookEntity getBookReferenceIfExist(String bookId) {
-		// check book exist, if not -> error
+		// check book exist, if not -> saveBook
 		boolean isBookExist = bookRepository.existsById(bookId);
 		if (!isBookExist) {
-			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+			saveBookUseAladin(bookId);
 		}
 		return bookRepository.getReferenceById(bookId);
 	}
