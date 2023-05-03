@@ -5,13 +5,15 @@ class Review {
     required this.profileImagePath,
     required this.score,
     required this.content,
+    required this.created,
   });
 
-  final String userId;
+  final int userId;
   final String nickname;
   final String profileImagePath;
   final int score;
   final String content;
+  final String created;
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
         userId: json["userId"],
@@ -19,6 +21,7 @@ class Review {
         profileImagePath: json["profileImagePath"],
         score: json["score"],
         content: json["content"],
+        created: json["created"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -27,5 +30,11 @@ class Review {
         "profileImagePath": profileImagePath,
         "score": score,
         "content": content,
+        "created": created,
       };
+
+  @override
+  String toString() {
+    return 'Review{userId: $userId, nickname: $nickname, profileImagePath: $profileImagePath, score: $score, content: $content, created: $created}';
+  }
 }

@@ -4,12 +4,11 @@ import 'package:dokki/constants/colors.dart';
 import 'package:dokki/ui/common_widgets/thumb_image.dart';
 import 'package:flutter/material.dart';
 
-class BookItem extends StatelessWidget {
+class BookItem extends StatefulWidget {
   final String imagePath;
   final String sideImagePath;
   final String backImagePath;
   final double width, height, depth;
-  final double rotateY;
   const BookItem({
     Key? key,
     required this.width,
@@ -18,13 +17,21 @@ class BookItem extends StatelessWidget {
     required this.imagePath,
     required this.sideImagePath,
     required this.backImagePath,
-    this.rotateY = 0.0,
   }) : super(key: key);
+
+  @override
+  State<BookItem> createState() => _BookItemState();
+}
+
+class _BookItemState extends State<BookItem> {
+  late double _sry;
+
+  double rotateY = -0.6;
 
   @override
   Widget build(BuildContext context) {
     late final front = Transform(
-      transform: Matrix4.translationValues(0.0, 0.0, depth / -2),
+      transform: Matrix4.translationValues(0.0, 0.0, widget.depth / -2),
       child: Container(
         decoration: const BoxDecoration(
           boxShadow: [
@@ -37,15 +44,15 @@ class BookItem extends StatelessWidget {
           ],
         ),
         child: ThumbImage(
-          thumbImagePath: imagePath,
-          width: width,
-          height: height,
+          thumbImagePath: widget.imagePath,
+          width: widget.width,
+          height: widget.height,
         ),
       ),
     );
 
     late final back = Transform(
-      transform: Matrix4.translationValues(0.0, 0.0, depth / 2),
+      transform: Matrix4.translationValues(0.0, 0.0, widget.depth / 2),
       alignment: Alignment.center,
       child: Container(
         decoration: const BoxDecoration(
@@ -59,16 +66,17 @@ class BookItem extends StatelessWidget {
           ],
         ),
         child: ThumbImage(
-          thumbImagePath: backImagePath == "" ? imagePath : backImagePath,
-          width: width,
-          height: height,
+          thumbImagePath: widget.backImagePath == ""
+              ? widget.imagePath
+              : widget.backImagePath,
+          width: widget.width,
+          height: widget.height,
         ),
       ),
     );
     late final starboard = _buildSide(side: 1);
     late final bottom = _buildSide(side: 2);
     late final port = _buildSide(side: 3);
-    print(rotateY);
     List<Widget> children = [bottom];
     if (rotateY >= 0) {
       if (rotateY < pi / 4) {
@@ -107,24 +115,41 @@ class BookItem extends StatelessWidget {
         children = [starboard, front];
       }
     }
-    return Transform(
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001)
-        ..rotateX(0)
-        ..rotateY(rotateY),
-      alignment: Alignment.center,
+    return GestureDetector(
+      onHorizontalDragStart: (e) {
+        setState(() {
+          _sry = e.localPosition.dx;
+        });
+      },
+      onHorizontalDragUpdate: (e) {
+        setState(() {
+          rotateY = (e.localPosition.dx - _sry) * -0.0174533;
+        });
+      },
       child: Container(
-          decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: grayColor200,
-                blurRadius: 12.0,
-                spreadRadius: 2.0,
-                offset: Offset(0, 14),
+        width: double.infinity,
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(color: brandColor100),
+        child: Transform(
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateX(-0.02)
+            ..rotateY(rotateY),
+          alignment: Alignment.center,
+          child: Container(
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: grayColor200,
+                    blurRadius: 12.0,
+                    spreadRadius: 2.0,
+                    offset: Offset(0, 14),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Stack(children: children)),
+              child: Stack(children: children)),
+        ),
+      ),
     );
   }
 
@@ -132,16 +157,16 @@ class BookItem extends StatelessWidget {
     final double translate;
     switch (side) {
       case 0: // top
-        translate = height / -2;
+        translate = widget.height / -2;
         break;
       case 1: // starboard
-        translate = width / 2;
+        translate = widget.width / 2;
         break;
       case 2: // bottom
-        translate = height / 2;
+        translate = widget.height / 2;
         break;
       case 3: // port
-        translate = width / -2;
+        translate = widget.width / -2;
         break;
       default:
         throw Exception("Invalid side : $side");
@@ -176,15 +201,16 @@ class BookItem extends StatelessWidget {
                     ),
                   ]),
                   child: ThumbImage(
-                    thumbImagePath:
-                        sideImagePath == "" ? imagePath : sideImagePath,
-                    width: depth,
-                    height: height,
+                    thumbImagePath: widget.sideImagePath == ""
+                        ? widget.imagePath
+                        : widget.sideImagePath,
+                    width: widget.depth,
+                    height: widget.height,
                   ),
                 )
               : Container(
-                  width: topOrBottom ? width : depth,
-                  height: topOrBottom ? depth : height,
+                  width: topOrBottom ? widget.width : widget.depth,
+                  height: topOrBottom ? widget.depth : widget.height,
                   decoration: const BoxDecoration(
                     color: Color(0xFFFFFEFC),
                     boxShadow: [

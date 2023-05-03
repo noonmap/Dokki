@@ -1,7 +1,9 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/ui/book_detail/widgets/book_item.dart';
+import 'package:dokki/ui/book_detail/widgets/review.item.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class BookDetailPage extends StatefulWidget {
@@ -11,9 +13,8 @@ class BookDetailPage extends StatefulWidget {
   State<BookDetailPage> createState() => _BookDetailPageState();
 }
 
-class _BookDetailPageState extends State<BookDetailPage> {
-  late double _sry;
-  double _ry = 0.0;
+class _BookDetailPageState extends State<BookDetailPage>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -28,8 +29,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build");
     final bp = Provider.of<BookProvider>(context);
-    print(bp.book!.bookCoverPath);
+    TabController tabController = TabController(length: 2, vsync: this);
+    final clientWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -53,99 +56,231 @@ class _BookDetailPageState extends State<BookDetailPage> {
       body: bp.isLoading || bp.book == null
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: brandColor000,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: const BoxDecoration(
-                          color: brandColor100,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(18),
-                            bottomRight: Radius.circular(18),
-                          ),
-                        ),
-                        padding: const EdgeInsets.fromLTRB(35, 10, 35, 10),
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Center(
-                              child: Text(
-                                bp.book!.bookTitle,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                                softWrap: false,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: brandColor100,
+                              ),
+                              padding:
+                                  const EdgeInsets.fromLTRB(35, 10, 35, 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      bp.book!.bookTitle,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      softWrap: false,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  BookItem(
+                                      imagePath: bp.book!.bookCoverPath,
+                                      backImagePath:
+                                          bp.book!.bookCoverBackImagePath,
+                                      sideImagePath:
+                                          bp.book!.bookCoverSideImagePath,
+                                      width: clientWidth / 2,
+                                      height: clientWidth / 1.6,
+                                      depth: (bp.book!.bookTotalPage / 5.5 > 100
+                                              ? 100
+                                              : bp.book!.bookTotalPage / 5.5)
+                                          .toDouble()),
+                                  const SizedBox(
+                                    height: 55,
+                                  ),
+                                  const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      MoreInfo(
+                                          icon: Icons.star_border_rounded,
+                                          text: "4.8"),
+                                      SizedBox(width: 10),
+                                      MoreInfo(
+                                          icon: Icons.people_outline,
+                                          text: "1121"),
+                                      SizedBox(width: 10),
+                                      MoreInfo(
+                                          icon: Icons.av_timer_sharp,
+                                          text: "4.8h"),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: brandColor100,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(32),
+                                  topRight: Radius.circular(32),
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            GestureDetector(
-                              onHorizontalDragStart: (e) {
-                                setState(() {
-                                  _sry = e.localPosition.dx;
-                                });
-                              },
-                              onHorizontalDragUpdate: (e) {
-                                setState(() {
-                                  _ry =
-                                      (e.localPosition.dx - _sry) * -0.0174533;
-                                });
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                alignment: Alignment.center,
-                                decoration:
-                                    const BoxDecoration(color: brandColor100),
-                                child: BookItem(
-                                    imagePath: bp.book!.bookCoverPath,
-                                    backImagePath:
-                                        bp.book!.bookCoverBackImagePath,
-                                    sideImagePath:
-                                        bp.book!.bookCoverSideImagePath,
-                                    width: 200,
-                                    height: 240,
-                                    rotateY: _ry,
-                                    depth: (bp.book!.bookTotalPage / 6 > 100
-                                            ? 100
-                                            : bp.book!.bookTotalPage / 6)
-                                        .toDouble()),
+                              child: TabBar(
+                                indicatorColor: brandColor300,
+                                indicatorWeight: 3,
+                                labelColor: brandColor300,
+                                unselectedLabelColor: brandColor200,
+                                controller: tabController,
+                                labelStyle: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                unselectedLabelStyle: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                ),
+                                tabs: const [
+                                  Tab(
+                                    text: "책 정보",
+                                    icon: Icon(Icons.menu_book_outlined),
+                                  ),
+                                  Tab(
+                                    text: "리뷰",
+                                    icon: Icon(Icons.comment_outlined),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 55,
-                            ),
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                MoreInfo(
-                                    icon: Icons.star_border_rounded,
-                                    text: "4.8"),
-                                SizedBox(width: 10),
-                                MoreInfo(
-                                    icon: Icons.people_outline, text: "1121"),
-                                SizedBox(width: 10),
-                                MoreInfo(
-                                    icon: Icons.av_timer_sharp, text: "4.8h"),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
+                            Container(
+                              width: double.maxFinite,
+                              height: 370,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 18, horizontal: 20),
+                              child: TabBarView(
+                                controller: tabController,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "책 소개",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        bp.book!.bookSummary,
+                                        maxLines: 5,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
+                                        style: const TextStyle(
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 14,
+                                      ),
+                                      const Text(
+                                        "작가",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        bp.book!.bookAuthor,
+                                        style: const TextStyle(
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 14,
+                                      ),
+                                      const Text(
+                                        "출판사",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        bp.book!.bookPublisher,
+                                        style: const TextStyle(
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 14,
+                                      ),
+                                      const Text(
+                                        "페이지",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        bp.book!.bookTotalPage.toString(),
+                                      )
+                                    ],
+                                  ),
+                                  ListView.builder(
+                                    itemCount: bp.book!.review.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 16, top: 16),
+                                        decoration: const BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    width: 1,
+                                                    color: grayColor100))),
+                                        child: ReviewItem(
+                                            profileImagePath: bp.book!
+                                                .review[index].profileImagePath,
+                                            nickname:
+                                                bp.book!.review[index].nickname,
+                                            content:
+                                                bp.book!.review[index].content,
+                                            score:
+                                                bp.book!.review[index].score),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
     );

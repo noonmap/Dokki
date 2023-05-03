@@ -42,13 +42,15 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const ProfilePage());
       default:
-        return MaterialPageRoute(builder: (_) {
-          return const Scaffold(
-            body: Center(
-              child: Text("No Route Defined!"),
-            ),
-          );
-        });
+        return MaterialPageRoute(
+          builder: (_) {
+            return const Scaffold(
+              body: Center(
+                child: Text("No Route Defined!"),
+              ),
+            );
+          },
+        );
     }
   }
 }
