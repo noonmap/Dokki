@@ -6,11 +6,14 @@ import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.AladinSearchResponseDto;
 import com.dokki.book.entity.BookEntity;
+import com.dokki.book.entity.BookStatisticsEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
+import com.dokki.book.repository.BookStatisticsRepository;
 import com.dokki.book.util.AladinCaller;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.review.dto.response.CommentResponseDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -23,18 +26,13 @@ import java.util.Optional;
 
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
-
 public class BookService {
 
 	private final BookRepository bookRepository;
+	private final BookStatisticsRepository bookStatisticsRepository;
 	private final ReviewClient reviewClient;
-
-
-	public BookService(BookRepository bookRepository, ReviewClient reviewClient) {
-		this.bookRepository = bookRepository;
-		this.reviewClient = reviewClient;
-	}
 
 
 	/**
@@ -84,12 +82,15 @@ public class BookService {
 			boolean isValidCoverSideImagePath = AladinCaller.isValidUrl(otherPath[1]);
 
 			// 유효하지 않은 url은 null 처리
-			if(!isValidCoverBackImagePath) otherPath[0] = null;
-			if(!isValidCoverSideImagePath) otherPath[1] = null;
+			if (!isValidCoverBackImagePath) otherPath[0] = null;
+			if (!isValidCoverSideImagePath) otherPath[1] = null;
 
-			// 저장
+			// 책 정보 저장
 			result = AladinItemResponseDto.toEntity(detailResponse, otherPath);
-			bookRepository.save(result);
+			result = bookRepository.save(result);
+
+			// 책 통계 정보 init, 저장
+			bookStatisticsRepository.save(new BookStatisticsEntity(result));
 		} else {
 			result = bookEntity.get();
 		}
