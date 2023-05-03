@@ -1,4 +1,4 @@
-package com.dokki.review.dto.request;
+package com.dokki.util.book.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiaryRequestDto {
+public class CollectionSimpleResponseDto {
 
-	private String content;
-	private String diaryImagePath;
+	private Long bookStatusId;
 
 }
