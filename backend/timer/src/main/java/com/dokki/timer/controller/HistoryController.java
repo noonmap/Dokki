@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -26,10 +28,14 @@ public class HistoryController {
 
 	@GetMapping("/year/{userId}")
 	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
-	public ResponseEntity<Integer[]> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
+	public ResponseEntity<Map<String, Integer>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
 		Integer[] yearHistory = historyService.getYearHistory(userId, year);
 		yearHistory = new Integer[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
-		return ResponseEntity.ok(yearHistory);
+		Map<String, Integer> map = new HashMap<>();
+		for (int i = 0; i < 12; i++) {
+			map.put(Integer.toString(i + 1), yearHistory[i]);
+		}
+		return ResponseEntity.ok(map);
 	}
 
 
