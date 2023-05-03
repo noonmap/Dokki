@@ -2,6 +2,7 @@ package com.dokki.timer.controller;
 
 
 import com.dokki.timer.dto.response.DailyStatisticsResponseDto;
+import com.dokki.timer.dto.response.MonthlyStatisticsResponseDto;
 import com.dokki.timer.service.HistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -28,14 +27,19 @@ public class HistoryController {
 
 	@GetMapping("/year/{userId}")
 	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
-	public ResponseEntity<Map<String, Integer>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
+	public ResponseEntity<List<MonthlyStatisticsResponseDto>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
 		Integer[] yearHistory = historyService.getYearHistory(userId, year);
+		
+		// 목업
 		yearHistory = new Integer[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
-		Map<String, Integer> map = new HashMap<>();
+		List<MonthlyStatisticsResponseDto> list = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {
-			map.put(Integer.toString(i + 1), yearHistory[i]);
+			list.add(MonthlyStatisticsResponseDto.builder()
+				.month(i + 1)
+				.count(yearHistory[i])
+				.build());
 		}
-		return ResponseEntity.ok(map);
+		return ResponseEntity.ok(list);
 	}
 
 
