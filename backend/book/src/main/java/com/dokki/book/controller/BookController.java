@@ -25,7 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -140,6 +142,21 @@ public class BookController {
 			.bookCoverPath(book.getCoverFrontImagePath())
 			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
+	}
+
+
+	@PostMapping("/simple/list")
+	@ApiOperation(value = "도서 요약 정보의 리스트를 조회합니다.")
+	public ResponseEntity<List<BookSimpleResponseDto>> getBookSimpleList(@RequestBody List<String> bookIdList) {
+		List<BookEntity> bookList = bookService.getBookListByIdIn(bookIdList);
+		List<BookSimpleResponseDto> result = bookList.stream().map(
+			o -> BookSimpleResponseDto.builder()
+				.bookId(o.getId())
+				.bookTitle(o.getTitle())
+				.bookCoverPath(o.getCoverFrontImagePath())
+				.build()
+		).collect(Collectors.toList());
+		return ResponseEntity.ok(result);
 	}
 
 }
