@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -54,5 +53,25 @@ public class UserEntity {
 	@Column(nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
+
+
+	public void increaseFollowerCount() {
+		this.followerCount++;
+	}
+
+
+	public void increaseFollowingCount() {
+		this.followingCount++;
+	}
+
+
+	public void decreaseFollowerCount() {
+		this.followerCount--;
+	}
+
+
+	public void decreaseFollowingCount() {
+		this.followingCount--;
+	}
 
 }
