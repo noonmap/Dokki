@@ -63,7 +63,7 @@ class userBio extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
