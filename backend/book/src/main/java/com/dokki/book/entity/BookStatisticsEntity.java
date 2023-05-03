@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
