@@ -15,13 +15,15 @@ void main() async {
       : await dotenv.load(fileName: "assets/config/ios/.env");
 
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: [SystemUiOverlay.bottom]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.bottom]);
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   static const String _title = 'dokki';
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -42,7 +44,6 @@ class MyApp extends StatelessWidget {
         },
         theme: ThemeData(
           scaffoldBackgroundColor: grayColor000,
-          fontFamily: 'Koddi',
         ),
         debugShowCheckedModeBanner: false,
         initialRoute: RoutesName.splash,
