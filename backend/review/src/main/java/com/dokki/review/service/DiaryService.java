@@ -63,6 +63,10 @@ public class DiaryService {
 			// create api이므로 조회 실패 시 exception 반환
 			throw e;
 		}
+		// 해당 책에 대해 이미 일기를 작성했다면 예외
+		if (diaryRepository.existsByBookId(bookId)) {
+			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+		}
 		// 생성
 		DiaryEntity diary = DiaryEntity.builder()
 			.userId(userId)
