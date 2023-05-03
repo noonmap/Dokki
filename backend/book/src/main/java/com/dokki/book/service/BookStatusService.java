@@ -104,4 +104,12 @@ public class BookStatusService {
 		bookStatusRepository.deleteByIdAndUserId(bookStatusId, userId);
 	}
 
+
+	/**
+	 * userId, bookId로 status 가져오기
+	 */
+	public BookStatusEntity getStatusByUserIdAndBookId(Long userId, String bookId) {
+		return bookStatusRepository.findByUserIdAndBookId(userId, bookId);
+	}
+
 }
