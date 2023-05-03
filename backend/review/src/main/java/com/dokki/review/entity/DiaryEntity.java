@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "diary")
+@EntityListeners(AuditingEntityListener.class) // 이게 있어야 하위 클래스에서 createdAt, updatedAt가 자동 생성이 됨
 public class DiaryEntity {
 
 	@CreatedDate
@@ -42,6 +43,16 @@ public class DiaryEntity {
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 	@Column(length = 500)
-	private String aiImagePath;
+	private String diaryImagePath;
+
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+
+	public void updateDiaryImagePath(String diaryImagePath) {
+		this.diaryImagePath = diaryImagePath;
+	}
 
 }
