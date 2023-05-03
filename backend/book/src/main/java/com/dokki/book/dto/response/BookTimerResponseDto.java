@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Builder
 public class BookTimerResponseDto {
 
-	private String bookId;
+	private Long bookStatusId;
 	private String bookTitle;
 	private Integer accumReadTime;
 
@@ -30,7 +30,7 @@ public class BookTimerResponseDto {
 		// TODO : 채우기 및 파라미터 수정 (accumReadTime 정보 있는 파라미터 추가)
 		BookEntity book = bookStatusEntity.getBookId();
 		return BookTimerResponseDto.builder()
-			.bookId(book.getId())
+			.bookStatusId(bookStatusEntity.getId())
 			.bookTitle(book.getTitle())
 			.accumReadTime(0)
 			.build();
@@ -45,7 +45,7 @@ public class BookTimerResponseDto {
 		// TODO : 채우기 및 파라미터 수정 (accumReadTime 정보 있는 파라미터 추가)
 		BookEntity book = bookStatusEntity.getBookId();
 		return BookTimerResponseDto.builder()
-			.bookId(book.getId())
+			.bookStatusId(bookStatusEntity.getId())
 			.bookTitle(book.getTitle())
 			.accumReadTime(time)
 			.build();

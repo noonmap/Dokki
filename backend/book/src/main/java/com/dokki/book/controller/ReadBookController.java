@@ -32,7 +32,7 @@ public class ReadBookController {
 
 	@GetMapping("")
 	@ApiOperation(value = "[타이머 뷰] 읽고 있는 도서 목록 조회")
-	public ResponseEntity<Slice<BookTimerResponseDto>> getBookTimerList(@RequestParam Pageable pageable) {
+	public ResponseEntity<Slice<BookTimerResponseDto>> getBookTimerList(Pageable pageable) {
 		Long userId = 0L;   // TODO: userId 가져오기
 		Slice<BookTimerResponseDto> bookTimerSlice = bookTimerService.getBookTimerList(userId, pageable);
 		return ResponseEntity.ok(bookTimerSlice);
