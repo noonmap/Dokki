@@ -45,8 +45,8 @@ class userBio extends StatelessWidget {
                     GestureDetector(
                       onTap: () {},
                       child: Container(
-                        width: 72,
-                        height: 28,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         decoration: const BoxDecoration(
                             color: brandColor100,
                             borderRadius:
@@ -63,7 +63,7 @@ class userBio extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
