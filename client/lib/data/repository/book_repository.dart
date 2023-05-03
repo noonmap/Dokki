@@ -45,6 +45,8 @@ class BookRepository {
     http.Response response = await _apiService.get("/books/$bookId", null);
     dynamic responseJson =
         jsonDecode(utf8.decode(response.bodyBytes)); // string으로온 데이터를 json으로 변경
+
+    print("1 : $responseJson");
     if (responseJson["bookCoverPath"] == null) {
       responseJson["bookCoverPath"] = "";
     }
@@ -67,7 +69,6 @@ class BookRepository {
       responseJson["review"] = [];
     }
     BookDetailModel bookDetailData = BookDetailModel.fromJson(responseJson);
-    print(bookDetailData);
     return bookDetailData;
   }
 }

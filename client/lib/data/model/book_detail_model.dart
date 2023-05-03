@@ -7,6 +7,7 @@ class BookDetailModel {
     required this.bookId,
     required this.bookTitle,
     required this.bookAuthor,
+    required this.bookSummary,
     required this.bookCoverPath,
     required this.bookCoverBackImagePath,
     required this.bookCoverSideImagePath,
@@ -21,6 +22,7 @@ class BookDetailModel {
   final String bookId;
   final String bookTitle;
   final String bookAuthor;
+  final String bookSummary;
   final String bookCoverPath;
   final String bookCoverBackImagePath;
   final String bookCoverSideImagePath;
@@ -37,6 +39,7 @@ class BookDetailModel {
         bookId: json["bookId"],
         bookTitle: json["bookTitle"],
         bookAuthor: json["bookAuthor"],
+        bookSummary: json["bookSummary"],
         bookCoverPath: json["bookCoverPath"],
         bookCoverBackImagePath: json["bookCoverBackImagePath"],
         bookCoverSideImagePath: json["bookCoverSideImagePath"],
@@ -44,7 +47,7 @@ class BookDetailModel {
         bookPublisher: json["bookPublisher"],
         bookTotalPage: json["bookTotalPage"],
         review:
-            List<Review>.from(json["review"].map((x) => Review.fromJson(x))),
+            (json["review"] as List).map((e) => Review.fromJson(e)).toList(),
         readerCount: json["readerCount"],
         meanScore: json["meanScore"].toDouble(),
         meanReadTime: json["meanReadTime"].toDouble(),
@@ -54,13 +57,14 @@ class BookDetailModel {
         "bookId": bookId,
         "bookTitle": bookTitle,
         "bookAuthor": bookAuthor,
+        "bookSummary": bookSummary,
         "bookCoverPath": bookCoverPath,
         "bookCoverBackImagePath": bookCoverBackImagePath,
         "bookCoverSideImagePath": bookCoverSideImagePath,
         "bookPublishYear": bookPublishYear,
         "bookPublisher": bookPublisher,
         "bookTotalPage": bookTotalPage,
-        "review": List<dynamic>.from(review.map((x) => x.toJson())),
+        "review": review.map((e) => e.toJson()).toList(),
         "readerCount": readerCount,
         "meanScore": meanScore,
         "meanReadTime": meanReadTime,
@@ -68,6 +72,6 @@ class BookDetailModel {
 
   @override
   String toString() {
-    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookCoverPath: $bookCoverPath, bookCoverBackImagePath: $bookCoverBackImagePath, bookCoverSideImagePath: $bookCoverSideImagePath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime}';
+    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookSummary: $bookSummary, bookCoverPath: $bookCoverPath, bookCoverBackImagePath: $bookCoverBackImagePath, bookCoverSideImagePath: $bookCoverSideImagePath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime}';
   }
 }
