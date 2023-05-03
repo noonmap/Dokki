@@ -20,6 +20,7 @@ public class BookDetailResponseDto {
 
 	private String bookId;
 	private String bookTitle;
+	private String bookSummary;
 	private String bookAuthor;
 	private String bookCoverPath;
 	private String bookCoverBackImagePath;
@@ -40,6 +41,7 @@ public class BookDetailResponseDto {
 			.bookId(item.getId())
 			.bookTitle(item.getTitle())
 			.bookAuthor(item.getAuthor())
+			.bookSummary(item.getSummary())
 			.bookCoverPath(item.getCoverFrontImagePath())
 			.bookCoverBackImagePath(item.getCoverBackImagePath())
 			.bookCoverSideImagePath(item.getCoverSideImagePath())

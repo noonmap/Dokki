@@ -13,6 +13,7 @@ import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import com.dokki.util.common.error.ErrorCode;
+import feign.FeignException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -47,8 +50,9 @@ public class BookController {
 		if (bookEntity.getStatistics() != null) {
 			try {
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
-			} catch (Exception e) {
+			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
+				log.error(e.getMessage());
 			}
 		}
 		return ResponseEntity.ok(bookDetailResponseDto);
@@ -138,6 +142,21 @@ public class BookController {
 			.bookCoverPath(book.getCoverFrontImagePath())
 			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
+	}
+
+
+	@PostMapping("/simple/list")
+	@ApiOperation(value = "도서 요약 정보의 리스트를 조회합니다.")
+	public ResponseEntity<List<BookSimpleResponseDto>> getBookSimpleList(@RequestBody List<String> bookIdList) {
+		List<BookEntity> bookList = bookService.getBookListByIdIn(bookIdList);
+		List<BookSimpleResponseDto> result = bookList.stream().map(
+			o -> BookSimpleResponseDto.builder()
+				.bookId(o.getId())
+				.bookTitle(o.getTitle())
+				.bookCoverPath(o.getCoverFrontImagePath())
+				.build()
+		).collect(Collectors.toList());
+		return ResponseEntity.ok(result);
 	}
 
 }
