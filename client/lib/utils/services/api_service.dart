@@ -4,7 +4,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = dotenv.env["BASE_LOCAL_URL"] as String;
+  final String _baseUrl = dotenv.env["BASE_PROD_URL"] as String;
   final Map<String, String> _headers = {
     "content-type": "application/json",
     "accept": "application/json",
