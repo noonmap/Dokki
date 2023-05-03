@@ -52,14 +52,16 @@ public class DiaryService {
 	 * @param diaryRequestDto
 	 */
 	public void createDiary(Long userId, String bookId, DiaryRequestDto diaryRequestDto) {
-		Long bookStatusId = Long.valueOf(DefaultEnum.BOOK_BOOK_STATUS_ID.getValue());
+		Long bookStatusId;
 		try {
 			// bookStatusId 조회
 			CollectionSimpleResponseDto collectionSimpleInfo = bookClient.getCollectionSimple(bookId);
 			bookStatusId = collectionSimpleInfo.getBookStatusId();
 		} catch (FeignException e) {
+			//			e.printStackTrace();
 			log.error(e.getMessage());
-			// 조회 실패 시 exception 반환
+			// create api이므로 조회 실패 시 exception 반환
+			throw e;
 		}
 		// 생성
 		DiaryEntity diary = DiaryEntity.builder()
