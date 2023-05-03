@@ -4,6 +4,7 @@ import 'package:dokki/ui/common_widgets/paragraph.dart';
 import 'package:dokki/ui/common_widgets/pink_box.dart';
 import 'package:dokki/ui/profile/widgets/profile_menu.dart';
 import 'package:dokki/ui/profile/widgets/user_bio.dart';
+import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
 import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +25,9 @@ class _ProfilePageState extends State<ProfilePage> {
   // 🍇 임시 유저 ID
   int userId = 1;
 
-  // calendar month, year
-  ValueNotifier<List<int>> calendarYearMonth =
-      ValueNotifier([DateTime.now().year, DateTime.now().month]);
-
-  // chart year
-  ValueNotifier<int> chartYear = ValueNotifier(DateTime.now().year);
+  int calendarYear = DateTime.now().year;
+  int calendarMonth = DateTime.now().month;
+  int chartYear = DateTime.now().year;
 
   @override
   void initState() {
@@ -44,13 +42,35 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final up = Provider.of<UserProvider>(context);
 
+    void onCalendarArrowTap(String direction) {
+      setState(() {
+        if (direction == 'left') {
+          if (calendarMonth == 1) {
+            calendarYear -= 1;
+            calendarMonth = 12;
+          } else {
+            calendarMonth -= 1;
+          }
+        } else if (direction == 'right') {
+          if (!(calendarMonth == DateTime.now().month &&
+              calendarYear == DateTime.now().year)) {
+            if (calendarMonth == 12) {
+              calendarYear += 1;
+              calendarMonth = 1;
+            } else {
+              calendarMonth += 1;
+            }
+          }
+        }
+      });
+    }
+
     void onChartArrowTap(String direction) {
       setState(() {
         if (direction == 'left') {
-          chartYear.value -= 1;
-        } else if (direction == 'right' &&
-            chartYear.value < DateTime.now().year) {
-          chartYear.value += 1;
+          chartYear -= 1;
+        } else if (direction == 'right' && chartYear < DateTime.now().year) {
+          chartYear += 1;
         }
       });
     }
@@ -73,15 +93,57 @@ class _ProfilePageState extends State<ProfilePage> {
                   PinkBox(
                     width: double.infinity,
                     height: 448.toDouble(),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Paragraph(
+                        const Paragraph(
                           text: '독서 달력',
                           size: 20,
                           weightType: WeightType.semiBold,
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => onCalendarArrowTap('left'),
+                              child: const Icon(
+                                Icons.arrow_back_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Paragraph(
+                                  text: '$calendarYear',
+                                  size: 14,
+                                  weightType: WeightType.medium,
+                                ),
+                                Paragraph(
+                                  text: '$calendarMonth월',
+                                  size: 20,
+                                  weightType: WeightType.semiBold,
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => onCalendarArrowTap('right'),
+                              child: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        UserMonthCalendar(
+                          up: up,
+                          userId: userId,
+                          year: calendarYear,
+                          month: calendarMonth,
+                        )
                       ],
                     ),
                   ),
@@ -110,13 +172,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 size: 20,
                               ),
                             ),
-                            ValueListenableBuilder<int>(
-                              valueListenable: chartYear,
-                              builder: (context, value, _) => Paragraph(
-                                text: value.toString(),
-                                size: 20,
-                                weightType: WeightType.semiBold,
-                              ),
+                            Paragraph(
+                              text: '$chartYear',
+                              size: 20,
+                              weightType: WeightType.semiBold,
                             ),
                             GestureDetector(
                               onTap: () => onChartArrowTap('right'),
@@ -129,11 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        ValueListenableBuilder<int>(
-                          valueListenable: chartYear,
-                          builder: (context, value, _) => UserYearChart(
-                              up: up, userId: userId, year: value),
-                        ),
+                        UserYearChart(up: up, userId: userId, year: chartYear),
                       ],
                     ),
                   ),
