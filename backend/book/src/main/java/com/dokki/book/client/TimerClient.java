@@ -40,7 +40,7 @@ public interface TimerClient {
 	 * @param bookStatusIdList
 	 * @return
 	 */
-	@PostMapping("/timers")
+	@GetMapping("/timers")
 	List<TimerSimpleResponseDto> getAccumTime(@RequestBody List<Long> bookStatusIdList);
 
 	/**
