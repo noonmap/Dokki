@@ -42,17 +42,10 @@ public class LoginService {
 
     private final RedisService redisService;
 
-    public UserResponseDto login(String code) throws JsonProcessingException {
-        KakaoRequestDto kakaoDto = KakaoRequestDto.builder()
-                .grant_type("authorization_code")
-                .client_id("9d03d60cc88c7bea2a829ea7d86cd32d")
-                .redirect_uri("http://localhost:5010/login/oauth2/code/kakao")
-                .code(code)
-                .build();
-        /** 카카오에게 인가 코드를 보내고 엑세스 토큰을 받아옴 **/
-        KakaoResponseDto kakaoResponseDto = kakaoClient.getAcessToken(kakaoDto.toString());
+    public UserResponseDto login(String token) throws JsonProcessingException {
+
         /** 엑세스 토큰을 이용해서 내 정보를 받아오자 **/
-        JsonNode jsonNode  = kakaoGetInfoClient.getInfo(kakaoResponseDto.getAccess_token());
+        JsonNode jsonNode  = kakaoGetInfoClient.getInfo("Bearer "+token);
         String id = jsonNode.get("id").asText();
         String email = jsonNode.get("kakao_account").get("email").asText();
         String nickname = jsonNode.get("kakao_account").get("profile")
