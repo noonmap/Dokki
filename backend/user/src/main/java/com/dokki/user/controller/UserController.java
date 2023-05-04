@@ -6,6 +6,7 @@ import com.dokki.user.dto.ResponseMessage;
 import com.dokki.user.dto.TokenDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
+import com.dokki.user.dto.response.UserResponseDto;
 import com.dokki.user.error.ErrorCode;
 import com.dokki.user.error.ErrorDto;
 import com.dokki.user.security.filter.JwtFilter;
@@ -13,6 +14,7 @@ import com.dokki.user.service.FollowService;
 import com.dokki.user.service.LoginService;
 import com.dokki.user.service.UserService;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +44,17 @@ public class UserController {
 	private final UserService userService;
 	private final LoginService loginService;
 	private final FollowService followService;
-
+    /** 
+     * 로그인 테스트 미완성
+     **/
+    @GetMapping("/oauth2/code/kakao")
+    public UserResponseDto login(@RequestParam String code) throws JsonProcessingException {
+        UserResponseDto userResponseDto = loginService.login(code);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
+        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
+        return userResponseDto;
+    }
     /**
      * API-Gateway가 보내는 요청에 응답
      */
