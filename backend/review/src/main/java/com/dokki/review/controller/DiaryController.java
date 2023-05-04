@@ -4,6 +4,7 @@ package com.dokki.review.controller;
 import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.request.DiaryRequestDto;
 import com.dokki.review.dto.response.DiaryResponseDto;
+import com.dokki.review.service.DiaryImageService;
 import com.dokki.review.service.DiaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,6 +28,8 @@ import java.util.Map;
 public class DiaryController {
 
 	private final DiaryService diaryService;
+
+	private final DiaryImageService diaryImageService;
 
 
 	@PostMapping("/{bookId}")
@@ -107,11 +111,11 @@ public class DiaryController {
 	@ApiOperation(value = "감정 일기 내용을 바탕으로 한 AI 이미지 생성", notes = "")
 	public ResponseEntity<Map<String, String>> createAIImage(@RequestBody AIImageRequestDto aiImageRequestDto) {
 		// TODO : userId 넣기
-		String imagePath = diaryService.createAIImage(1L, aiImageRequestDto);
+		List<String> imagePath = diaryImageService.createAIImage(1L, aiImageRequestDto);
 		// 테스트
 		//		imagePath = "/default/image.png";
 		Map<String, String> result = new HashMap<>();
-		result.put("diaryImagePath", imagePath);
+		result.put("diaryImagePath", imagePath.get(0));
 		return ResponseEntity.ok(result);
 	}
 
