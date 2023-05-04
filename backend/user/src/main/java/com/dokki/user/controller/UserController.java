@@ -7,8 +7,6 @@ import com.dokki.user.dto.TokenDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.dto.response.UserResponseDto;
-import com.dokki.user.error.ErrorCode;
-import com.dokki.user.error.ErrorDto;
 import com.dokki.user.security.filter.JwtFilter;
 import com.dokki.user.service.FollowService;
 import com.dokki.user.service.LoginService;
@@ -21,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
