@@ -8,7 +8,6 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -56,4 +55,24 @@ public class UserEntity {
 	@Column(nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
+
+	public void increaseFollowerCount() {
+		this.followerCount++;
+	}
+
+
+	public void increaseFollowingCount() {
+		this.followingCount++;
+	}
+
+
+	public void decreaseFollowerCount() {
+		this.followerCount--;
+	}
+
+
+	public void decreaseFollowingCount() {
+		this.followingCount--;
+	}
+
 }

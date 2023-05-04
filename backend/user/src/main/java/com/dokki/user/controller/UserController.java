@@ -1,24 +1,23 @@
 package com.dokki.user.controller;
 
+
 import com.dokki.user.config.exception.LogoutException;
 import com.dokki.user.dto.ResponseMessage;
 import com.dokki.user.dto.TokenDto;
-import com.dokki.user.dto.request.FollowRequestDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
-
-import com.dokki.user.entity.UserEntity;
 import com.dokki.user.error.ErrorCode;
 import com.dokki.user.error.ErrorDto;
-import com.dokki.user.repository.UserRepository;
 import com.dokki.user.security.filter.JwtFilter;
+import com.dokki.user.service.FollowService;
 import com.dokki.user.service.LoginService;
-import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import com.dokki.user.service.UserService;
+import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpHeaders;
@@ -32,15 +31,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("users")
-@Api(tags = {"Users"},description = "유저 관련 서비스")
+@Api(tags = { "Users" }, description = "유저 관련 서비스")
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
-    private final LoginService loginService;
+	private final UserService userService;
+	private final LoginService loginService;
+	private final FollowService followService;
+
     /**
      * API-Gateway가 보내는 요청에 응답
      */
@@ -70,32 +72,33 @@ public class UserController {
      */
     @GetMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request) {
-        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-        try{
-            TokenDto tokenDto = loginService.refresh(refreshToken);
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
-            httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
-            return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-        }catch (LogoutException e){
-            ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
+		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+		try {
+			TokenDto tokenDto = loginService.refresh(refreshToken);
+			HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
+			httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
+			return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+		} catch (LogoutException e) {
+			ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
 
-            return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-        }
-    }
-    /**
-     * 엑세스 만료 후 리프레시는 살아있을 때
-     */
-    @GetMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request)throws LogoutException {
+			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+		}
+	}
+	/**
+	 * 엑세스 만료 후 리프레시는 살아있을 때
+	 */
+	@GetMapping("/reissue")
+	public ResponseEntity<?> reissue(HttpServletRequest request) throws LogoutException {
 
-        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-        TokenDto tokenDto = loginService.reissue(refreshToken);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
-        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
-        return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-    }
+		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+		TokenDto tokenDto = loginService.reissue(refreshToken);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
+		httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
+		return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+	}
+
     /**
      * 사용자 검색
      */
@@ -160,35 +163,61 @@ public class UserController {
         List<UserSimpleInfoDto> userSimpleInfoDtoList = userService.getUserSimpleforReview(userIdList);
         return ResponseEntity.ok(userSimpleInfoDtoList);
     }
-    /**
-     * 팔로우 목록 조회
-     */
-    @GetMapping("/follow/{userId}")
-    @ApiOperation(value = "팔로우 목록 조회", notes = "팔로우 목록 조회")
-    public ResponseEntity<?> getFollowList(@PathVariable long userId, FollowRequestDto followRequestDto){
-        List<UserSimpleInfoDto> mockUsers = Arrays.asList(
-                new UserSimpleInfoDto(1L, "follower1", "imagePath"),
-                new UserSimpleInfoDto(2L, "follower2", "imagePath"),
-                new UserSimpleInfoDto(3L, "follower3", "imagePath")
-        );
-        Slice<UserSimpleInfoDto> userSimpleInfoDtoSlice = new SliceImpl<>(mockUsers);
-        return ResponseEntity.ok(userSimpleInfoDtoSlice);
-    }
-    /**
-     * 팔로우 추가
-     */
-    @PostMapping("/follow/{userId}")
-    @ApiOperation(value = "팔로우 추가", notes = "팔로우 추가")
-    public ResponseEntity<?> createFollow(@PathVariable long userId){
-        return ResponseEntity.ok("OK");
-    }
-    /**
-     * 팔로우 취소(언팔로우)
-     */
-    @DeleteMapping("/follow/{userId}")
-    @ApiOperation(value = "팔로우 삭제", notes = "팔로우 삭제 -> 언팔로우")
-    public ResponseEntity<?> deleteFollow(@PathVariable long userId){
-        return ResponseEntity.ok("OK");
-    }
+	/**
+	 * 팔로우 하고 있는 사람 목록 조회
+	 */
+	@GetMapping("/following/{userId}")
+	@ApiOperation(value = "유저가 팔로우 한 사람 목록 조회", notes = "유저가 팔로우 한 사람 목록 조회")
+	public ResponseEntity<Slice<UserSimpleInfoDto>> getFollowingList(@PathVariable Long userId, Pageable pageable) {
+		Slice<UserSimpleInfoDto> followings = followService.getFollowingList(userId, pageable);
+		//		List<UserSimpleInfoDto> mockUsers = Arrays.asList(
+		//			new UserSimpleInfoDto(1L, "follower1", "imagePath"),
+		//			new UserSimpleInfoDto(2L, "follower2", "imagePath"),
+		//			new UserSimpleInfoDto(3L, "follower3", "imagePath")
+		//		);
+		//        followings= new SliceImpl<>(mockUsers);
+		return ResponseEntity.ok(followings);
+	}
+
+
+	/**
+	 * 팔로워 목록 조회
+	 */
+	@GetMapping("/follower/{userId}")
+	@ApiOperation(value = "팔로워 목록 조회", notes = "팔로워 목록 조회")
+	public ResponseEntity<Slice<UserSimpleInfoDto>> getFollowerList(@PathVariable Long userId, Pageable pageable) {
+		Slice<UserSimpleInfoDto> followers = followService.getFollowerList(userId, pageable);
+		//		List<UserSimpleInfoDto> mockUsers = Arrays.asList(
+		//			new UserSimpleInfoDto(1L, "follower1", "imagePath"),
+		//			new UserSimpleInfoDto(2L, "follower2", "imagePath"),
+		//			new UserSimpleInfoDto(3L, "follower3", "imagePath")
+		//		);
+		//		followers = new SliceImpl<>(mockUsers);
+		return ResponseEntity.ok(followers);
+	}
+
+
+	/**
+	 * 팔로우 추가
+	 */
+	@PostMapping("/follow/{userId}")
+	@ApiOperation(value = "팔로우 추가", notes = "팔로우 추가")
+	public ResponseEntity<Boolean> createFollow(@PathVariable Long userId) {
+		// TODO : 유저 id 추가
+		followService.createFollow(3L, userId);
+		return ResponseEntity.ok(true);
+	}
+
+
+	/**
+	 * 팔로우 취소(언팔로우)
+	 */
+	@DeleteMapping("/follow/{userId}")
+	@ApiOperation(value = "팔로우 삭제", notes = "팔로우 삭제 -> 언팔로우")
+	public ResponseEntity<Boolean> deleteFollow(@PathVariable Long userId) {
+		// TODO : 유저 id 추가
+		followService.deleteFollow(3L, userId);
+		return ResponseEntity.ok(true);
+	}
 
 }
