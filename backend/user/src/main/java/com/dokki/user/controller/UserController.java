@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -42,40 +43,35 @@ public class UserController {
 	private final LoginService loginService;
 	private final FollowService followService;
 
-
-	/**
-	 * 로그인
-	 */
-	@GetMapping("/login")
-	@ApiOperation(value = "로그인", notes = "카카오를 이용한 로그인")
-	public ResponseEntity<?> googleLogin(@RequestParam("code") String code) throws Exception {
-		ProfileResponseDto dto = null;//userService.login(code);
-		HttpHeaders httpHeaders = new HttpHeaders();
-		//httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
-		//httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
-
-		return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);
-	}
-
-
-	/**
-	 * 로그아웃
-	 */
-	@GetMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request) throws Exception {
-		String accessToken = request.getHeader(JwtFilter.ACCESSTOKEN_HEADER);
-		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-		TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
-		ResponseMessage responseMessage = loginService.logout(tokenDto);
-		return ResponseEntity.ok("OK");
-	}
-
-
-	/**
-	 * 엑세스 만료직전
-	 */
-	@GetMapping("/refresh")
-	public ResponseEntity<?> refresh(HttpServletRequest request) {
+    /**
+     * API-Gateway가 보내는 요청에 응답
+     */
+    @GetMapping("/auth")
+    @ApiOperation(value = "gateway에게 유저 정보를 보냄", notes = "gateway에게 유저 정보를 보냄")
+    public ResponseEntity<?> getAuth() throws Exception{
+        Optional<UserSimpleInfoDto> userSimpleInfoDto = userService.getAuth();
+        if(userSimpleInfoDto.isPresent()){
+            return ResponseEntity.ok(userSimpleInfoDto.get());
+        }else{
+            return ResponseEntity.ok("FAIL");
+        }
+    }
+    /**
+     * 로그아웃
+     */
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) throws Exception{
+        String accessToken = request.getHeader(JwtFilter.ACCESSTOKEN_HEADER);
+        String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+        TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
+        ResponseMessage responseMessage = loginService.logout(tokenDto);
+        return ResponseEntity.ok("OK");
+    }
+    /**
+     * 엑세스 만료직전
+     */
+    @GetMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
 		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
 		try {
 			TokenDto tokenDto = loginService.refresh(refreshToken);
@@ -89,8 +85,6 @@ public class UserController {
 			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 		}
 	}
-
-
 	/**
 	 * 엑세스 만료 후 리프레시는 살아있을 때
 	 */
@@ -105,71 +99,70 @@ public class UserController {
 		return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
 	}
 
-
-	/**
-	 * 사용자 검색
-	 */
-	@GetMapping("")
-	@ApiOperation(value = "사용자 검색", notes = "사용자를 조회한다.")
-	public ResponseEntity<?> getUserList(ProfileRequestDto profileRequestDto) {
-		List<UserSimpleInfoDto> mockUsers = Arrays.asList(
-			new UserSimpleInfoDto(1L, "user1", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png"),
-			new UserSimpleInfoDto(2L, "user2", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png"),
-			new UserSimpleInfoDto(3L, "user3", "https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png")
-		);
-		SliceImpl<UserSimpleInfoDto> userSimpleInfoDtoSlice = new SliceImpl<>(mockUsers);
-		return ResponseEntity.ok(userSimpleInfoDtoSlice);
-	}
-
-
-	/**
-	 * 유저 프로필 정보 조회
-	 */
-	@GetMapping("/profile/{userId}")
-	@ApiOperation(value = "유저 프로필 정보 조회", notes = "유저 프로필 정보 조회")
-	public ResponseEntity<?> getUserProfile(@PathVariable long userId) {
-		ProfileResponseDto profileResponseDto = ProfileResponseDto.builder()
-			.userId(1)
-			.nickname("nickname")
-			.profileImagePath("https://t1.daumcdn.net/crms/symbol_img/symbol_%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1.png")
-			.followerCount(5)
-			.followingCount(100)
-			.isFollowed(true)
-			.build();
-		return ResponseEntity.ok(profileResponseDto);
-	}
-
-
-	/**
-	 * 유저 닉네임 수정
-	 */
-	@PutMapping("/profile/nickname")
-	@ApiOperation(value = "유저 닉네임 수정", notes = "유저 닉네임 수정")
-	public ResponseEntity<?> modifyNickname(@RequestBody String nickname) {
-		return ResponseEntity.ok("OK");
-	}
-
-
-	/**
-	 * 유저 프로필 사진 수정
-	 */
-	@PostMapping("/profile/image")
-	@ApiOperation(value = "유저 프로필 사진 수정", notes = "유저 프로필 사진 수정")
-	public ResponseEntity<?> modifyImage(@RequestPart MultipartFile uploadFile) {
-		return ResponseEntity.ok("OK");
-	}
-
-
-	/**
-	 * 독끼풀 상태 조회
-	 */
-	@GetMapping("/dokki/{userId}")
-	@ApiOperation(value = "독끼풀 상태 조회", notes = "독끼풀 상태 조회")
-	public ResponseEntity<?> getDokki(@PathVariable long userId) {
-		return ResponseEntity.ok("OK");
-	}
-
-
+    /**
+     * 사용자 검색
+     */
+    @GetMapping("")
+    @ApiOperation(value = "사용자 검색", notes = "사용자를 조회한다.")
+    public ResponseEntity<?> getUserList(ProfileRequestDto profileRequestDto){
+        Slice<UserSimpleInfoDto> userSimpleInfoDtoSlice = userService.getUserList(profileRequestDto);
+        return ResponseEntity.ok(userSimpleInfoDtoSlice);
+    }
+    /**
+     * 유저 프로필 정보 조회
+     */
+    @GetMapping("/profile/{userId}")
+    @ApiOperation(value = "유저 프로필 정보 조회", notes = "유저 프로필 정보 조회")
+    public ResponseEntity<?> getUserProfile(@PathVariable long userId){
+        ProfileResponseDto profileResponseDto = userService.getUserProfile(userId);
+        return ResponseEntity.ok(profileResponseDto);
+    }
+    /**
+     * 유저 닉네임 수정
+     */
+    @PutMapping("/profile/nickname")
+    @ApiOperation(value = "유저 닉네임 수정", notes = "유저 닉네임 수정")
+    public ResponseEntity<?> modifyNickname(@RequestBody String nickname){
+        String response = userService.modifyNickname(nickname);
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * 유저 프로필 사진 수정
+     */
+    @PostMapping("/profile/image")
+    @ApiOperation(value = "유저 프로필 사진 수정", notes = "유저 프로필 사진 수정")
+    public ResponseEntity<?> modifyImage(@RequestPart MultipartFile uploadFile ){
+        try{
+            String response = userService.modifyImage(uploadFile);
+            if(response.equals("SUCCESS")){
+                return ResponseEntity.ok(response);
+            }else{
+                return ResponseEntity.ok("수정 과정 중 오류가 발생함");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.ok("Fail");
+        }
+    }
+    /**
+     * 독끼풀 상태 조회
+     */
+    @GetMapping("/dokki/{userId}")
+    @ApiOperation(value = "독끼풀 상태 조회", notes = "독끼풀 상태 조회")
+    public ResponseEntity<?> getDokki(@PathVariable long userId){
+        String response = userService.getDokki(userId);
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * 리뷰 서비스에서 사용하는 간단 유저 정보 리스트
+     */
+    @PostMapping("/profile/simple")
+    @ApiOperation(value = "리뷰 서버에서 사용하는 유저정보 리스트", notes = "독끼풀 상태 조회")
+    public ResponseEntity<?> getUserSimpleforReview(@RequestBody List<Long> userIdList){
+        log.info("리뷰서버 컨트롤러");
+        List<UserSimpleInfoDto> userSimpleInfoDtoList = userService.getUserSimpleforReview(userIdList);
+        return ResponseEntity.ok(userSimpleInfoDtoList);
+    }
 	/**
 	 * 팔로우 하고 있는 사람 목록 조회
 	 */

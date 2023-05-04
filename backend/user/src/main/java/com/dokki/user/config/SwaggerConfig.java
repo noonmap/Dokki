@@ -23,7 +23,7 @@ import java.util.Set;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
+public class  SwaggerConfig {
 
 	@Bean
 	public Docket api() {

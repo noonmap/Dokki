@@ -1,4 +1,4 @@
-package com.dokki.book.dto.response;
+package com.dokki.timer.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class DailyStatisticsResponseDto {
 
 	private Integer day;
+	private Integer dayOfWeek;
 	private String bookId;
 	private String bookTitle;
 	private String bookCoverPath;
