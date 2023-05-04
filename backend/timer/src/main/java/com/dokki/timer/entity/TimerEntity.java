@@ -23,7 +23,7 @@ public class TimerEntity {
 	private Long id;
 	@Column(nullable = false)
 	private Long userId;
-	@Column(nullable = false, length = 20)
+	@Column(length = 20)
 	private String bookId;
 	@Column(nullable = false)
 	private Long bookStatusId;
@@ -33,5 +33,21 @@ public class TimerEntity {
 	private LocalDate startTime;
 	@Column(nullable = false)
 	private LocalDate endTime;
+
+
+	public void updateTimerEntity(int currTime, LocalDate endTime) {
+		setAccumTime(currTime);
+		setEndTime(endTime);
+	}
+
+
+	private void setAccumTime(int currTime) {
+		this.accumTime += currTime;
+	}
+
+
+	private void setEndTime(LocalDate endTime) {
+		this.endTime = endTime;
+	}
 
 }

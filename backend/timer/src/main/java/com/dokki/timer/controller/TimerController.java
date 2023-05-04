@@ -24,18 +24,18 @@ public class TimerController {
 	private final TimerService timerService;
 
 
-	@PostMapping("/{bookId}/start")
+	@PostMapping("/{bookStatusId}/start")
 	@ApiOperation(value = "독서 시간 측정을 시작합니다.")
-	public ResponseEntity<Boolean> startTimer(@PathVariable String bookId) {
-		timerService.startTimer(bookId);
+	public ResponseEntity<Boolean> startTimer(@PathVariable Long bookStatusId) {
+		timerService.startTimer(bookStatusId);
 		return ResponseEntity.ok(true);
 	}
 
 
-	@PostMapping("/{bookId}/end")
+	@PostMapping("/{bookStatusId}/end")
 	@ApiOperation(value = "독서 시간 측정을 종료합니다.", notes = "시작 시간과 종료 시간을 저장하고, 두 시간의 차를 독서 누적 시간에 추가합니다.")
-	public ResponseEntity<Boolean> endTimer(@PathVariable String bookId) {
-		timerService.endTimer(bookId);
+	public ResponseEntity<Boolean> endTimer(@PathVariable Long bookStatusId) {
+		timerService.endTimer(bookStatusId);
 		return ResponseEntity.ok(true);
 	}
 
@@ -43,15 +43,15 @@ public class TimerController {
 	@GetMapping("/history/{userId}")
 	@ApiOperation(value = "한 달 독서 기록을 조회합니다. (프로필에서 사용, 달력 형태)", notes = "하루 중 가장 읽은 시간이 긴 책 리스트를 반환합니다. 리스트 요소의 형태는 {day: Integer, bookId: String}와 같습니다.")
 	public ResponseEntity<List<Map<String, String>>> getMonthlyReadTimeHistory(@PathVariable Long userId, @RequestParam("year") Integer year, @RequestParam Integer month) {
-		List<Map<String, String>> result = timerService.getMonthlyReadTimeHistory(userId, year, month);
-		return ResponseEntity.ok(result);
+		// List<Map<String, String>> result = timerService.getMonthlyReadTimeHistory(userId, year, month);
+		return ResponseEntity.ok(null);
 	}
 
 
-	@DeleteMapping("/{userId}/{bookId}")
+	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "타이머 정보를 삭제합니다.")
-	public ResponseEntity<Boolean> deleteTimer(@PathVariable Integer userId, @PathVariable String bookId) {
-		timerService.deleteTimer(userId, bookId);
+	public ResponseEntity<Boolean> deleteTimer(@PathVariable Long bookStatusId, @RequestParam Long userId) {
+		timerService.deleteTimer(bookStatusId, userId);
 		return ResponseEntity.ok(true);
 	}
 

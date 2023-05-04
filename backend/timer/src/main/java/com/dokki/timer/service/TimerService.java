@@ -1,16 +1,20 @@
 package com.dokki.timer.service;
 
 
+import com.dokki.timer.entity.TimerEntity;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Log4j2
@@ -25,20 +29,43 @@ public class TimerService {
 	/**
 	 * 독서 시간 측정 시작
 	 *
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void startTimer(String bookId) {
+	public void startTimer(Long bookStatusId) {
 	}
 
 
 	/**
 	 * 독서 시간 측정 종료
 	 *
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void endTimer(String bookId) {
-	}
+	public void endTimer(Long bookStatusId) {
+		// TODO: 레디스에서 가져온 데이터로 시간 계산
+		LocalDateTime startTime = null;
+		// 임시
+		startTime = LocalDateTime.now().minusMinutes(20);
 
+		LocalDateTime endTime = LocalDateTime.now();
+		Duration duration = Duration.between(startTime, endTime);
+		Long currTime = duration.getSeconds();
+
+		// bookStatusId로 타이머 존재여부 확인, 존재하지 않다면 새로 만들기
+		boolean isBookExist = timerRepository.existsByBookStatusId(bookStatusId);
+		TimerEntity timerEntity;
+		if (!isBookExist) {
+			timerEntity = timerRepository.save(TimerEntity.builder()
+				.accumTime(Math.toIntExact(currTime))      // toIntExact -> ArithmeticException (if the argument overflows an int)
+				.startTime(startTime.toLocalDate())
+				.endTime(endTime.toLocalDate())
+				.bookStatusId(bookStatusId)
+				.build());
+		} else {
+			timerEntity = timerRepository.findByBookStatusId(bookStatusId);
+			updateTimer(timerEntity, endTime.toLocalDate(), Math.toIntExact(currTime));
+		}
+
+	}
 
 	/**
 	 * 한 달 독서 기록을 조회합니다. (프로필에서 사용, 달력 형태)
@@ -50,18 +77,18 @@ public class TimerService {
 	 * @param month
 	 * @return
 	 */
-	public List<Map<String, String>> getMonthlyReadTimeHistory(Long userId, Integer year, Integer month) {
-		return new ArrayList<>();
-	}
+	//	public List<Map<String, String>> getMonthlyReadTimeHistory(Long userId, Integer year, Integer month) {
+	//		return new ArrayList<>();
+	//	}
 
 
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
 	 * @param userId
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void deleteTimer(Integer userId, String bookId) {
+	public void deleteTimer(Long bookStatusId, Long userId) {
 	}
 
 
@@ -85,6 +112,15 @@ public class TimerService {
 	 * @param done
 	 */
 	public void modifyEndTime(Long bookStatusId, Boolean done) {
+	}
+
+
+	/**
+	 * 타이머 정보 update
+	 */
+	@Transactional
+	protected void updateTimer(TimerEntity timerEntity, LocalDate endTime, int currTime) {
+		timerEntity.updateTimerEntity(currTime, endTime);
 	}
 
 }
