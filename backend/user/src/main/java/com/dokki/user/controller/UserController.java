@@ -44,12 +44,12 @@ public class UserController {
 	private final UserService userService;
 	private final LoginService loginService;
 	private final FollowService followService;
-    /** 
+    /**
      * 로그인 테스트 미완성
      **/
-    @GetMapping("/oauth2/code/kakao")
-    public UserResponseDto login(@RequestParam String code) throws JsonProcessingException {
-        UserResponseDto userResponseDto = loginService.login(code);
+    @GetMapping("/oauth2/kakao")
+    public UserResponseDto login(@RequestParam String token) throws JsonProcessingException {
+        UserResponseDto userResponseDto = loginService.login(token);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
         httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");

@@ -21,15 +21,13 @@ class UserApplicationTests {
 	void createTest(){
 		for(int i=0; i<10; i++) {
 			UserEntity user = UserEntity.builder()
-					.created(LocalDateTime.now())
-					.email("testEmail")
+					.email("test@gmail"+i+".com")
 					.followerCount(0)
 					.followingCount(0)
-					.kakaoId("testKakao")
-					.updated(LocalDateTime.now())
-					.nickname("testNickName")
-					.profileImagePath("testImage")
-					.password("testPassword")
+					.kakaoId("testKakaoId"+i)
+					.nickname("nickname"+i)
+					.profileImagePath("https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg")
+					.password("testPassword"+i)
 					.build();
 			userRepository.save(user);
 		}
