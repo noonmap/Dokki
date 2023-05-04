@@ -1,7 +1,7 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/ui/book_detail/widgets/book_item.dart';
-import 'package:dokki/ui/book_detail/widgets/review.item.dart';
+import 'package:dokki/ui/book_detail/widgets/review_item.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
