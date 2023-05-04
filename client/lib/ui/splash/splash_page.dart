@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dokki/constants/colors.dart';
 import 'package:dokki/constants/image_strings.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: brandColor100,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

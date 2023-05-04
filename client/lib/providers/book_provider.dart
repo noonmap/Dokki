@@ -32,12 +32,15 @@ class BookProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
+      print(page);
       Map<String, dynamic> returnData =
           await _bookRepository.getSearchBookListData(search, queryType, page);
 
       List<Book> pageBookList = returnData["bookList"];
       pageData = returnData["pageData"];
-      _bookList = pageBookList;
+      for (int i = 0; i < 10; i++) {
+        _bookList.add(pageBookList[i]);
+      }
     } catch (e) {
       error = "error";
     } finally {
