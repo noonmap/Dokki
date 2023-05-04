@@ -46,11 +46,11 @@ class userBio extends StatelessWidget {
                       onTap: () {},
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                            horizontal: 12, vertical: 6),
                         decoration: const BoxDecoration(
                             color: brandColor100,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
+                                BorderRadius.all(Radius.circular(12))),
                         child: Center(
                           child: Paragraph(
                             text: up.userBio!.isFollowed ? '팔로잉' : '팔로우',
@@ -63,7 +63,6 @@ class userBio extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: 6),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
