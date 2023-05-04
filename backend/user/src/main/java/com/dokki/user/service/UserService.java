@@ -34,17 +34,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
+    @Value("${app.fileupload.uploadPath}")
+    String uploadPath;
+    @Value("${app.fileupload.uploadDir}")
+    String uploadFolder;
+
     /**
      * 사용자 검색
      *     private String search;
      *     private int page;
      *     private int size;
      */
-
-    @Value("${app.fileupload.uploadPath}")
-    String uploadPath;
-    @Value("${app.fileupload.uploadDir}")
-    String uploadFolder;
     public Slice<UserSimpleInfoDto> getUserList(ProfileRequestDto profileRequestDto) {
         Slice<UserEntity> userListSlice = userRepository.findSliceByNicknameContains(
                 profileRequestDto.getSearch(),
@@ -70,7 +71,8 @@ public class UserService {
      */
     public String modifyNickname(String nickname) {
         /** 현재 사용자 정보를 가져와서 id로 조회를 한다.**/
-        Optional<UserEntity> user = SecurityUtil.getCurrentEmail().flatMap(userRepository::findByEmail);
+        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+        Optional<UserEntity> user = userRepository.findById(id);
         if(user.isPresent()){
             user.get().setNickname(nickname);
             userRepository.save(user.get());
@@ -100,8 +102,10 @@ public class UserService {
             uploadFile.transferTo(path.toFile());
 
             /** 현재 사용자 정보를 가져와서 id로 조회를 한다.**/
-            Optional<UserEntity> user = SecurityUtil.getCurrentEmail().flatMap(userRepository::findByEmail);
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            Optional<UserEntity> user = userRepository.findById(id);
             user.get().setProfileImagePath(uploadFolder + "/" + savingFileName);
+            userRepository.save(user.get());
             return "SUCCESS";
         }catch (IOException e){
             e.printStackTrace();
@@ -129,5 +133,17 @@ public class UserService {
         }
 
         return userSimpleInfoDtoList;
+    }
+
+    public Optional<UserSimpleInfoDto> getAuth() {
+        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+        Optional<UserSimpleInfoDto> userSimpleInfoDto = userRepository.findById(id).map(
+                userEntity -> UserSimpleInfoDto.builder()
+                        .profileImagePath(userEntity.getProfileImagePath())
+                        .userId(userEntity.getId())
+                        .nickname(userEntity.getNickname())
+                        .build()
+        );
+        return userSimpleInfoDto;
     }
 }

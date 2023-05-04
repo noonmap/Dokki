@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,17 +42,17 @@ public class UserController {
     private final UserService userService;
     private final LoginService loginService;
     /**
-     * 로그인
+     * API-Gateway가 보내는 요청에 응답
      */
-    @GetMapping("/login")
-    @ApiOperation(value = "로그인", notes = "카카오를 이용한 로그인")
-    public ResponseEntity<?> googleLogin(@RequestParam("code") String code) throws Exception{
-        ProfileResponseDto dto = null;//userService.login(code);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        //httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
-        //httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
-
-        return new ResponseEntity<>(dto, httpHeaders, HttpStatus.OK);
+    @GetMapping("/auth")
+    @ApiOperation(value = "gateway에게 유저 정보를 보냄", notes = "gateway에게 유저 정보를 보냄")
+    public ResponseEntity<?> getAuth() throws Exception{
+        Optional<UserSimpleInfoDto> userSimpleInfoDto = userService.getAuth();
+        if(userSimpleInfoDto.isPresent()){
+            return ResponseEntity.ok(userSimpleInfoDto.get());
+        }else{
+            return ResponseEntity.ok("FAIL");
+        }
     }
     /**
      * 로그아웃

@@ -42,8 +42,6 @@ public class LoginService {
 
     private final RedisService redisService;
 
-
-
     public UserResponseDto login(String code) throws JsonProcessingException {
         KakaoRequestDto kakaoDto = KakaoRequestDto.builder()
                 .grant_type("authorization_code")
@@ -82,7 +80,7 @@ public class LoginService {
             tempUser = userEntity.get();
         }
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(tempUser.getEmail(), "kakao"+tempUser.getEmail());
+                new UsernamePasswordAuthenticationToken(String.valueOf(tempUser.getId()), "kakao"+tempUser.getEmail());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -157,9 +155,9 @@ public class LoginService {
         String accessToken = tokenProvider.createAccessToken(authentication);
         String newRefreshToken = tokenProvider.createRefreshToken(authentication);
 
-        String email = SecurityUtil.getCurrentEmail().get();
+        String id = SecurityUtil.getCurrentId().get();
 
-        redisService.setValues(newRefreshToken, email);
+        redisService.setValues(newRefreshToken, id);
         token.setAccessToken(accessToken);
         token.setRefreshToken(newRefreshToken);
 

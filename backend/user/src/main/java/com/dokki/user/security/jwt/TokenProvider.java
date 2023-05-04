@@ -69,6 +69,8 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenAccessValidityInMilliseconds);
 
+        /** 여기서 nickname 꺼내서 id 가져오기 **/
+
         LOGGER.info("Access토큰 생성중..");
 
         return Jwts.builder()
