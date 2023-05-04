@@ -113,8 +113,6 @@ public class LoginService {
                     .kakaoId(userDto.getProviderId())
                     .profileImagePath(userDto.getProfileImageUrl())
                     .nickname(userDto.getNickname())
-                    .created(LocalDateTime.now())
-                    .updated(LocalDateTime.now())
                     .followerCount(0)
                     .followingCount(0)
                     .password(passwordEncoder.encode("kakao"+userDto.getEmail()))
