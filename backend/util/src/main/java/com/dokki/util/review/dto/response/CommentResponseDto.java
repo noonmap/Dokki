@@ -22,6 +22,7 @@ public class CommentResponseDto {
 	public String profileImagePath;
 
 	// comment info
+	public Long commentId;
 	public Integer score;
 	public String content;
 

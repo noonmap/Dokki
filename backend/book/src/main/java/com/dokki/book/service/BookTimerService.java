@@ -5,7 +5,6 @@ import com.dokki.book.client.TimerClient;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
-import com.dokki.book.repository.BookRepository;
 import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
@@ -33,6 +32,7 @@ public class BookTimerService {
 
 	private final TimerClient timerClient;
 
+
 	/**
 	 * [타이머 뷰] 읽고 있는 도서 목록 조회
 	 *
@@ -43,18 +43,20 @@ public class BookTimerService {
 	public Slice<BookTimerResponseDto> getBookTimerList(Long userId, Pageable pageable) {
 		Slice<BookStatusEntity> bookTimerSlice = bookStatusRepository.getByUserIdAndStatusEquals(userId, STATUS_IN_PROGRESS, pageable);
 
-		// TODO: timer 서버에서 각 statusId마다 time 가져오기
-
 		// bookTimerSlice에서 statusId 리스트 추출
 		List<Long> statusIdList = bookTimerSlice.getContent().stream()
 			.map(BookStatusEntity::getId)
 			.collect(Collectors.toList());
-		List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
 
+		// TODO: timer 서버에서 각 statusId마다 time 가져오기, PostMapping으로 변경
+		// List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
+
+		// TODO: getAccumTime 수정 후 변경
+		List<TimerSimpleResponseDto> timeList = new ArrayList<>();
 		Slice<BookTimerResponseDto> resultList;
-		if(timeList.isEmpty()){
+		if (timeList.isEmpty()) {
 			resultList = BookTimerResponseDto.fromEntitySlice(bookTimerSlice);
-		}else{
+		} else {
 			resultList = BookTimerResponseDto.fromStatusAndTimerEntitySlice(bookTimerSlice, timeList);
 		}
 		return resultList;

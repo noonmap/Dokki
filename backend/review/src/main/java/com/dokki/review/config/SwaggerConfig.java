@@ -36,7 +36,7 @@ public class SwaggerConfig {
 			.produces(getProduceContentTypes())
 			.select()
 			.apis(RequestHandlerSelectors.basePackage("com.dokki.review"))
-			.paths(PathSelectors.ant("/api/**"))
+			.paths(PathSelectors.ant("/**"))
 			.build();
 	}
 
