@@ -88,9 +88,12 @@ public class CommentController {
 		List<CommentResponseDto> commentResponseDtoList = commentService.get3Comment(bookId);
 		// test 반환값
 		commentResponseDtoList = new ArrayList<>(); //CommentResponseDto.fromEntityList(commentEntityList);
-		commentResponseDtoList.add(CommentResponseDto.builder().content("리뷰리뷰").created(LocalDateTime.now()).score(4).build());
-		commentResponseDtoList.add(CommentResponseDto.builder().content("리이뷰").created(LocalDateTime.now()).score(5).build());
-		commentResponseDtoList.add(CommentResponseDto.builder().content("리이뷰222").created(LocalDateTime.now()).score(5).build());
+		commentResponseDtoList.add(CommentResponseDto.builder().userId(0L).nickname("닉").commentId(0L).content("리뷰리뷰")
+			.profileImagePath("https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Shin_Min_A.jpg/250px-Shin_Min_A.jpg").created(LocalDateTime.now()).score(4).build());
+		commentResponseDtoList.add(CommentResponseDto.builder().userId(0L).nickname("닉").commentId(1L).content("리이뷰")
+			.profileImagePath("https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Shin_Min_A.jpg/250px-Shin_Min_A.jpg").created(LocalDateTime.now()).score(5).build());
+		commentResponseDtoList.add(CommentResponseDto.builder().userId(1L).nickname("넥").commentId(3L).content("리이뷰222")
+			.profileImagePath("https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Shin_Min_A.jpg/250px-Shin_Min_A.jpg").created(LocalDateTime.now()).score(5).build());
 		return ResponseEntity.ok(commentResponseDtoList);
 	}
 
