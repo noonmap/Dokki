@@ -29,8 +29,8 @@ import java.util.Optional;
 public class JwtFilter extends GenericFilterBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtFilter.class);
-    public static final String ACCESSTOKEN_HEADER = "AccessToken";
-    public static final String REFRESHTOKEN_HEADER = "RefreshToken";
+    public static final String ACCESSTOKEN_HEADER = "Authorization";
+    public static final String REFRESHTOKEN_HEADER = "Refresh";
 
     private final TokenProvider tokenProvider;
     private final RedisService redisService;
