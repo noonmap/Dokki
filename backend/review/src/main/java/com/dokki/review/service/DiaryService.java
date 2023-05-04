@@ -3,7 +3,6 @@ package com.dokki.review.service;
 
 import com.dokki.review.client.BookClient;
 import com.dokki.review.config.exception.CustomException;
-import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.request.DiaryRequestDto;
 import com.dokki.review.dto.response.DiaryResponseDto;
 import com.dokki.review.entity.DiaryEntity;
@@ -187,18 +186,6 @@ public class DiaryService {
 			);
 		}
 		return diaryResponseDtoSlice;
-	}
-
-
-	/**
-	 * AI 이미지 생성
-	 *
-	 * @return 생성한 이미지 경로 반환
-	 */
-	public String createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
-		// TODO : api 호출
-		// redis에 이미지 생성 횟수 제한 걸어야 한다.
-		return "";
 	}
 
 }
