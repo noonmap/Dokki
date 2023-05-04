@@ -47,7 +47,7 @@ public class UserController {
     /**
      * 로그인 테스트 미완성
      **/
-    @GetMapping("/oauth2/kakao")
+    @GetMapping("/login/oauth2/kakao")
     public UserResponseDto login(@RequestParam String token) throws JsonProcessingException {
         UserResponseDto userResponseDto = loginService.login(token);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -82,25 +82,25 @@ public class UserController {
     /**
      * 엑세스 만료직전
      */
-    @GetMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request) {
-		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
-		try {
-			TokenDto tokenDto = loginService.refresh(refreshToken);
-			HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
-			httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
-			return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
-		} catch (LogoutException e) {
-			ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
-
-			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-		}
-	}
+//    @GetMapping("/refresh")
+//    public ResponseEntity<?> refresh(HttpServletRequest request) {
+//		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
+//		try {
+//			TokenDto tokenDto = loginService.refresh(refreshToken);
+//			HttpHeaders httpHeaders = new HttpHeaders();
+//			httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + tokenDto.getAccessToken());
+//			httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + tokenDto.getRefreshToken());
+//			return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+//		} catch (LogoutException e) {
+//			ErrorDto error = new ErrorDto(ErrorCode.PLZ_RELOGIN.getMessage(), ErrorCode.PLZ_RELOGIN.getCode());
+//
+//			return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+//		}
+//	}
 	/**
 	 * 엑세스 만료 후 리프레시는 살아있을 때
 	 */
-	@GetMapping("/reissue")
+	@GetMapping("/refresh")
 	public ResponseEntity<?> reissue(HttpServletRequest request) throws LogoutException {
 
 		String refreshToken = request.getHeader(JwtFilter.REFRESHTOKEN_HEADER);
