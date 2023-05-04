@@ -4,12 +4,10 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = dotenv.env["BASE_PROD_URL"] as String;
-  final Map<String, String> _headers = {
-    "content-type": "application/json",
-    "accept": "application/json",
+  final String _baseUrl = dotenv.env['BASE_PROD_URL'] as String;
+  final _headers = {
+    "Content-Type": "application/json",
   };
-
   Future<http.Response> get(String url, Map<String, dynamic>? params) async {
     try {
       late Uri uri;

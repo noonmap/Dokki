@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import "package:http/http.dart" as http;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 class LoginButton extends StatelessWidget {
@@ -22,7 +25,11 @@ class LoginButton extends StatelessWidget {
         // OAuthToken token = isInstalled
         //     ? await UserApi.instance.loginWithKakaoTalk()
         //     : await UserApi.instance.loginWithKakaoAccount();
-        // print(token);
+        // Uri uri = Uri.parse("https://dokki.kr/users/login/oauth2/kakao")
+        //     .replace(queryParameters: {"token": token.accessToken});
+        // http.Response response = await http.get(uri);
+        // dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+        // print(responseJson);
       },
       child: Container(
         width: 230,
