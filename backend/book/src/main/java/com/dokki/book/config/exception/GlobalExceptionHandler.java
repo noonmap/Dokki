@@ -1,7 +1,6 @@
-package com.dokki.review.book.exception;
+package com.dokki.book.config.exception;
 
 
-import com.dokki.book.config.exception.CustomException;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.common.error.ErrorResponse;
 import com.dokki.util.common.error.ErrorUtils;
