@@ -97,5 +97,5 @@ springfox:
 # file path
 app:
   fileupload:
-    uploadPath: static
-    uploadDir: upload
+    uploadPath: ${UPLOAD_PATH}
+    uploadDir: ${UPLOAD_DIR}
