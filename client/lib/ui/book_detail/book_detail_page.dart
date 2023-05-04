@@ -29,7 +29,6 @@ class _BookDetailPageState extends State<BookDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    print("build");
     final bp = Provider.of<BookProvider>(context);
     TabController tabController = TabController(length: 2, vsync: this);
     final clientWidth = MediaQuery.of(context).size.width;
@@ -207,6 +206,9 @@ class _BookDetailPageState extends State<BookDetailPage>
                                       ),
                                       Text(
                                         bp.book!.bookAuthor,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
                                         style: const TextStyle(
                                           letterSpacing: 0.5,
                                         ),

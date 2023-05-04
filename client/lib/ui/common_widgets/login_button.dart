@@ -2,6 +2,7 @@ import 'package:dokki/constants/colors.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 class LoginButton extends StatelessWidget {
   final String text, iconPath;
@@ -16,6 +17,12 @@ class LoginButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.main);
+        // bool isInstalled = await isKakaoTalkInstalled();
+        //
+        // OAuthToken token = isInstalled
+        //     ? await UserApi.instance.loginWithKakaoTalk()
+        //     : await UserApi.instance.loginWithKakaoAccount();
+        // print(token);
       },
       child: Container(
         width: 230,
