@@ -20,8 +20,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final ScrollController _scrollController = ScrollController();
-
   // 🍇 임시 유저 ID
   int userId = 101;
 
@@ -79,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
       body: up.isLoading || up.userBio == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              controller: _scrollController,
               padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),
               child: Column(
                 children: [

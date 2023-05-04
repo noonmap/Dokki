@@ -23,8 +23,13 @@ class UserRepository {
   // GET : 독서 달력
   Future<List<UserMonthlyCalendarModel>> getUserMonthlyCalendarData(
       {required userId, required year, required month}) async {
-    http.Response res = await _apiService.get(
-        '/timers/history/month/$userId?year=$year&month=$month', null);
+    Map<String, String> params = {
+      'year': '$year',
+      'month': '$month',
+    };
+
+    http.Response res =
+        await _apiService.get('/timers/history/month/$userId', params);
 
     if (res.statusCode == 200) {
       final List<dynamic> monthlyData = jsonDecode(utf8.decode(res.bodyBytes));
@@ -32,6 +37,7 @@ class UserRepository {
       List<UserMonthlyCalendarModel> monthlyCalendarData = monthlyData
           .map((dailyData) => UserMonthlyCalendarModel.fromJson(dailyData))
           .toList();
+
       return monthlyCalendarData;
     }
     throw Error();
@@ -42,8 +48,12 @@ class UserRepository {
     required userId,
     required year,
   }) async {
+    Map<String, String> params = {
+      'year': '$year',
+    };
+
     http.Response res =
-        await _apiService.get('/timers/history/year/$userId?year=$year', null);
+        await _apiService.get('/timers/history/year/$userId', params);
 
     if (res.statusCode == 200) {
       final List<dynamic> monthlyData = jsonDecode(utf8.decode(res.bodyBytes));
