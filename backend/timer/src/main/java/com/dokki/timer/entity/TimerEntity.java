@@ -36,17 +36,7 @@ public class TimerEntity {
 
 
 	public void updateTimerEntity(int currTime, LocalDate endTime) {
-		setAccumTime(currTime);
-		setEndTime(endTime);
-	}
-
-
-	private void setAccumTime(int currTime) {
 		this.accumTime += currTime;
-	}
-
-
-	private void setEndTime(LocalDate endTime) {
 		this.endTime = endTime;
 	}
 
