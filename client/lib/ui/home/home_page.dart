@@ -2,11 +2,18 @@ import 'package:dokki/constants/colors.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  @override
   Widget build(BuildContext context) {
+    TabController tabController = TabController(length: 2, vsync: this);
+
     return Container(
       decoration: const BoxDecoration(color: brandColor100),
       padding: const EdgeInsets.only(top: 40),
@@ -37,7 +44,44 @@ class HomePage extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              decoration: BoxDecoration(color: Colors.amber),
+              decoration: const BoxDecoration(color: grayColor000),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              child: Column(
+                children: [
+                  TabBar(
+                    indicatorColor: brandColor300,
+                    indicatorWeight: 3,
+                    labelColor: brandColor300,
+                    unselectedLabelColor: brandColor200,
+                    controller: tabController,
+                    labelPadding: EdgeInsets.symmetric(vertical: 14),
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                    tabs: const [
+                      Tab(
+                        text: "읽는 중",
+                      ),
+                      Tab(
+                        text: "찜 목록",
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                      child: TabBarView(
+                    controller: tabController,
+                    children: [
+                      Text("ss"),
+                      Text("aa"),
+                    ],
+                  ))
+                ],
+              ),
             ),
           )
         ],
