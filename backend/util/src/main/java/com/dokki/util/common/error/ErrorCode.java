@@ -12,9 +12,14 @@ public enum ErrorCode {
 	DUPLICATE_RESOURCE(409, "C004", "이미 존재하는 데이터입니다."),
 
 	UNAUTHORIZED(400, "U001", "로그인이 필요합니다."),
-	NOT_AUTHORIZED(401, "U002", "로그인 정보를 가져올 수 없습니다."),
-	EXPIRED_ACCESS_TOKEN(401, "U003", "엑세스 토큰 만료"),
-	EXPIRED_REFRESH_TOKEN(401, "U004", "다시 로그인해주세요."),
+	WRONG_TYPE_TOKEN(400,"U002", "잘못된 타입의 토큰입니다."),
+	EXPIRED_TOKEN(401,"U003","만료된 토큰입니다."),
+	UNSUPPORTED_TOKEN(401,"U004","지원하지않는 토큰입니다."),
+	ACCESS_DENIED(401,"U005", "접근이 거부된 토큰입니다."),
+	WRONG_TOKEN(401,"U006", "잘못된 토큰입니다."),
+	LOGOUT_TOKEN(401,"U007", "로그아웃된 토큰입니다."),
+	PLZ_RELOGIN(401,"U008", "다시 로그인 해주세요."),
+
 
 	UNABLE_SEARCH(500, "B001", "검색 API를 사용할 수 없습니다.");
 

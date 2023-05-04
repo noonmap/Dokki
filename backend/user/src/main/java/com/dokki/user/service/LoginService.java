@@ -6,7 +6,6 @@ import com.dokki.user.dto.ResponseMessage;
 import com.dokki.user.dto.TokenDto;
 import com.dokki.user.dto.UserDto;
 import com.dokki.user.dto.request.KakaoRequestDto;
-import com.dokki.user.dto.response.KakaoInfoResponseDto;
 import com.dokki.user.dto.response.KakaoResponseDto;
 import com.dokki.user.dto.response.UserResponseDto;
 import com.dokki.user.entity.UserEntity;
@@ -16,7 +15,6 @@ import com.dokki.user.security.SecurityUtil;
 import com.dokki.user.security.jwt.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,8 +41,6 @@ public class LoginService {
     private final TokenProvider tokenProvider;
 
     private final RedisService redisService;
-
-
 
     public UserResponseDto login(String code) throws JsonProcessingException {
         KakaoRequestDto kakaoDto = KakaoRequestDto.builder()
@@ -73,7 +69,7 @@ public class LoginService {
                 .build();
 
         /** 받아온 정보를 가지고 우리 회원인지 조회 **/
-        Optional<UserEntity> userEntity = userRepository.findByemail(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
         /** db에 없는 회원이라면 회원가입 진행 **/
         UserEntity tempUser;
         if(userEntity.orElse(null)==null) {
@@ -84,7 +80,7 @@ public class LoginService {
             tempUser = userEntity.get();
         }
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(tempUser.getEmail(), "kakao"+tempUser.getEmail());
+                new UsernamePasswordAuthenticationToken(String.valueOf(tempUser.getId()), "kakao"+tempUser.getEmail());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -106,7 +102,7 @@ public class LoginService {
         userDto.setUsername(tempUser.getNickname());
         //userDto.setProfileImageUrl(fileService.getFileUrl(tempUser.getImage()));
         //userDto.setUserId(tempUser.getUserId());
-
+        log.info(userResponseDto.getTokenDto().getAccessToken(),userResponseDto.getTokenDto().getRefreshToken());
         userResponseDto.setUserDto(userDto);
         return userResponseDto;
 
@@ -135,8 +131,8 @@ public class LoginService {
             // 추후 예외 처리 예정
             return null;
         }
-        Authentication authentication = tokenProvider.getAuthentication(tokenProvider.resolveToken(refreshToken));
 
+        Authentication authentication = tokenProvider.getAuthentication(tokenProvider.resolveToken(refreshToken));
         String accessToken = tokenProvider.createAccessToken(authentication);
 
         token.setAccessToken(accessToken);
@@ -159,12 +155,11 @@ public class LoginService {
         String accessToken = tokenProvider.createAccessToken(authentication);
         String newRefreshToken = tokenProvider.createRefreshToken(authentication);
 
-        String email = SecurityUtil.getCurrentEmail().get();
+        String id = SecurityUtil.getCurrentId().get();
 
-        redisService.setValues(newRefreshToken, email);
+        redisService.setValues(newRefreshToken, id);
         token.setAccessToken(accessToken);
         token.setRefreshToken(newRefreshToken);
-
 
         return token;
     }

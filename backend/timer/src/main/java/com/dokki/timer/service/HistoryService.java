@@ -1,7 +1,7 @@
-package com.dokki.book.service;
+package com.dokki.timer.service;
 
 
-import com.dokki.book.dto.response.DailyStatisticsResponseDto;
+import com.dokki.timer.dto.response.DailyStatisticsResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,8 @@ public class HistoryService {
 	 * @return Integer[12] 한 해 독서시간
 	 */
 	public Integer[] getYearHistory(Long userId, int year) {
+		System.out.println(userId);
+		System.out.println(year);
 		Integer[] result = new Integer[12];
 		return result;
 	}
