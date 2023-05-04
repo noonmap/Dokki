@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class TimerService {
 			}
 
 			// 타이머 종료 및 누적시간 계산
-			timerEntity.updateTimerEntity(Math.toIntExact(currTime), endTime.toLocalDate());
+			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
 		}
 
 	}
@@ -112,9 +113,14 @@ public class TimerService {
 	 * 독서 완독 시간 정보를 추가 또는 삭제(null)합니다.
 	 *
 	 * @param bookStatusId
-	 * @param done
 	 */
-	public void modifyEndTime(Long bookStatusId, Boolean done) {
+	@Transactional
+	public void modifyEndTime(Long userId, Long bookStatusId) {
+		TimerEntity timerEntity = timerRepository.findTopByBookStatusId(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST));
+		if (!userId.equals(timerEntity.getUserId())) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		timerEntity.updateBookComplete(LocalDate.now());
 	}
 
 }

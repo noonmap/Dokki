@@ -35,8 +35,13 @@ public class TimerEntity {
 	private LocalDate endTime;
 
 
-	public void updateTimerEntity(int currTime, LocalDate endTime) {
+	public void updateTimerStop(int currTime, LocalDate endTime) {
 		this.accumTime += currTime;
+		this.endTime = endTime;
+	}
+
+
+	public void updateBookComplete(LocalDate endTime) {
 		this.endTime = endTime;
 	}
 
