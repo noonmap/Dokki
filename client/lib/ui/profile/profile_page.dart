@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final ScrollController _scrollController = ScrollController();
 
   // 🍇 임시 유저 ID
-  int userId = 1;
+  int userId = 101;
 
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
@@ -92,7 +92,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   // 독서 달력
                   PinkBox(
                     width: double.infinity,
-                    height: 448.toDouble(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -118,6 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Paragraph(
                                   text: '$calendarYear',
                                   size: 14,
+                                  color: grayColor300,
                                   weightType: WeightType.medium,
                                 ),
                                 Paragraph(

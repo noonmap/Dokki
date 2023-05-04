@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 class PinkBox extends StatelessWidget {
   const PinkBox({
     super.key,
-    required this.width,
-    required this.height,
+    this.width = double.infinity,
+    this.height,
     required this.child,
   });
 
-  final width, height, child;
+  final double? width, height;
+  final dynamic child;
 
   @override
   Widget build(BuildContext context) {
