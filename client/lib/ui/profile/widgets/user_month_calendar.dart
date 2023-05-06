@@ -68,14 +68,6 @@ class _UserMonthCalendarState extends State<UserMonthCalendar> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _year = widget.year;
-    _month = widget.month;
-    makeCalendar(_year, _month);
-  }
-
-  @override
   void didUpdateWidget(covariant UserMonthCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.year != widget.year || oldWidget.month != widget.month) {
@@ -83,6 +75,12 @@ class _UserMonthCalendarState extends State<UserMonthCalendar> {
       _month = widget.month;
       makeCalendar(_year, _month);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    insertDays(widget.year, widget.month);
   }
 
   @override

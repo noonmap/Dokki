@@ -7,7 +7,6 @@ import 'package:dokki/ui/profile/widgets/user_bio.dart';
 import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
 import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 // 🍇TODO :: userBio - 본인 프로필 여부에 따라 1️⃣팔로우 버튼, 2️⃣메뉴 구성 다르게 하기
@@ -22,28 +21,26 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // 🍇 임시 유저 ID
+  int userId = 123;
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
   int chartYear = DateTime.now().year;
 
-  _asyncFetchData() async {
-    const storage = FlutterSecureStorage();
-    String userId = await storage.read(key: "userId") as String;
-    // provider
-    final up = Provider.of<UserProvider>(context, listen: false);
-    up.getUserBioById(int.parse(userId));
-  }
-
   @override
   void initState() {
     super.initState();
-    _asyncFetchData();
+    final up = Provider.of<UserProvider>(context, listen: false);
+    Future.wait([
+      up.getUserBioById(userId),
+      up.getUserMonthlyCalendar(
+          userId: userId, year: calendarYear, month: calendarMonth),
+      up.getUserMonthlyCount(userId: userId, year: calendarYear)
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<UserProvider>(context);
-
     void onCalendarArrowTap(String direction) {
       setState(() {
         if (direction == 'left') {
@@ -78,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      body: up.isLoading || up.userBio == null
+      body: up.isLoading || up.isLoading2 || up.isLoading3 || up.userBio == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),
@@ -141,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 24),
                         UserMonthCalendar(
                           up: up,
-                          userId: up.userBio!.userId,
+                          userId: userId,
                           year: calendarYear,
                           month: calendarMonth,
                         )
@@ -189,10 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        UserYearChart(
-                            up: up,
-                            userId: up.userBio!.userId,
-                            year: chartYear),
+                        UserYearChart(up: up, userId: userId, year: chartYear),
                       ],
                     ),
                   ),

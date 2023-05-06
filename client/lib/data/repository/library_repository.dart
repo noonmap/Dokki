@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dokki/data/model/library/library_book_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
 
@@ -18,35 +16,30 @@ class LibraryRepository {
       'size': '$dataSize',
     };
 
-    dynamic res = await _apiService.get('/books/collections', params);
+    dynamic response = await _apiService.get('/books/collections', params);
 
-    if (res.statusCode == 200) {
-      final dynamic allData = jsonDecode(utf8.decode(res.bodyBytes));
+    final libraryBooksData = response['content'] as List;
+    List<LibraryBookModel> libraryBooks = libraryBooksData
+        .map((book) => LibraryBookModel.fromJson(book))
+        .toList();
 
-      final libraryBooksData = allData['content'] as List;
-      List<LibraryBookModel> libraryBooks = libraryBooksData
-          .map((book) => LibraryBookModel.fromJson(book))
-          .toList();
+    final first = response['first'];
+    final last = response['last'];
+    final numberOfElements = response['numberOfElements'];
+    final empty = response['empty'];
 
-      final first = allData['first'];
-      final last = allData['last'];
-      final numberOfElements = allData['numberOfElements'];
-      final empty = allData['empty'];
+    Map<String, dynamic> pageData = {
+      'numberOfElements': numberOfElements,
+      'empty': empty,
+      'first': first,
+      'last': last,
+    };
 
-      Map<String, dynamic> pageData = {
-        'numberOfElements': numberOfElements,
-        'empty': empty,
-        'first': first,
-        'last': last,
-      };
+    Map<String, dynamic> libraryData = {
+      'libraryBooks': libraryBooks,
+      'pageData': pageData,
+    };
 
-      Map<String, dynamic> libraryData = {
-        'libraryBooks': libraryBooks,
-        'pageData': pageData,
-      };
-
-      return libraryData;
-    }
-    throw Error();
+    return libraryData;
   }
 }
