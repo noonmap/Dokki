@@ -29,7 +29,7 @@ public class ProfileResponseDto {
                 .profileImagePath(userEntity.getProfileImagePath())
                 .followerCount(userEntity.getFollowerCount())
                 .followingCount(userEntity.getFollowingCount())
-                .isFollowed(true)
+                .isFollowed(false)
                 .build();
     }
 }
