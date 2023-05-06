@@ -94,7 +94,7 @@ public class LoginService {
         userResponseDto.setTokenDto(tokenDto);
         userDto.setUsername(tempUser.getNickname());
         //userDto.setProfileImageUrl(fileService.getFileUrl(tempUser.getImage()));
-        //userDto.setUserId(tempUser.getUserId());
+        userDto.setUserId(tempUser.getId());
         log.info(userResponseDto.getTokenDto().getAccessToken(),userResponseDto.getTokenDto().getRefreshToken());
         userResponseDto.setUserDto(userDto);
         return userResponseDto;
