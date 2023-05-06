@@ -7,6 +7,9 @@ import 'package:flutter/foundation.dart';
 class UserProvider extends ChangeNotifier {
   final UserRepository _userRepository = UserRepository();
   bool isLoading = false;
+  bool isLoading2 = false;
+  bool isLoading3 = false;
+  String error = "";
 
   UserBioModel? userBio;
   List<UserMonthlyCalendarModel> userMonthlyCalendar = [];
@@ -15,11 +18,12 @@ class UserProvider extends ChangeNotifier {
   // GET : 프로필 바이오
   Future<void> getUserBioById(int userId) async {
     isLoading = true;
-
     try {
       UserBioModel userBioData =
           await _userRepository.getUserBioDataById(userId);
       userBio = userBioData;
+    } catch (e) {
+      error = "error";
     } finally {
       isLoading = false;
       notifyListeners();
@@ -32,15 +36,16 @@ class UserProvider extends ChangeNotifier {
     required year,
     required month,
   }) async {
-    isLoading = true;
-
+    isLoading2 = true;
     try {
       List<UserMonthlyCalendarModel> userMonthlyCalendarData =
           await _userRepository.getUserMonthlyCalendarData(
               userId: userId, year: year, month: month);
       userMonthlyCalendar = userMonthlyCalendarData;
+    } catch (e) {
+      error = "error";
     } finally {
-      isLoading = false;
+      isLoading2 = false;
       notifyListeners();
     }
   }
@@ -50,14 +55,15 @@ class UserProvider extends ChangeNotifier {
     required userId,
     required year,
   }) async {
-    isLoading = true;
-
+    isLoading3 = true;
     try {
       List<UserMonthlyCountModel> userMonthlyCountData = await _userRepository
           .getUserMonthlyCountData(userId: userId, year: year);
       userMonthlyCount = userMonthlyCountData;
+    } catch (e) {
+      error = "error";
     } finally {
-      isLoading = false;
+      isLoading3 = false;
       notifyListeners();
     }
   }
