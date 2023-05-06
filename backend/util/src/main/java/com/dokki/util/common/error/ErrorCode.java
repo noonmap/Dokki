@@ -9,6 +9,7 @@ public enum ErrorCode {
 	INVALID_REQUEST(400, "C001", "잘못된 요청입니다."),
 	UNKNOWN_ERROR(400, "C002", "알 수 없는 에러"),
 	NOTFOUND_RESOURCE(404, "C003", "해당 자원이 존재하지 않습니다."),
+	DUPLICATE_RESOURCE(409, "C004", "이미 존재하는 데이터입니다."),
 
 	UNAUTHORIZED(400, "U001", "로그인이 필요합니다."),
 	NOT_AUTHORIZED(401, "U002", "로그인 정보를 가져올 수 없습니다."),
