@@ -66,7 +66,15 @@ public class UserService {
      */
     public ProfileResponseDto getUserProfile(long userId) {
         Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(userId).map(ProfileResponseDto::toDto);
-        return profileResponseDto.get();
+        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+        if(userId==id){
+            return profileResponseDto.get();
+        }else{
+            boolean isFollowed = followRepository.existsByFromUserIdAndToUserId(id,userId);
+            profileResponseDto.get().setFollowed(isFollowed);
+            return profileResponseDto.get();
+        }
+
     }
     /**
      * 유저 닉네임 수정
