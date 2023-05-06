@@ -7,6 +7,7 @@ import 'package:dokki/ui/profile/widgets/user_bio.dart';
 import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
 import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 // 🍇TODO :: userBio - 본인 프로필 여부에 따라 1️⃣팔로우 버튼, 2️⃣메뉴 구성 다르게 하기
@@ -21,19 +22,22 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // 🍇 임시 유저 ID
-  int userId = 101;
-
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
   int chartYear = DateTime.now().year;
 
+  _asyncFetchData() async {
+    const storage = FlutterSecureStorage();
+    String userId = await storage.read(key: "userId") as String;
+    // provider
+    final up = Provider.of<UserProvider>(context, listen: false);
+    up.getUserBioById(int.parse(userId));
+  }
+
   @override
   void initState() {
     super.initState();
-
-    // provider
-    final up = Provider.of<UserProvider>(context, listen: false);
-    up.getUserBioById(userId);
+    _asyncFetchData();
   }
 
   @override
@@ -137,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 24),
                         UserMonthCalendar(
                           up: up,
-                          userId: userId,
+                          userId: up.userBio!.userId,
                           year: calendarYear,
                           month: calendarMonth,
                         )
@@ -185,7 +189,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        UserYearChart(up: up, userId: userId, year: chartYear),
+                        UserYearChart(
+                            up: up,
+                            userId: up.userBio!.userId,
+                            year: chartYear),
                       ],
                     ),
                   ),

@@ -40,12 +40,12 @@ class _UserYearChartState extends State<UserYearChart> {
 
   @override
   Widget build(BuildContext context) {
-    List<charts.Series<UserMonthlyCountModel, String>> series = [
+    List<charts.Series<dynamic, String>> series = [
       charts.Series(
         id: 'yearChart',
         data: widget.up.userMonthlyCount,
-        domainFn: (UserMonthlyCountModel series, _) => series.month.toString(),
-        measureFn: (UserMonthlyCountModel series, _) => series.count,
+        domainFn: (dynamic series, _) => series.month.toString(),
+        measureFn: (dynamic series, _) => series.count,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(brandColor300),
       )
     ];

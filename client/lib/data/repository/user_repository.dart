@@ -1,23 +1,16 @@
-import 'dart:convert';
-
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
-import "package:http/http.dart" as http;
 
 class UserRepository {
   final APIService _apiService = APIService();
 
-  // GET : 프로필 바이오
+  // GET : 다른 유저 상세 조회
   Future<UserBioModel> getUserBioDataById(int userId) async {
-    http.Response res = await _apiService.get('/users/profile/$userId', null);
-
-    if (res.statusCode == 200) {
-      final dynamic userBio = jsonDecode(utf8.decode(res.bodyBytes));
-      return UserBioModel.fromJson(userBio);
-    }
-    throw Error();
+    dynamic response = await _apiService.get('/users/profile/$userId', null);
+    UserBioModel userData = UserBioModel.fromJson(response);
+    return userData;
   }
 
   // GET : 독서 달력
@@ -28,19 +21,14 @@ class UserRepository {
       'month': '$month',
     };
 
-    http.Response res =
+    dynamic response =
         await _apiService.get('/timers/history/month/$userId', params);
 
-    if (res.statusCode == 200) {
-      final List<dynamic> monthlyData = jsonDecode(utf8.decode(res.bodyBytes));
-
-      List<UserMonthlyCalendarModel> monthlyCalendarData = monthlyData
-          .map((dailyData) => UserMonthlyCalendarModel.fromJson(dailyData))
-          .toList();
-
-      return monthlyCalendarData;
-    }
-    throw Error();
+    final responseData = response as List;
+    List<UserMonthlyCalendarModel> monthlyCalendarData = responseData
+        .map((dailyData) => UserMonthlyCalendarModel.fromJson(dailyData))
+        .toList();
+    return monthlyCalendarData;
   }
 
   // GET : 한 해 기록
@@ -52,18 +40,15 @@ class UserRepository {
       'year': '$year',
     };
 
-    http.Response res =
+    dynamic response =
         await _apiService.get('/timers/history/year/$userId', params);
+    // response 가 dynamic이므로 어떠한 값이라도 올 수 있다.
+    // 때문에 받은 데이터가 List<dynamic>
+    final responseData = response as List;
+    List<UserMonthlyCountModel> monthlyCountData = responseData
+        .map((dailyData) => UserMonthlyCountModel.fromJson(dailyData))
+        .toList();
 
-    if (res.statusCode == 200) {
-      final List<dynamic> monthlyData = jsonDecode(utf8.decode(res.bodyBytes));
-
-      List<UserMonthlyCountModel> monthlyCountData = monthlyData
-          .map((dailyData) => UserMonthlyCountModel.fromJson(dailyData))
-          .toList();
-
-      return monthlyCountData;
-    }
-    throw Error();
+    return monthlyCountData;
   }
 }
