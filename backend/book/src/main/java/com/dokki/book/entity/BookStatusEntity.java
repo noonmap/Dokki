@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class) // date 자동 추가 및 수정
 @Table(name = "book_status")
 public class BookStatusEntity {
 
@@ -45,5 +46,10 @@ public class BookStatusEntity {
 	@Column(nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 }
