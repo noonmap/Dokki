@@ -8,6 +8,7 @@ class UserRepository {
 
   // GET : 다른 유저 상세 조회
   Future<UserBioModel> getUserBioDataById(int userId) async {
+    print("getUser");
     dynamic response = await _apiService.get('/users/profile/$userId', null);
     UserBioModel userData = UserBioModel.fromJson(response);
     return userData;
@@ -20,6 +21,7 @@ class UserRepository {
       'year': '$year',
       'month': '$month',
     };
+    print("getUserCale");
 
     dynamic response =
         await _apiService.get('/timers/history/month/$userId', params);
@@ -39,6 +41,7 @@ class UserRepository {
     Map<String, String> params = {
       'year': '$year',
     };
+    print("getUserCount");
 
     dynamic response =
         await _apiService.get('/timers/history/year/$userId', params);

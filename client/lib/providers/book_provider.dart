@@ -32,7 +32,6 @@ class BookProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-      print(page);
       Map<String, dynamic> returnData =
           await _bookRepository.getSearchBookListData(search, queryType, page);
 

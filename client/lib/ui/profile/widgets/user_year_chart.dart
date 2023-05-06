@@ -1,6 +1,5 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/data/model/user/user_monthly_count_model.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +24,6 @@ class _UserYearChartState extends State<UserYearChart> {
   @override
   void initState() {
     super.initState();
-    _year = widget.year;
-    widget.up.getUserMonthlyCount(userId: widget.userId, year: _year);
   }
 
   @override
