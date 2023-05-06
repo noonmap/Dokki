@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -228,4 +229,20 @@ public class UserController {
 		return ResponseEntity.ok(true);
 	}
 
+    /**
+     * 헤더 정보보는 api
+     **/
+    @GetMapping("/header")
+    public ResponseEntity<?> login(@RequestHeader Map<String, String> headers) {
+        return ResponseEntity.ok(headers);
+    }
+
+    /**
+     * 마이페이지에서 정보 받아올 때(follow 등)
+     **/
+    @GetMapping("/info")
+    public ResponseEntity<?> getUserDetail() {
+        ProfileResponseDto profileResponseDto = userService.getUserInfo();
+        return ResponseEntity.ok(profileResponseDto);
+    }
 }
