@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dokki/data/model/library/library_book_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
-import "package:http/http.dart" as http;
 
 class LibraryRepository {
   final APIService _apiService = APIService();
@@ -19,7 +18,7 @@ class LibraryRepository {
       'size': '$dataSize',
     };
 
-    http.Response res = await _apiService.get('/books/collections', params);
+    dynamic res = await _apiService.get('/books/collections', params);
 
     if (res.statusCode == 200) {
       final dynamic allData = jsonDecode(utf8.decode(res.bodyBytes));
