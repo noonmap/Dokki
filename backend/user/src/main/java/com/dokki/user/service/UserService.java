@@ -3,7 +3,9 @@ package com.dokki.user.service;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.dto.response.UserResponseDto;
+import com.dokki.user.entity.FollowEntity;
 import com.dokki.user.entity.UserEntity;
+import com.dokki.user.repository.FollowRepository;
 import com.dokki.user.repository.UserRepository;
 import com.dokki.user.security.SecurityUtil;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
+    private final FollowRepository followRepository;
     @Value("${app.fileupload.uploadPath}")
     String uploadPath;
     @Value("${app.fileupload.uploadDir}")
@@ -145,5 +147,21 @@ public class UserService {
                         .build()
         );
         return userSimpleInfoDto;
+    }
+
+    public ProfileResponseDto getUserInfo() {
+        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+        int followerCount = followRepository.countByToUserId(id);
+        int followingCount = followRepository.countByFromUserId(id);
+        Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(id).map(
+                userEntity -> ProfileResponseDto.builder()
+                        .profileImagePath(userEntity.getProfileImagePath())
+                        .userId(userEntity.getId())
+                        .nickname(userEntity.getNickname())
+                        .followerCount(followerCount)
+                        .followingCount(followingCount)
+                        .build()
+        );
+        return profileResponseDto.get();
     }
 }
