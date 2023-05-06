@@ -101,8 +101,7 @@ public class TimerService {
 		List<TimerEntity> timerList = timerRepository.findByBookStatusIdIn(bookStatusIdList);
 		return timerList.stream().map(
 			o -> TimerSimpleResponseDto.builder()
-				.timerId(o.getId())
-				.bookId(o.getBookId())
+				.bookStatusId(o.getBookStatusId())
 				.accumTime(o.getAccumTime())
 				.build()
 		).collect(Collectors.toList());
