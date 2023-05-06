@@ -41,6 +41,7 @@ public class BookTimerResponseDto {
 		return bookEntityPage.map(BookTimerResponseDto::fromEntity);
 	}
 
+
 	public static BookTimerResponseDto fromStatusAndTimerEntity(BookStatusEntity bookStatusEntity, int time) {
 		// TODO : 채우기 및 파라미터 수정 (accumReadTime 정보 있는 파라미터 추가)
 		BookEntity book = bookStatusEntity.getBookId();
@@ -54,15 +55,21 @@ public class BookTimerResponseDto {
 
 	public static Slice<BookTimerResponseDto> fromStatusAndTimerEntitySlice(Slice<BookStatusEntity> bookStatusEntitySlice, List<TimerSimpleResponseDto> timeList) {
 		// 정렬
-		Collections.sort(bookStatusEntitySlice.getContent(), (c1, c2) -> Math.toIntExact(c2.getId() - c1.getId()));
 		Collections.sort(timeList, (c1, c2) -> Math.toIntExact(c2.getBookStatusId() - c1.getBookStatusId()));
-		
+
 		// book status 정보와 time 맵핑
 		AtomicInteger counter = new AtomicInteger(0); // map()에서 index 역할
 		return bookStatusEntitySlice.map(
 			c -> {
 				int idx = counter.getAndIncrement();
-				return BookTimerResponseDto.fromStatusAndTimerEntity(c, timeList.get(idx).getAccumTime());
+				if (idx >= timeList.size()) {   // out of index
+					return BookTimerResponseDto.fromEntity(c);
+				} else if (c.getId().equals(timeList.get(idx).getBookStatusId())) { // book status id don't match
+					counter.decrementAndGet();
+					return BookTimerResponseDto.fromEntity(c);
+				} else {
+					return BookTimerResponseDto.fromStatusAndTimerEntity(c, timeList.get(idx).getAccumTime());
+				}
 			}
 		);
 	}

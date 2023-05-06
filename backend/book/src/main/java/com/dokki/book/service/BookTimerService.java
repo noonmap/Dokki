@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,11 +47,9 @@ public class BookTimerService {
 			.map(BookStatusEntity::getId)
 			.collect(Collectors.toList());
 
-		// TODO: timer 서버에서 각 statusId마다 time 가져오기, PostMapping으로 변경
-		// List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
+		// timer 서버에서 각 statusId마다 time 가져오기
+		List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
 
-		// TODO: getAccumTime 수정 후 변경
-		List<TimerSimpleResponseDto> timeList = new ArrayList<>();
 		Slice<BookTimerResponseDto> resultList;
 		if (timeList.isEmpty()) {
 			resultList = BookTimerResponseDto.fromEntitySlice(bookTimerSlice);
