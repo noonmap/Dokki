@@ -70,12 +70,10 @@ public class SecurityConfig {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
-				.antMatchers("/login/**").permitAll()
-//                .antMatchers("/swagger-ui/**").permitAll()
-//                .antMatchers("/boards/**").permitAll()
-//                .antMatchers("/protects/**").permitAll()
-//                .antMatchers("/user/login/*").permitAll()
-//                .antMatchers("/user/refresh").permitAll()
+				.antMatchers("/**").permitAll()
+				//.antMatchers("/login/**").permitAll()
+				//.antMatchers("/users/reissue").permitAll()
+				//.antMatchers("/users/refresh").permitAll()
 				.anyRequest().authenticated()
 
 				/**JwtSecurityConfig 적용 */

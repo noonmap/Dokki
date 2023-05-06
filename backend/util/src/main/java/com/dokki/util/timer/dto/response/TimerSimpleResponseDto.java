@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimerSimpleResponseDto {
 
-	private Long timerId;
-	private String bookId;
+	private Long bookStatusId;
 	private Integer accumTime;
 
 }

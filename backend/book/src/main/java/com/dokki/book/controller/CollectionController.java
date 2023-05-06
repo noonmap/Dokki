@@ -1,14 +1,15 @@
 package com.dokki.book.controller;
 
 
-import com.dokki.book.service.CollectionService;
 import com.dokki.book.dto.response.CollectionResponseDto;
+import com.dokki.book.entity.BookStatusEntity;
+import com.dokki.book.service.BookStatusService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,24 +22,25 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "컬렉션 API")
 public class CollectionController {
 
-	private final CollectionService collectionService;
+	private final BookStatusService bookStatusService;
 
 
-	// /books/collections/{userId}?page=&size=
-	@GetMapping("/{userId}")
+	// /books/collections?userId=&page=&size=
+	@GetMapping("")
 	@ApiOperation(value = "다 읽은 책 컬렉션 조회", notes = "")
-	public ResponseEntity<Page<CollectionResponseDto>> getCollectionList(@PathVariable Long userId, @RequestParam Pageable pageable) {
-		Page<CollectionResponseDto> collectionPage = collectionService.getCollectionList(userId, pageable);
-		return ResponseEntity.ok(collectionPage);
+	public ResponseEntity<Slice<CollectionResponseDto>> getCollectionList(@RequestParam Long userId, Pageable pageable) {
+		Slice<BookStatusEntity> bookStatusEntitySlice = bookStatusService.getCollectionList(userId, pageable);
+		Slice<CollectionResponseDto> collectionSlice = CollectionResponseDto.fromEntitySlice(bookStatusEntitySlice);
+		return ResponseEntity.ok(collectionSlice);
 	}
 
 
-	//   /books/collections/{bookId}
-	@DeleteMapping("/{bookId}")
+	//   /books/collections/{bookStatusId}
+	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "다 읽은 책 컬렉션에서 삭제")
-	public ResponseEntity<HttpStatus> deleteCollection(@PathVariable String bookId) {
+	public ResponseEntity<HttpStatus> deleteCollection(@PathVariable Long bookStatusId) {
 		Long userId = 0L;   // TODO: userId 가져오기
-		collectionService.deleteCollection(bookId, userId);
+		bookStatusService.deleteCollection(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

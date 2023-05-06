@@ -5,9 +5,9 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @Setter
 @Table(name = "users") // 예약어 때문에 user가 아니라 users로 설정
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
 
 	@Id
@@ -54,5 +55,24 @@ public class UserEntity {
 	@Column(nullable = false)
 	@Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
 	private LocalDateTime updated;
+
+	public void increaseFollowerCount() {
+		this.followerCount++;
+	}
+
+
+	public void increaseFollowingCount() {
+		this.followingCount++;
+	}
+
+
+	public void decreaseFollowerCount() {
+		this.followerCount--;
+	}
+
+
+	public void decreaseFollowingCount() {
+		this.followingCount--;
+	}
 
 }
