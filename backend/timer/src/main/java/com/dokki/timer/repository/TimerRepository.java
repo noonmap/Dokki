@@ -13,4 +13,6 @@ public interface TimerRepository extends JpaRepository<TimerEntity, Long> {
 	Optional<TimerEntity> findTopByBookStatusId(Long bookStatusId);
 	List<TimerEntity> findByBookStatusIdIn(List<Long> idList);
 
+	void deleteByBookStatusId(Long bookStatusId);
+
 }
