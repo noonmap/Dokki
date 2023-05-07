@@ -1,6 +1,7 @@
 package com.dokki.timer.service;
 
 
+import com.dokki.timer.client.BookClient;
 import com.dokki.timer.config.exception.CustomException;
 import com.dokki.timer.entity.DailyStatisticsEntity;
 import com.dokki.timer.entity.TimerEntity;
@@ -32,6 +33,8 @@ public class TimerService {
 	private final DailyStatisticsRepository dailyStatisticsRepository;
 
 	private final TimerRedisService timerRedisService;
+
+	private final BookClient bookClient;
 	/**
 	 * 독서 시간 측정 시작
 	 *
@@ -62,7 +65,7 @@ public class TimerService {
 		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
 		if (optionalTimerEntity.isEmpty()) {
 			// TODO: bookStatusId로 bookId 가져와서 추가하기
-			String bookId = "";
+			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
 			timerRepository.save(TimerEntity.builder()
 				.userId(userId)
 				.bookId(bookId)
