@@ -50,7 +50,7 @@ public interface TimerClient {
 	 * @param done
 	 * @return
 	 */
-	@PutMapping("/timers/{bookStatusId}/endtime")
+	@PutMapping("/timers/{bookStatusId}/complete")
 	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId, @RequestParam("done") Boolean done);
 
 }
