@@ -17,6 +17,8 @@ public interface BookClient {
 	 * @return
 	 */
 	@GetMapping("/books/simple/{bookId}")
-	BookSimpleResponseDto getBookSimple(@PathVariable String bookId);
+	BookSimpleResponseDto getBookSimple(@PathVariable(value = "bookId") String bookId);
 
+	@GetMapping("/books/read-book/{bookStatusId}")
+	String getBookIdByBookStatusId(@PathVariable(value = "bookStatusId") Long bookStatusId);
 }
