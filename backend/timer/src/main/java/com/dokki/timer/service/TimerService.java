@@ -93,6 +93,8 @@ public class TimerService {
 					.accumTime(Math.toIntExact(currTime))
 					.recordDate(timerEntity.getStartTime())
 					.build();
+			} else{
+				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
 			}
 			dailyStatisticsRepository.save(dailyStatisticsEntity);
 		}
