@@ -105,10 +105,10 @@ public class TimerService {
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
-	 * @param userId
 	 * @param bookStatusId
 	 */
-	public void deleteTimer(Long bookStatusId, Long userId) {
+	public void deleteTimer(Long bookStatusId) {
+		timerRepository.deleteByBookStatusId(bookStatusId);
 	}
 
 

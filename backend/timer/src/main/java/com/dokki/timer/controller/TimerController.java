@@ -43,8 +43,8 @@ public class TimerController {
 
 	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "타이머 정보를 삭제합니다.")
-	public ResponseEntity<Boolean> deleteTimer(@PathVariable Long bookStatusId, @RequestParam Long userId) {
-		timerService.deleteTimer(bookStatusId, userId);
+	public ResponseEntity<Boolean> deleteTimer(@PathVariable Long bookStatusId) {
+		timerService.deleteTimer(bookStatusId);
 		return ResponseEntity.ok(null);
 	}
 
