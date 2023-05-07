@@ -39,8 +39,11 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const DokkiGrassPage());
       case RoutesName.profile:
+        var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const ProfilePage());
+            builder: (BuildContext context) =>
+                ProfilePage(userId: args['userId']),
+            settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) {
