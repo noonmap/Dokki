@@ -3,6 +3,8 @@ package com.dokki.timer.service;
 
 import com.dokki.timer.config.exception.CustomException;
 import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.TimerRedis;
+import com.dokki.timer.redis.TimerRedisService;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.common.error.ErrorCode;
@@ -28,13 +30,14 @@ public class TimerService {
 	private final TimerRepository timerRepository;
 	private final DailyStatisticsRepository dailyStatisticsRepository;
 
-
+	private final TimerRedisService timerRedisService;
 	/**
 	 * 독서 시간 측정 시작
 	 *
 	 * @param bookStatusId
 	 */
-	public void startTimer(Long bookStatusId) {
+	public void startTimer(Long userId, Long bookStatusId) {
+		timerRedisService.setTimerRedis(userId, bookStatusId);
 	}
 
 
@@ -45,10 +48,10 @@ public class TimerService {
 	 */
 	@Transactional
 	public void endTimer(Long bookStatusId, Long userId) {
-		// TODO: 레디스에서 가져온 데이터로 시간 계산
-		LocalDateTime startTime = null;
-		// 임시
-		startTime = LocalDateTime.now().minusMinutes(20);
+		// 타이머 시작기록 가져온 후 redis에서 삭제
+		TimerRedis getTimer = timerRedisService.getTimerRedis(userId);
+		timerRedisService.deleteTimerRedis(userId);
+		LocalDateTime startTime = getTimer.getStartAt();
 
 		LocalDateTime endTime = LocalDateTime.now();
 		Duration duration = Duration.between(startTime, endTime);

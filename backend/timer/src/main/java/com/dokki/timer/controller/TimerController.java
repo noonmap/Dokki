@@ -26,7 +26,8 @@ public class TimerController {
 	@PostMapping("/{bookStatusId}/start")
 	@ApiOperation(value = "독서 시간 측정을 시작합니다.")
 	public ResponseEntity<Boolean> startTimer(@PathVariable Long bookStatusId) {
-		timerService.startTimer(bookStatusId);
+		Long userId = 0L;   // TODO: userId 가져오기
+		timerService.startTimer(userId, bookStatusId);
 		return ResponseEntity.ok(null);
 	}
 
