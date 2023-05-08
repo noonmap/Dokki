@@ -31,13 +31,10 @@ public class HistoryController {
 		List<MonthlyStatisticsResponseDto> result = historyService.getYearHistory(userId, year);
 
 		// TODO: mockup 제거
-		int[] yearHistory = new int[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
+		Long[] yearHistory = new Long[] { 3L, 1L, 0L, 0L, 1L, 1L, 1L, 1L, 4L, 3L, 2L, 1L };
 		result = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {
-			result.add(MonthlyStatisticsResponseDto.builder()
-				.month(i + 1)
-				.count(yearHistory[i])
-				.build());
+			result.add(new MonthlyStatisticsResponseDto(i+1, yearHistory[i]));
 		}
 		return ResponseEntity.ok(historyService.getYearHistory(userId, year));
 	}
