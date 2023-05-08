@@ -73,8 +73,7 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Ionicons.search_sharp), label: "검색"),
           BottomNavigationBarItem(
               icon: Icon(Ionicons.library_sharp), label: "서재"),
-          BottomNavigationBarItem(
-              icon: Icon(Ionicons.flower_sharp), label: "텃밭"),
+          BottomNavigationBarItem(icon: Icon(Ionicons.leaf_sharp), label: "텃밭"),
           BottomNavigationBarItem(
               icon: Icon(Ionicons.person_sharp), label: "프로필"),
         ],
