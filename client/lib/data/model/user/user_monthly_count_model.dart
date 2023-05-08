@@ -6,7 +6,9 @@ class UserMonthlyCountModel {
     required this.count,
   });
 
-  UserMonthlyCountModel.fromJson(Map<String, dynamic> json)
-      : month = json['month'],
-        count = json['count'];
+  factory UserMonthlyCountModel.fromJson(Map<String, dynamic> json) =>
+      UserMonthlyCountModel(
+        month: json["month"],
+        count: json["count"],
+      );
 }

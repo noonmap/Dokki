@@ -15,11 +15,17 @@ class UserBioModel {
     required this.followerCount,
   });
 
-  UserBioModel.fromJson(Map<String, dynamic> json)
-      : userId = json['userId'],
-        nickname = json['nickname'],
-        profileImagePath = json['profileImagePath'],
-        followingCount = json['followingCount'],
-        followerCount = json['followerCount'],
-        isFollowed = json['isFollowed'];
+  factory UserBioModel.fromJson(Map<String, dynamic> json) => UserBioModel(
+        userId: json['userId'],
+        nickname: json['nickname'],
+        profileImagePath: json['profileImagePath'],
+        followingCount: json['followingCount'],
+        followerCount: json['followerCount'],
+        isFollowed: json['isFollowed'],
+      );
+
+  @override
+  String toString() {
+    return 'UserBioModel{userId: $userId, nickname: $nickname, profileImagePath: $profileImagePath, isFollowed: $isFollowed, followingCount: $followingCount, followerCount: $followerCount}';
+  }
 }

@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -15,14 +17,35 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RoutesName.main);
-        // bool isInstalled = await isKakaoTalkInstalled();
-        //
-        // OAuthToken token = isInstalled
-        //     ? await UserApi.instance.loginWithKakaoTalk()
-        //     : await UserApi.instance.loginWithKakaoAccount();
-        // print(token);
+      onTap: () async {
+        final Dio dio = Dio();
+        const storage = FlutterSecureStorage();
+        bool isInstalled = await isKakaoTalkInstalled();
+        OAuthToken token = isInstalled
+            ? await UserApi.instance.loginWithKakaoTalk()
+            : await UserApi.instance.loginWithKakaoAccount();
+        dynamic response = await dio.get(
+            "https://dokki.kr/users/login/oauth2/kakao",
+            queryParameters: {"token": token.accessToken});
+        await storage.write(
+            key: "ACCESS_TOKEN",
+            value: response.data["tokenDto"]["accessToken"]);
+        await storage.write(
+            key: "REFRESH_TOKEN",
+            value: response.data["tokenDto"]["refreshToken"]);
+        await storage.write(
+            key: "userId",
+            value: response.data["userDto"]["userId"].toString());
+        await storage.write(
+            key: "username", value: response.data["userDto"]["username"]);
+        await storage.write(
+            key: "email", value: response.data["userDto"]["email"]);
+        await storage.write(
+            key: "nickname", value: response.data["userDto"]["nickname"]);
+        await storage.write(
+            key: "profileImageUrl",
+            value: response.data["userDto"]["profileImageUrl"]);
+        Navigator.popAndPushNamed(context, RoutesName.main);
       },
       child: Container(
         width: 230,

@@ -10,10 +10,13 @@ class UserMonthlyCalendarModel {
     required this.bookCoverPath,
   });
 
-  UserMonthlyCalendarModel.fromJson(Map<String, dynamic> json)
-      : day = json['day'],
-        dayOfWeek = json['dayOfWeek'],
-        bookId = json['bookId'],
-        bookTitle = json['bookTitle'],
-        bookCoverPath = json['bookCoverPath'];
+  factory UserMonthlyCalendarModel.fromJson(Map<String, dynamic> json) {
+    return UserMonthlyCalendarModel(
+      day: json['day'],
+      dayOfWeek: json['dayOfWeek'],
+      bookId: json['bookId'],
+      bookTitle: json['bookTitle'],
+      bookCoverPath: json['bookCoverPath'],
+    );
+  }
 }

@@ -21,8 +21,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // 🍇 임시 유저 ID
-  int userId = 101;
-
+  int userId = 123;
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
   int chartYear = DateTime.now().year;
@@ -30,16 +29,18 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-
-    // provider
     final up = Provider.of<UserProvider>(context, listen: false);
-    up.getUserBioById(userId);
+    Future.wait([
+      up.getUserBioById(userId),
+      up.getUserMonthlyCalendar(
+          userId: userId, year: calendarYear, month: calendarMonth),
+      up.getUserMonthlyCount(userId: userId, year: calendarYear)
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<UserProvider>(context);
-
     void onCalendarArrowTap(String direction) {
       setState(() {
         if (direction == 'left') {
@@ -74,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      body: up.isLoading || up.userBio == null
+      body: up.isLoading || up.isLoading2 || up.isLoading3 || up.userBio == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),

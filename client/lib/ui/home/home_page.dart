@@ -13,7 +13,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
-
     return Container(
       decoration: const BoxDecoration(color: brandColor100),
       padding: const EdgeInsets.only(top: 40),
