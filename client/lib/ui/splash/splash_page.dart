@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   static const storage = FlutterSecureStorage();
 
   _asyncLoginCheck() async {
-    dynamic username = await storage.read(key: "username");
+    dynamic username = await storage.read(key: "");
     if (username != null) {
       // 로그인 한 상태이면 바로 메인 페이지로 이동
       Timer(const Duration(milliseconds: 2500), () {
