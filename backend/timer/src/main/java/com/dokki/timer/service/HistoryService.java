@@ -3,6 +3,7 @@ package com.dokki.timer.service;
 
 import com.dokki.timer.client.BookClient;
 import com.dokki.timer.dto.response.DailyStatisticsResponseDto;
+import com.dokki.timer.dto.response.MonthlyStatisticsResponseDto;
 import com.dokki.timer.entity.DailyStatisticsEntity;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
@@ -11,8 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Slf4j
@@ -30,21 +35,30 @@ public class HistoryService {
 	 *
 	 * @param userId
 	 * @param year
-	 * @return int[12] 한 해 독서시간
+	 * @return 한 해 독서시간 (월별 통계 리스트)
 	 */
-	public int[] getYearHistory(Long userId, int year) {
-		int[] result = new int[12];
-		LocalDate startDate = LocalDate.of(year, 1, 1);
-		LocalDate endDate = LocalDate.of(year + 1, 1, 1);
-		List<DailyStatisticsEntity> dailyStatisticsEntityList = dailyStatisticsRepository.getByUserIdAndRecordDateGreaterThanEqualAndRecordDateLessThan(userId, startDate, endDate);
-		for (DailyStatisticsEntity e : dailyStatisticsEntityList) {
-			int month = e.getRecordDate().getMonth().getValue();
-			result[month] += e.getAccumTime();
+	public List<MonthlyStatisticsResponseDto> getYearHistory(Long userId, int year) {
+		List<MonthlyStatisticsResponseDto> monthlyStatisticsList = new ArrayList<>();
+
+		// 통계기록 가져오기
+		List<Map<Integer, Integer>> monthlyStatisticsMapList = dailyStatisticsRepository.getMonthlyStatisticsListByYear(userId, year);
+		Map<Integer, Integer> map = new HashMap<>();
+		for (Map<Integer, Integer> m : monthlyStatisticsMapList) {
+			map.putAll(m);
 		}
-		for (int i = 0; i < 12; i++) {
-			result[i] = (int) Math.ceil((double) result[i] / (60 * 60));   // 시간으로 계산
-		}
-		return result;
+
+		// 리스트에 통계기록 추가
+		IntStream.range(1, 13).forEach(i -> {
+				int timeCount = map.getOrDefault(i, 0);
+				if (timeCount != 0) timeCount = timeCount / (60 * 60);
+				monthlyStatisticsList.add(
+					MonthlyStatisticsResponseDto.builder()
+						.month(i)
+						.count(timeCount)
+						.build());
+			}
+		);
+		return monthlyStatisticsList;
 	}
 
 
