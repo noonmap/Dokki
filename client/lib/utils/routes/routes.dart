@@ -50,8 +50,11 @@ class Routes {
             settings: settings);
 
       case RoutesName.dokkiGrass:
+        var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const DokkiGrassPage());
+            builder: (BuildContext context) =>
+                DokkiGrassPage(userId: args['userId']),
+            settings: settings);
 
       case RoutesName.profile:
         var args = settings.arguments as Map<String, dynamic>;
