@@ -16,7 +16,7 @@ class UserProvider extends ChangeNotifier {
   List<UserMonthlyCountModel> userMonthlyCount = [];
 
   // GET : 프로필 바이오
-  Future<void> getUserBioById(int userId) async {
+  Future<void> getUserBioById(String userId) async {
     isLoading = true;
     try {
       UserBioModel userBioData =

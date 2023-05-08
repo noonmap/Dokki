@@ -13,15 +13,18 @@ import 'package:provider/provider.dart';
 // 🍇TODO :: menuItem - onTap 처리하기
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final String userId;
+
+  const ProfilePage({
+    super.key,
+    required this.userId,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // 🍇 임시 유저 ID
-  int userId = 123;
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
   int chartYear = DateTime.now().year;
@@ -31,10 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final up = Provider.of<UserProvider>(context, listen: false);
     Future.wait([
-      up.getUserBioById(userId),
+      up.getUserBioById(widget.userId),
       up.getUserMonthlyCalendar(
-          userId: userId, year: calendarYear, month: calendarMonth),
-      up.getUserMonthlyCount(userId: userId, year: calendarYear)
+          userId: widget.userId, year: calendarYear, month: calendarMonth),
+      up.getUserMonthlyCount(userId: widget.userId, year: calendarYear)
     ]);
   }
 
@@ -138,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 24),
                         UserMonthCalendar(
                           up: up,
-                          userId: userId,
+                          userId: widget.userId,
                           year: calendarYear,
                           month: calendarMonth,
                         )
@@ -186,7 +189,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         const SizedBox(height: 24),
-                        UserYearChart(up: up, userId: userId, year: chartYear),
+                        UserYearChart(
+                            up: up, userId: widget.userId, year: chartYear),
                       ],
                     ),
                   ),
