@@ -1,5 +1,6 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/providers/library_provider.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/routes/routes.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<LibraryProvider>(
           create: (context) => LibraryProvider(),
         ),
+        ChangeNotifierProvider<DiaryProvider>(
+          create: (context) => DiaryProvider(),
+        )
       ],
       child: MaterialApp(
         builder: (context, widget) {
