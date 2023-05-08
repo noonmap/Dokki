@@ -6,12 +6,12 @@ class LibraryRepository {
 
   // GET : 서재 조회
   Future<Map<String, dynamic>> getLibraryBooksData({
-    required int userId,
+    required String userId,
     required int page,
   }) async {
     const int dataSize = 12;
-    Map<String, dynamic> params = {
-      'userId': '$userId',
+    Map<String, String> params = {
+      'userId': userId,
       'page': '$page',
       'size': '$dataSize',
     };
@@ -26,11 +26,11 @@ class LibraryRepository {
     final first = response['first'];
     final last = response['last'];
     final numberOfElements = response['numberOfElements'];
-    final empty = response['empty'];
+    final isEmpty = response['empty'];
 
     Map<String, dynamic> pageData = {
       'numberOfElements': numberOfElements,
-      'empty': empty,
+      'isEmpty': isEmpty,
       'first': first,
       'last': last,
     };
