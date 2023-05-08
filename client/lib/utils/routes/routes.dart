@@ -79,8 +79,11 @@ class Routes {
             builder: (BuildContext context) => const DiaryPage());
 
       case RoutesName.diaryDetail:
+        var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const DiaryDetailPage());
+            builder: (BuildContext context) =>
+                DiaryDetailPage(diaryId: args['diaryId']),
+            settings: settings);
 
       default:
         return MaterialPageRoute(
