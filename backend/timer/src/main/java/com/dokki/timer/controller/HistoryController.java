@@ -28,18 +28,18 @@ public class HistoryController {
 	@GetMapping("/year/{userId}")
 	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
 	public ResponseEntity<List<MonthlyStatisticsResponseDto>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
-		int[] yearHistory = historyService.getYearHistory(userId, year);
+		List<MonthlyStatisticsResponseDto> result = historyService.getYearHistory(userId, year);
 
-		// 목업
-		yearHistory = new int[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
-		List<MonthlyStatisticsResponseDto> list = new ArrayList<>();
+		// TODO: mockup 제거
+		int[] yearHistory = new int[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
+		result = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {
-			list.add(MonthlyStatisticsResponseDto.builder()
+			result.add(MonthlyStatisticsResponseDto.builder()
 				.month(i + 1)
 				.count(yearHistory[i])
 				.build());
 		}
-		return ResponseEntity.ok(list);
+		return ResponseEntity.ok(historyService.getYearHistory(userId, year));
 	}
 
 
@@ -76,7 +76,7 @@ public class HistoryController {
 			.bookTitle("시나모롤 컬러링 아트북")
 			.bookCoverPath("https://image.aladin.co.kr/product/31356/62/cover/k232832099_1.jpg")
 			.build());
-		return ResponseEntity.ok(dailyStatisticsList);
+		return ResponseEntity.ok(historyService.getDailyStatisticsList(userId, year, month));
 	}
 
 }
