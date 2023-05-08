@@ -26,12 +26,11 @@ public interface TimerClient {
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
-	 * @param userId
-	 * @param bookId
+	 * @param bookStatusId
 	 * @return
 	 */
-	@DeleteMapping("/timers/{userId}/{bookId}")
-	Boolean deleteTimer(@PathVariable(value = "userId") Integer userId, @PathVariable(value = "bookId") String bookId);
+	@DeleteMapping("/timers/{bookStatusId}")
+	Boolean deleteTimer(@PathVariable(value = "bookStatusId") Long bookStatusId);
 
 	/**
 	 * 타이머 정보 중 누적 시간을 조회합니다.
@@ -51,7 +50,7 @@ public interface TimerClient {
 	 * @param done
 	 * @return
 	 */
-	@PutMapping("/timers/{bookStatusId}/endtime")
+	@PutMapping("/timers/{bookStatusId}/complete")
 	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId, @RequestParam("done") Boolean done);
 
 }

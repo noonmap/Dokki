@@ -58,4 +58,11 @@ public class ReadBookController {
 		return ResponseEntity.ok(map);
 	}
 
+	@GetMapping("/{bookStatusId}")
+	@ApiOperation(value = "bookStatusId로 책 id 가져오기", notes = "")
+	public ResponseEntity<String> getBookTimerId(@PathVariable Long bookStatusId) {
+		BookStatusEntity bookStatusEntity = bookStatusService.getBookStatus(bookStatusId);
+		return ResponseEntity.ok(bookStatusEntity.getBookId().getId());
+	}
+
 }
