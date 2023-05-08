@@ -21,17 +21,16 @@ public interface TimerClient {
 	 * @return
 	 */
 	@GetMapping("/timers/history/{userId}")
-	List<Map<String, String>> getMonthlyReadTimeHistory(@PathVariable Long userId, @RequestParam("year") Integer year, @RequestParam Integer month);
+	List<Map<String, String>> getMonthlyReadTimeHistory(@PathVariable(value = "userId") Long userId, @RequestParam("year") Integer year, @RequestParam("month") Integer month);
 
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
-	 * @param userId
-	 * @param bookId
+	 * @param bookStatusId
 	 * @return
 	 */
-	@DeleteMapping("/timers/{userId}/{bookId}")
-	Boolean deleteTimer(@PathVariable Integer userId, @PathVariable String bookId);
+	@DeleteMapping("/timers/{bookStatusId}")
+	Boolean deleteTimer(@PathVariable(value = "bookStatusId") Long bookStatusId);
 
 	/**
 	 * 타이머 정보 중 누적 시간을 조회합니다.
@@ -40,7 +39,7 @@ public interface TimerClient {
 	 * @param bookStatusIdList
 	 * @return
 	 */
-	@GetMapping("/timers")
+	@PostMapping("/timers/accum")
 	List<TimerSimpleResponseDto> getAccumTime(@RequestBody List<Long> bookStatusIdList);
 
 	/**
@@ -51,7 +50,7 @@ public interface TimerClient {
 	 * @param done
 	 * @return
 	 */
-	@PutMapping("/timers/{bookStatusId}/endtime")
-	Boolean modifyEndTime(@PathVariable Long bookStatusId, @RequestParam Boolean done);
+	@PutMapping("/timers/{bookStatusId}/complete")
+	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId, @RequestParam("done") Boolean done);
 
 }
