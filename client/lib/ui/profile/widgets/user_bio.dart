@@ -1,15 +1,22 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/ui/common_widgets/paragraph.dart';
+import 'package:dokki/ui/profile/widgets/follow_button.dart';
+import 'package:dokki/ui/profile/widgets/logout_button.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
 class userBio extends StatelessWidget {
   const userBio({
     super.key,
     required this.up,
+    required this.userId,
+    required this.isMine,
   });
 
   final UserProvider up;
+  final String userId;
+  final bool isMine;
 
   @override
   Widget build(BuildContext context) {
@@ -42,54 +49,64 @@ class userBio extends StatelessWidget {
                       weightType: WeightType.semiBold,
                     ),
                     // 팔로우 버튼
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: const BoxDecoration(
-                            color: brandColor100,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
-                        child: Center(
-                          child: Paragraph(
-                            text: up.userBio!.isFollowed ? '팔로잉' : '팔로우',
-                            color: brandColor300,
-                            size: 16,
-                            weightType: WeightType.semiBold,
-                          ),
-                        ),
-                      ),
-                    )
+                    isMine
+                        ? const LogoutButton()
+                        : FollowButton(isFollowed: up.userBio!.isFollowed),
                   ],
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 팔로우
-                    const Paragraph(
-                      text: '팔로우  ',
-                      color: grayColor300,
-                      size: 16,
-                    ),
-                    Paragraph(
-                      text: up.userBio!.followingCount.toString(),
-                      color: grayColor300,
-                      size: 18,
-                      weightType: WeightType.semiBold,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, RoutesName.follow,
+                            arguments: {
+                              'userId': userId,
+                              "category": 'following',
+                            });
+                      },
+                      child: Row(
+                        children: [
+                          const Paragraph(
+                            text: '팔로잉  ',
+                            color: grayColor300,
+                            size: 16,
+                          ),
+                          Paragraph(
+                            text: up.userBio!.followingCount.toString(),
+                            color: grayColor300,
+                            size: 18,
+                            weightType: WeightType.semiBold,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(width: 24),
                     // 팔로워
-                    const Paragraph(
-                      text: '팔로워  ',
-                      color: grayColor300,
-                      size: 16,
-                    ),
-                    Paragraph(
-                      text: up.userBio!.followerCount.toString(),
-                      color: grayColor300,
-                      size: 18,
-                      weightType: WeightType.semiBold,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, RoutesName.follow,
+                            arguments: {
+                              'userId': userId,
+                              'category': 'follower',
+                            });
+                      },
+                      child: Row(
+                        children: [
+                          const Paragraph(
+                            text: '팔로워  ',
+                            color: grayColor300,
+                            size: 16,
+                          ),
+                          Paragraph(
+                            text: up.userBio!.followerCount.toString(),
+                            color: grayColor300,
+                            size: 18,
+                            weightType: WeightType.semiBold,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 )
