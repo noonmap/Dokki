@@ -141,17 +141,8 @@ public class UserController {
     @PostMapping("/profile/image")
     @ApiOperation(value = "유저 프로필 사진 수정", notes = "유저 프로필 사진 수정")
     public ResponseEntity<?> modifyImage(@RequestPart MultipartFile uploadFile ){
-        try{
-            String response = userService.modifyImage(uploadFile);
-            if(response.equals("SUCCESS")){
-                return ResponseEntity.ok(response);
-            }else{
-                return ResponseEntity.ok("수정 과정 중 오류가 발생함");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.ok("Fail");
-        }
+        String response = userService.modifyImage(uploadFile);
+        return ResponseEntity.ok(response);
     }
     /**
      * 독끼풀 상태 조회
