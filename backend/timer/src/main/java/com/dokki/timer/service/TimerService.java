@@ -1,8 +1,12 @@
 package com.dokki.timer.service;
 
 
+import com.dokki.timer.client.BookClient;
 import com.dokki.timer.config.exception.CustomException;
+import com.dokki.timer.entity.DailyStatisticsEntity;
 import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.TimerRedis;
+import com.dokki.timer.redis.TimerRedisService;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.common.error.ErrorCode;
@@ -28,13 +32,16 @@ public class TimerService {
 	private final TimerRepository timerRepository;
 	private final DailyStatisticsRepository dailyStatisticsRepository;
 
+	private final TimerRedisService timerRedisService;
 
+	private final BookClient bookClient;
 	/**
 	 * 독서 시간 측정 시작
 	 *
 	 * @param bookStatusId
 	 */
-	public void startTimer(Long bookStatusId) {
+	public void startTimer(Long userId, Long bookStatusId) {
+		timerRedisService.setTimerRedis(userId, bookStatusId);
 	}
 
 
@@ -45,10 +52,10 @@ public class TimerService {
 	 */
 	@Transactional
 	public void endTimer(Long bookStatusId, Long userId) {
-		// TODO: 레디스에서 가져온 데이터로 시간 계산
-		LocalDateTime startTime = null;
-		// 임시
-		startTime = LocalDateTime.now().minusMinutes(20);
+		// 타이머 시작기록 가져온 후 redis에서 삭제
+		TimerRedis getTimer = timerRedisService.getTimerRedis(userId);
+		timerRedisService.deleteTimerRedis(userId);
+		LocalDateTime startTime = getTimer.getStartAt();
 
 		LocalDateTime endTime = LocalDateTime.now();
 		Duration duration = Duration.between(startTime, endTime);
@@ -58,8 +65,10 @@ public class TimerService {
 		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
 		if (optionalTimerEntity.isEmpty()) {
 			// TODO: bookStatusId로 bookId 가져와서 추가하기
+			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
 			timerRepository.save(TimerEntity.builder()
 				.userId(userId)
+				.bookId(bookId)
 				.bookStatusId(bookStatusId)
 				.accumTime(Math.toIntExact(currTime))      // toIntExact -> ArithmeticException (if the argument overflows an int)
 				.startTime(startTime.toLocalDate())
@@ -74,6 +83,20 @@ public class TimerService {
 
 			// 타이머 종료 및 누적시간 계산
 			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
+
+			// 일일통계 계산
+			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndRecordDateIs(userId, timerEntity.getStartTime());
+			if(dailyStatisticsEntity == null) {
+				dailyStatisticsEntity = DailyStatisticsEntity.builder()
+					.userId(userId)
+					.bookId(timerEntity.getBookId())
+					.accumTime(Math.toIntExact(currTime))
+					.recordDate(timerEntity.getStartTime())
+					.build();
+			} else{
+				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
+			}
+			dailyStatisticsRepository.save(dailyStatisticsEntity);
 		}
 
 	}
@@ -82,10 +105,10 @@ public class TimerService {
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
-	 * @param userId
 	 * @param bookStatusId
 	 */
-	public void deleteTimer(Long bookStatusId, Long userId) {
+	public void deleteTimer(Long bookStatusId) {
+		timerRepository.deleteByBookStatusId(bookStatusId);
 	}
 
 
