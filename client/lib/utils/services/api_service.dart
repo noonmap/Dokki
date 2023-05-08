@@ -1,62 +1,54 @@
 import "package:dio/dio.dart";
+import "package:dokki/constants/common.dart";
 import "package:dokki/utils/services/auth_dio.dart";
-import "package:flutter_secure_storage/flutter_secure_storage.dart";
-import "package:http/http.dart" as http;
+import "package:flutter_dotenv/flutter_dotenv.dart";
 
 class APIService {
-  late Dio api;
-  late FlutterSecureStorage storage;
+  Dio dio = Dio();
+
   APIService() {
-    AuthDio authDio = AuthDio();
-    api = authDio.dio;
-    storage = const FlutterSecureStorage();
+    dio.interceptors.add(CustomInterceptor(storage: storage));
+    dio.options.baseUrl = dotenv.env['BASE_PROD_URL'] as String;
   }
+
   Future<dynamic> get(String url, Map<String, dynamic>? params) async {
-    api.options.headers['Authorization'] =
-        'Bearer ${await storage.read(key: "ACCESS_TOKEN")}';
     try {
       if (params == null) {
-        final response = await api.get(url);
+        final response = await dio.get(url);
         return response.data;
       } else {
-        final response = await api.get(url, queryParameters: params);
+        final response = await dio.get(url, queryParameters: params);
         return response.data;
       }
     } catch (e) {
-      return e;
+      rethrow;
     }
   }
 
   Future<dynamic> post(String url, Map<String, dynamic> data) async {
-    api.options.headers['Authorization'] =
-        'Bearer ${await storage.read(key: "ACCESS_TOKEN")}';
     try {
-      final response = await api.post(url, data: data);
+      final response = await dio.post(url, data: data);
       return response.data;
     } catch (e) {
-      return http.Response({"message": e}.toString(), 400);
+      rethrow;
     }
   }
 
   Future<dynamic> put(String url, Map<String, dynamic> data) async {
-    api.options.headers['Authorization'] =
-        'Bearer ${await storage.read(key: "ACCESS_TOKEN")}';
     try {
-      final response = await api.put(url, data: data);
+      final response = await dio.put(url, data: data);
       return response.data;
     } catch (e) {
-      return http.Response({"message": e}.toString(), 400);
+      rethrow;
     }
   }
 
   Future<dynamic> delete(String url) async {
-    api.options.headers['Authorization'] =
-        'Bearer ${await storage.read(key: "ACCESS_TOKEN")}';
     try {
-      final response = await api.delete(url);
+      final response = await dio.delete(url);
       return response.data;
     } catch (e) {
-      return http.Response({"message": e}.toString(), 400);
+      rethrow;
     }
   }
 }

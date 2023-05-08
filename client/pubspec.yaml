@@ -53,18 +53,23 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/config/android/.env
-    - assets/config/ios/.env
+    - assets/config/.env
 
   fonts:
-    - family: Koddi
+    - family: Noto
       fonts:
-        - asset: assets/fonts/KoddiUDOnGothic-Regular.otf
-          weight: 500
-        - asset: assets/fonts/KoddiUDOnGothic-Bold.otf
+        - asset: assets/fonts/NotoSansKR-Black.otf
+          weight: 900
+        - asset: assets/fonts/NotoSansKR-Bold.otf
           weight: 600
-        - asset: assets/fonts/KoddiUDOnGothic-ExtraBold.otf
-          weight: 700
+        - asset: assets/fonts/NotoSansKR-Medium.otf
+          weight: 500
+        - asset: assets/fonts/NotoSansKR-Regular.otf
+          weight: 400
+        - asset: assets/fonts/NotoSansKR-Light.otf
+          weight: 300
+        - asset: assets/fonts/NotoSansKR-Thin.otf
+          weight: 100
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
