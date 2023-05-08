@@ -7,31 +7,37 @@ import 'package:dokki/utils/services/api_service.dart';
 class UserRepository {
   final APIService _apiService = APIService();
 
-  // GET : 다른 유저 상세 조회
-  Future<UserBioModel> getUserBioDataById(String userId) async {
-    print("getUser");
-    dynamic response = await _apiService.get('/users/profile/$userId', null);
-    UserBioModel userData = UserBioModel.fromJson(response);
-    return userData;
+  // GET : 유저 상세 조회
+  Future<UserBioModel> getUserBioDataById(int userId) async {
+    try {
+      dynamic response = await _apiService.get('/users/profile/$userId', null);
+      UserBioModel userData = UserBioModel.fromJson(response);
+      return userData;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // GET : 독서 달력
   Future<List<UserMonthlyCalendarModel>> getUserMonthlyCalendarData(
       {required userId, required year, required month}) async {
-    Map<String, String> params = {
-      'year': '$year',
-      'month': '$month',
-    };
-    print("getUserCale");
+    try {
+      Map<String, String> params = {
+        'year': '$year',
+        'month': '$month',
+      };
 
-    dynamic response =
-        await _apiService.get('/timers/history/month/$userId', params);
+      dynamic response =
+          await _apiService.get('/timers/history/month/$userId', params);
 
-    final responseData = response as List;
-    List<UserMonthlyCalendarModel> monthlyCalendarData = responseData
-        .map((dailyData) => UserMonthlyCalendarModel.fromJson(dailyData))
-        .toList();
-    return monthlyCalendarData;
+      final responseData = response as List;
+      List<UserMonthlyCalendarModel> monthlyCalendarData = responseData
+          .map((dailyData) => UserMonthlyCalendarModel.fromJson(dailyData))
+          .toList();
+      return monthlyCalendarData;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // GET : 한 해 기록
@@ -42,18 +48,20 @@ class UserRepository {
     Map<String, String> params = {
       'year': '$year',
     };
-    print("getUserCount");
+    try {
+      dynamic response =
+          await _apiService.get('/timers/history/year/$userId', params);
+      // response 가 dynamic이므로 어떠한 값이라도 올 수 있다.
+      // 때문에 받은 데이터가 List<dynamic>
+      final responseData = response as List;
+      List<UserMonthlyCountModel> monthlyCountData = responseData
+          .map((dailyData) => UserMonthlyCountModel.fromJson(dailyData))
+          .toList();
 
-    dynamic response =
-        await _apiService.get('/timers/history/year/$userId', params);
-    // response 가 dynamic이므로 어떠한 값이라도 올 수 있다.
-    // 때문에 받은 데이터가 List<dynamic>
-    final responseData = response as List;
-    List<UserMonthlyCountModel> monthlyCountData = responseData
-        .map((dailyData) => UserMonthlyCountModel.fromJson(dailyData))
-        .toList();
-
-    return monthlyCountData;
+      return monthlyCountData;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // GET : 찜한 책 조회

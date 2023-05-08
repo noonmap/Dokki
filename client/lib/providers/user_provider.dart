@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/data/model/simple_book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
@@ -31,10 +32,10 @@ class UserProvider extends ChangeNotifier {
     isLoading = true;
     try {
       UserBioModel userBioData =
-          await _userRepository.getUserBioDataById(userId);
+          await _userRepository.getUserBioDataById(int.parse(userId));
       userBio = userBioData;
-    } catch (e) {
-      error = "error";
+    } on DioError catch (e) {
+      print(e.response);
     } finally {
       isLoading = false;
       notifyListeners();
@@ -53,8 +54,8 @@ class UserProvider extends ChangeNotifier {
           await _userRepository.getUserMonthlyCalendarData(
               userId: userId, year: year, month: month);
       userMonthlyCalendar = userMonthlyCalendarData;
-    } catch (e) {
-      error = "error";
+    } on DioError catch (e) {
+      print(e.response);
     } finally {
       isLoading2 = false;
       notifyListeners();
@@ -71,8 +72,8 @@ class UserProvider extends ChangeNotifier {
       List<UserMonthlyCountModel> userMonthlyCountData = await _userRepository
           .getUserMonthlyCountData(userId: userId, year: year);
       userMonthlyCount = userMonthlyCountData;
-    } catch (e) {
-      error = "error";
+    } on DioError catch (e) {
+      print(e.response);
     } finally {
       isLoading3 = false;
       notifyListeners();

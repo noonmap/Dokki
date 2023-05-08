@@ -1,6 +1,9 @@
+import "package:dio/dio.dart";
 import "package:dokki/constants/common.dart";
+import "package:dokki/data/model/book/book_simple_model.dart";
 import "package:dokki/data/model/book_detail_model.dart";
 import "package:dokki/data/model/book_model.dart";
+import "package:dokki/data/model/response_modal.dart";
 import "package:dokki/utils/services/api_service.dart";
 
 class BookRepository {
@@ -14,7 +17,6 @@ class BookRepository {
       "page": page,
       "size": PAGE_LIMIT,
     };
-    // http.Response response = await _apiService.get("/books/search", params);
     dynamic response = await _apiService.get("/books/search", params);
     final booksData = response["content"] as List;
     List<Book> bookList = booksData.map((json) => Book.fromJson(json)).toList();
@@ -62,5 +64,45 @@ class BookRepository {
     }
     BookDetailModel bookDetailData = BookDetailModel.fromJson(response);
     return bookDetailData;
+  }
+
+  // GET : 찜 목록 데이터
+  Future<Map<String, dynamic>> getLikeBookListData(
+      String page, String size) async {
+    Map<String, String> params = {
+      "page": page,
+      "size": size,
+    };
+    dynamic response = await _apiService.get("/books/like", params);
+    final booksData = response["content"] as List;
+    List<SimpleBook> bookList =
+        booksData.map((json) => SimpleBook.fromJson(json)).toList();
+
+    final first = response["first"];
+    final last = response["last"];
+    final empty = response["empty"];
+    final numberOfElements = response["numberOfElements"];
+    Map<String, dynamic> pagesData = {
+      "numberOfElements": numberOfElements,
+      "empty": empty,
+      "first": first,
+      "last": last,
+    };
+    Map<String, dynamic> returnData = {
+      "likeBookList": bookList,
+      "pageData": pagesData,
+    };
+    return returnData;
+  }
+
+  // POST : 찜 목록 추가
+  Future<dynamic> addLikeBookData(String bookId) async {
+    try {
+      dynamic response = await _apiService.post("/books/like/$bookId", {});
+
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dokki/constants/colors.dart';
+import 'package:dokki/constants/common.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/ui/common_widgets/paragraph.dart';
 import 'package:dokki/ui/common_widgets/pink_box.dart';
@@ -7,7 +8,6 @@ import 'package:dokki/ui/profile/widgets/user_bio.dart';
 import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
 import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 // 🍇TODO :: userBio - 본인 프로필 여부에 따라 1️⃣팔로우 버튼, 2️⃣메뉴 구성 다르게 하기
@@ -26,6 +26,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // 🍇 임시 유저 ID
   String myId = '';
   bool isMine = false;
 
@@ -38,7 +39,6 @@ class _ProfilePageState extends State<ProfilePage> {
   int chartYear = DateTime.now().year;
 
   void getUserInfoFromStorage() async {
-    const storage = FlutterSecureStorage();
     String? tmpId = await storage.read(key: 'userId');
 
     if (tmpId != null) {
