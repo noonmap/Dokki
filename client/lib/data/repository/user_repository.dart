@@ -7,7 +7,7 @@ class UserRepository {
   final APIService _apiService = APIService();
 
   // GET : 다른 유저 상세 조회
-  Future<UserBioModel> getUserBioDataById(int userId) async {
+  Future<UserBioModel> getUserBioDataById(String userId) async {
     print("getUser");
     dynamic response = await _apiService.get('/users/profile/$userId', null);
     UserBioModel userData = UserBioModel.fromJson(response);

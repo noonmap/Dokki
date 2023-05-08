@@ -5,6 +5,7 @@ import 'package:dokki/ui/home/home_page.dart';
 import 'package:dokki/ui/library/library_page.dart';
 import 'package:dokki/ui/profile/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ionicons/ionicons.dart';
 
 class MainPage extends StatefulWidget {
@@ -15,18 +16,38 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final storage = const FlutterSecureStorage();
+  late String userId;
+
   List pages = [
     const HomePage(),
     const SearchBookPage(),
     const LibraryPage(),
     const DokkiGrassPage(),
-    const ProfilePage(),
+    const ProfilePage(userId: ''),
   ];
+
   int currentIndex = 0;
   void onTap(int index) {
     setState(() {
       currentIndex = index;
     });
+  }
+
+  void getUserIdFromStorage() async {
+    String? tmp = await storage.read(key: "userId");
+    if (tmp != null) {
+      setState(() {
+        userId = tmp;
+        pages[4] = ProfilePage(userId: userId);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserIdFromStorage();
   }
 
   @override

@@ -13,7 +13,8 @@ class UserMonthCalendar extends StatefulWidget {
   });
 
   final UserProvider up;
-  final int userId, year, month;
+  final String userId;
+  final int year, month;
 
   @override
   State<UserMonthCalendar> createState() => _UserMonthCalendarState();
