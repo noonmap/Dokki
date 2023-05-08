@@ -112,8 +112,8 @@ public class UserService {
             uploadFile.transferTo(path.toFile());
 
             /** 현재 사용자 정보를 가져와서 id로 조회를 한다.**/
-            //Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-            Optional<UserEntity> user = userRepository.findById(122L);
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            Optional<UserEntity> user = userRepository.findById(id);
             user.get().setProfileImagePath(uploadFolder + "/" + savingFileName);
             userRepository.save(user.get());
             return "SUCCESS";
