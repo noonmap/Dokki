@@ -16,7 +16,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom]);
-  WidgetsFlutterBinding.ensureInitialized();
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env["KAKAO_NATIVE_KEY"],

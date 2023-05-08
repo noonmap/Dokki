@@ -1,4 +1,5 @@
 import 'package:dokki/constants/colors.dart';
+import 'package:dokki/constants/common.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/ui/common_widgets/paragraph.dart';
 import 'package:dokki/ui/common_widgets/pink_box.dart';
@@ -26,6 +27,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // 🍇 임시 유저 ID
   String myId = '';
   bool isMine = false;
 
