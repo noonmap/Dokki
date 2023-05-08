@@ -1,5 +1,6 @@
 package com.dokki.user.service;
 
+import com.dokki.user.config.exception.CustomException;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.dto.response.UserResponseDto;
@@ -8,6 +9,7 @@ import com.dokki.user.entity.UserEntity;
 import com.dokki.user.repository.FollowRepository;
 import com.dokki.user.repository.UserRepository;
 import com.dokki.user.security.SecurityUtil;
+import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -49,51 +52,67 @@ public class UserService {
      *     private int size;
      */
     public Slice<UserSimpleInfoDto> getUserList(ProfileRequestDto profileRequestDto) {
-        Slice<UserEntity> userListSlice = userRepository.findSliceByNicknameContains(
-                profileRequestDto.getSearch(),
-                PageRequest.of(profileRequestDto.getPage(), profileRequestDto.getSize()));
-        Slice<UserSimpleInfoDto> userSimpleInfoDtoSlice =
-                userListSlice.map(entity -> UserSimpleInfoDto.builder()
-                        .userId(entity.getId())
-                        .nickname(entity.getNickname())
-                        .profileImagePath(entity.getProfileImagePath())
-                        .build()
-                );
-        return userSimpleInfoDtoSlice;
+        try{
+            Slice<UserEntity> userListSlice = userRepository.findSliceByNicknameContains(
+                    profileRequestDto.getSearch(),
+                    PageRequest.of(profileRequestDto.getPage(), profileRequestDto.getSize()));
+            Slice<UserSimpleInfoDto> userSimpleInfoDtoSlice =
+                    userListSlice.map(entity -> UserSimpleInfoDto.builder()
+                            .userId(entity.getId())
+                            .nickname(entity.getNickname())
+                            .profileImagePath(entity.getProfileImagePath())
+                            .build()
+                    );
+            return userSimpleInfoDtoSlice;
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
     }
     /**
      * 유저 프로필 정보 조회
      */
     public ProfileResponseDto getUserProfile(long userId) {
-        Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(userId).map(ProfileResponseDto::toDto);
-        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-        if(userId==id){
-            return profileResponseDto.get();
-        }else{
-            boolean isFollowed = followRepository.existsByFromUserIdAndToUserId(id,userId);
-            profileResponseDto.get().setFollowed(isFollowed);
-            return profileResponseDto.get();
+        try{
+            Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(userId).map(ProfileResponseDto::toDto);
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            if(userId==id){
+                return profileResponseDto.get();
+            }else{
+                boolean isFollowed = followRepository.existsByFromUserIdAndToUserId(id,userId);
+                profileResponseDto.get().setFollowed(isFollowed);
+                return profileResponseDto.get();
+            }
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
-
     }
     /**
      * 유저 닉네임 수정
      */
     public String modifyNickname(String nickname) {
         /** 현재 사용자 정보를 가져와서 id로 조회를 한다.**/
-        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-        Optional<UserEntity> user = userRepository.findById(id);
-        if(user.isPresent()){
-            user.get().setNickname(nickname);
-            userRepository.save(user.get());
-            return "SUCCESS";
-        }else{
-            return "FAIL";
+        try{
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            Optional<UserEntity> user = userRepository.findById(id);
+            if(user.isPresent()){
+                user.get().setNickname(nickname);
+                userRepository.save(user.get());
+                return nickname;
+            }else{
+                throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+            }
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
+
     }
     /**
      * 유저 이미지 파일 수정
      */
+    @Transactional
     public String modifyImage(MultipartFile uploadFile){
         try{
             String pathName = uploadPath + File.separator + uploadFolder + File.separator;
@@ -112,14 +131,14 @@ public class UserService {
             uploadFile.transferTo(path.toFile());
 
             /** 현재 사용자 정보를 가져와서 id로 조회를 한다.**/
-            //Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-            Optional<UserEntity> user = userRepository.findById(122L);
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            Optional<UserEntity> user = userRepository.findById(id);
             user.get().setProfileImagePath(uploadFolder + "/" + savingFileName);
             userRepository.save(user.get());
             return "SUCCESS";
-        }catch (IOException e){
+        }catch (RuntimeException | IOException e){
             e.printStackTrace();
-            return "FAIL";
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
     }
     /**
@@ -130,46 +149,61 @@ public class UserService {
     }
 
     public List<UserSimpleInfoDto> getUserSimpleforReview(List<Long> userIdList) {
-        List<UserSimpleInfoDto> userSimpleInfoDtoList = new ArrayList<>();
-        for(Long l : userIdList){
-            Optional<UserSimpleInfoDto> userSimpleInfoDto  = userRepository.findById(l).map(
+        try{
+            List<UserSimpleInfoDto> userSimpleInfoDtoList = new ArrayList<>();
+            for(Long l : userIdList){
+                Optional<UserSimpleInfoDto> userSimpleInfoDto  = userRepository.findById(l).map(
+                        userEntity -> UserSimpleInfoDto.builder()
+                                .profileImagePath(userEntity.getProfileImagePath())
+                                .userId(userEntity.getId())
+                                .nickname(userEntity.getNickname())
+                                .build()
+                );
+                userSimpleInfoDtoList.add(userSimpleInfoDto.get());
+            }
+
+            return userSimpleInfoDtoList;
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
+    public Optional<UserSimpleInfoDto> getAuth() {
+        try{
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            Optional<UserSimpleInfoDto> userSimpleInfoDto = userRepository.findById(id).map(
                     userEntity -> UserSimpleInfoDto.builder()
                             .profileImagePath(userEntity.getProfileImagePath())
                             .userId(userEntity.getId())
                             .nickname(userEntity.getNickname())
                             .build()
             );
-            userSimpleInfoDtoList.add(userSimpleInfoDto.get());
+            return userSimpleInfoDto;
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
-
-        return userSimpleInfoDtoList;
-    }
-
-    public Optional<UserSimpleInfoDto> getAuth() {
-        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-        Optional<UserSimpleInfoDto> userSimpleInfoDto = userRepository.findById(id).map(
-                userEntity -> UserSimpleInfoDto.builder()
-                        .profileImagePath(userEntity.getProfileImagePath())
-                        .userId(userEntity.getId())
-                        .nickname(userEntity.getNickname())
-                        .build()
-        );
-        return userSimpleInfoDto;
     }
 
     public ProfileResponseDto getUserInfo() {
-        Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
-        int followerCount = followRepository.countByToUserId(id);
-        int followingCount = followRepository.countByFromUserId(id);
-        Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(id).map(
-                userEntity -> ProfileResponseDto.builder()
-                        .profileImagePath(userEntity.getProfileImagePath())
-                        .userId(userEntity.getId())
-                        .nickname(userEntity.getNickname())
-                        .followerCount(followerCount)
-                        .followingCount(followingCount)
-                        .build()
-        );
-        return profileResponseDto.get();
+        try{
+            Long id = Long.valueOf(SecurityUtil.getCurrentId().get());
+            int followerCount = followRepository.countByToUserId(id);
+            int followingCount = followRepository.countByFromUserId(id);
+            Optional<ProfileResponseDto> profileResponseDto = userRepository.findById(id).map(
+                    userEntity -> ProfileResponseDto.builder()
+                            .profileImagePath(userEntity.getProfileImagePath())
+                            .userId(userEntity.getId())
+                            .nickname(userEntity.getNickname())
+                            .followerCount(followerCount)
+                            .followingCount(followingCount)
+                            .build()
+            );
+            return profileResponseDto.get();
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
     }
 }
