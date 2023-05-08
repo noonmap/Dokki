@@ -174,7 +174,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
             ],
           ),
         ),
-        if (bp.isLoading) const OpacityLoading()
+        if (bp.isListLoading) const OpacityLoading()
       ],
     );
   }

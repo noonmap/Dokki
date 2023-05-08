@@ -11,8 +11,9 @@ class CustomInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    print('[REQ] [${options.method}] ${options.uri}');
     final token = await storage.read(key: 'ACCESS_TOKEN');
+    print('[REQ] [${options.method}] ${options.uri}');
+    print('[REQ] [ACCESSTOKEN] $token');
     options.headers.addAll({'authorization': 'Bearer $token'});
     return super.onRequest(options, handler);
   }
@@ -44,6 +45,8 @@ class CustomInterceptor extends Interceptor {
     final isPathRefresh = err.requestOptions.path == '/users/refresh';
 
     if (isStatus401 && !isPathRefresh) {
+      print('[ERR] [${err.requestOptions.method}] accessToken 만료');
+
       // 401 에러가 발생 + 일반 REST API 요청에서 에러가 발생한 경우 -> accessToken 재발급
       final dio = Dio();
       dio.options.baseUrl = baseUrl;
@@ -75,12 +78,13 @@ class CustomInterceptor extends Interceptor {
         // 정상 적인 response 값 리턴
         return handler.resolve(response);
       } on DioError catch (e) {
+        print('[ERR] [${e.requestOptions.method}] refreshToken 만료');
+
         // refresh token의 상태가 만료
         // 로그인 페이지로 이동
         return handler.reject(e);
       }
     }
-
     // Token과 관련된 에러가 아닌 경우
     return handler.reject(err);
   }

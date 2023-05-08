@@ -1,5 +1,6 @@
 import "package:dio/dio.dart";
 import "package:dokki/constants/common.dart";
+import "package:dokki/data/model/response_modal.dart";
 import "package:dokki/utils/services/auth_dio.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 
@@ -20,8 +21,9 @@ class APIService {
         final response = await dio.get(url, queryParameters: params);
         return response.data;
       }
-    } catch (e) {
-      rethrow;
+    } on DioError catch (error) {
+      throw DioError(
+          requestOptions: error.requestOptions, response: error.response);
     }
   }
 
@@ -29,26 +31,29 @@ class APIService {
     try {
       final response = await dio.post(url, data: data);
       return response.data;
-    } catch (e) {
-      rethrow;
+    } on DioError catch (error) {
+      throw DioError(
+          requestOptions: error.requestOptions, response: error.response);
     }
   }
 
   Future<dynamic> put(String url, Map<String, dynamic> data) async {
     try {
       final response = await dio.put(url, data: data);
-      return response.data;
-    } catch (e) {
-      rethrow;
+      return response;
+    } on DioError catch (error) {
+      throw DioError(
+          requestOptions: error.requestOptions, response: error.response);
     }
   }
 
   Future<dynamic> delete(String url) async {
     try {
       final response = await dio.delete(url);
-      return response.data;
-    } catch (e) {
-      rethrow;
+      return response;
+    } on DioError catch (error) {
+      throw DioError(
+          requestOptions: error.requestOptions, response: error.response);
     }
   }
 }
