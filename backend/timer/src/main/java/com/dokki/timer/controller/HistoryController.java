@@ -29,7 +29,7 @@ public class HistoryController {
 	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
 	public ResponseEntity<List<MonthlyStatisticsResponseDto>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
 		int[] yearHistory = historyService.getYearHistory(userId, year);
-		
+
 		// 목업
 		yearHistory = new int[] { 3, 1, 0, 0, 1, 1, 1, 1, 4, 3, 2, 1 };
 		List<MonthlyStatisticsResponseDto> list = new ArrayList<>();
