@@ -29,9 +29,10 @@ public interface BookClient {
 	 * @param bookIdList
 	 * @return
 	 */
-	@PostMapping("/books/simple/list/{bookId}")
+	@PostMapping("/books/simple/list")
 	List<BookSimpleResponseDto> getBookSimple(@RequestBody List<String> bookIdList);
 
 	@GetMapping("/books/read-book/{bookStatusId}")
 	String getBookIdByBookStatusId(@PathVariable(value = "bookStatusId") Long bookStatusId);
+
 }
