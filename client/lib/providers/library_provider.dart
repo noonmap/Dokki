@@ -9,9 +9,15 @@ class LibraryProvider extends ChangeNotifier {
   List<LibraryBookModel> libraryBooks = [];
   Map<String, dynamic> pageData = {};
 
+  void initProvider() {
+    libraryBooks = [];
+    pageData = {};
+    isLoading = false;
+  }
+
   // GET : 서재 조회
   Future<void> getLibraryBooks({
-    required int userId,
+    required String userId,
     required int page,
   }) async {
     isLoading = true;
@@ -19,7 +25,7 @@ class LibraryProvider extends ChangeNotifier {
     try {
       Map<String, dynamic> libraryData = await _libraryRepository
           .getLibraryBooksData(userId: userId, page: page);
-      libraryBooks = libraryData['libraryBooks'];
+      libraryBooks.addAll(libraryData['libraryBooks']);
       pageData = libraryData['pageData'];
     } finally {
       isLoading = false;
