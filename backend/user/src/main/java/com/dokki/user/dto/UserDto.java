@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 public class UserDto {
     private String username;
-    private String userId;
+    private long userId;
     private String email;
     private String nickname;
     private String profileImageUrl;

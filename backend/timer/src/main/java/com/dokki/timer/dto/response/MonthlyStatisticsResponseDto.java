@@ -1,4 +1,4 @@
-package com.dokki.util.timer.dto.response;
+package com.dokki.timer.dto.response;
 
 
 import lombok.AllArgsConstructor;
@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimerSimpleResponseDto {
+public class MonthlyStatisticsResponseDto {
 
-	private Long bookStatusId;
-	private Integer accumTime;
+	private int month;
+	private int count;
 
 }

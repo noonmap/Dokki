@@ -22,7 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 @Configuration
@@ -34,8 +36,6 @@ public class SecurityConfig {
 	private final RedisService redisService;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-
 	@Bean
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
@@ -70,12 +70,10 @@ public class SecurityConfig {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
-				.antMatchers("/**").permitAll()
-//                .antMatchers("/swagger-ui/**").permitAll()
-//                .antMatchers("/boards/**").permitAll()
-//                .antMatchers("/protects/**").permitAll()
-//                .antMatchers("/user/login/*").permitAll()
-//                .antMatchers("/user/refresh").permitAll()
+				//.antMatchers("/**").permitAll()
+				.antMatchers("/users/login/**").permitAll()
+				//.antMatchers("/users/reissue").permitAll()
+				.antMatchers("/users/refresh/**").permitAll()
 				.anyRequest().authenticated()
 
 				/**JwtSecurityConfig 적용 */
