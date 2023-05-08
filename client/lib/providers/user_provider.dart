@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/data/model/simple_book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
@@ -31,7 +32,7 @@ class UserProvider extends ChangeNotifier {
     isLoading = true;
     try {
       UserBioModel userBioData =
-          await _userRepository.getUserBioDataById(userId);
+          await _userRepository.getUserBioDataById(int.parse(userId));
       userBio = userBioData;
     } on DioError catch (e) {
       print(e.response);
