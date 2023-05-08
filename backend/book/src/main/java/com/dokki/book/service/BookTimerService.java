@@ -75,8 +75,11 @@ public class BookTimerService {
 		}
 		bookStatusRepository.deleteById(bookStatusId);
 
-		// TODO: timer table에 bookStatusId가 동일한 컬럼 삭제
-		// timerClient.deleteTimer(bookStatusId);
+		try {
+			timerClient.deleteTimer(bookStatusId);
+		}catch (Exception e){
+			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}",bookStatusId);
+		}
 	}
 
 }
