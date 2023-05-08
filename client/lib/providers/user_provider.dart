@@ -1,3 +1,4 @@
+import 'package:dokki/data/model/simple_book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
@@ -14,6 +15,16 @@ class UserProvider extends ChangeNotifier {
   UserBioModel? userBio;
   List<UserMonthlyCalendarModel> userMonthlyCalendar = [];
   List<UserMonthlyCountModel> userMonthlyCount = [];
+
+  bool wishlistLoading = false;
+  List<SimpleBookModel> wishlistBooks = [];
+  Map<String, dynamic> pageData = {};
+
+  void initProvider() {
+    wishlistBooks = [];
+    pageData = {};
+    wishlistLoading = false;
+  }
 
   // GET : 프로필 바이오
   Future<void> getUserBioById(String userId) async {
@@ -64,6 +75,23 @@ class UserProvider extends ChangeNotifier {
       error = "error";
     } finally {
       isLoading3 = false;
+      notifyListeners();
+    }
+  }
+
+  // GET : 찜한 책 조회
+  Future<void> getWishlist({
+    required int page,
+  }) async {
+    wishlistLoading = true;
+
+    try {
+      Map<String, dynamic> wishlistData =
+          await _userRepository.getWishlistData(page: page);
+      wishlistBooks.addAll(wishlistData['wishlistBooks']);
+      pageData = wishlistData['pageData'];
+    } finally {
+      wishlistLoading = false;
       notifyListeners();
     }
   }

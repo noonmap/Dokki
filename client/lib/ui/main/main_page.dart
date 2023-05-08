@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   List pages = [
     const HomePage(),
     const SearchBookPage(),
-    const LibraryPage(),
+    const LibraryPage(userId: ''),
     const DokkiGrassPage(),
     const ProfilePage(userId: ''),
   ];
@@ -39,6 +39,7 @@ class _MainPageState extends State<MainPage> {
     if (tmp != null) {
       setState(() {
         userId = tmp;
+        pages[2] = LibraryPage(userId: userId);
         pages[4] = ProfilePage(userId: userId);
       });
     }

@@ -7,6 +7,7 @@ import 'package:dokki/ui/profile/widgets/user_bio.dart';
 import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
 import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 // 🍇TODO :: userBio - 본인 프로필 여부에 따라 1️⃣팔로우 버튼, 2️⃣메뉴 구성 다르게 하기
@@ -25,13 +26,34 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String myId = '';
+  bool isMine = false;
+
+  final GlobalKey calendarKey = GlobalKey();
+  final GlobalKey chartKey = GlobalKey();
+  Map<String, GlobalKey> keys = {};
+
   int calendarYear = DateTime.now().year;
   int calendarMonth = DateTime.now().month;
   int chartYear = DateTime.now().year;
 
+  void getUserInfoFromStorage() async {
+    const storage = FlutterSecureStorage();
+    String? tmpId = await storage.read(key: 'userId');
+
+    if (tmpId != null) {
+      setState(() {
+        myId = tmpId;
+        isMine = widget.userId == myId;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserInfoFromStorage();
+
     final up = Provider.of<UserProvider>(context, listen: false);
     Future.wait([
       up.getUserBioById(widget.userId),
@@ -39,6 +61,13 @@ class _ProfilePageState extends State<ProfilePage> {
           userId: widget.userId, year: calendarYear, month: calendarMonth),
       up.getUserMonthlyCount(userId: widget.userId, year: calendarYear)
     ]);
+
+    setState(() {
+      keys = {
+        'calendar': calendarKey,
+        'chart': chartKey,
+      };
+    });
   }
 
   @override
@@ -85,13 +114,18 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   // 바이오
-                  userBio(up: up),
+                  userBio(
+                    up: up,
+                    userId: widget.userId,
+                    isMine: isMine,
+                  ),
                   const SizedBox(height: 48),
                   // 메뉴
-                  const ProfileMenu(),
+                  ProfileMenu(isMine: isMine, keys: keys),
                   const SizedBox(height: 48),
                   // 독서 달력
                   PinkBox(
+                    key: calendarKey,
                     width: double.infinity,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,6 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 48),
                   // 한 해 기록
                   PinkBox(
+                    key: chartKey,
                     width: double.infinity,
                     height: 360.toDouble(),
                     child: Column(

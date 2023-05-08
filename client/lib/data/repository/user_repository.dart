@@ -1,3 +1,4 @@
+import 'package:dokki/data/model/simple_book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
@@ -53,5 +54,42 @@ class UserRepository {
         .toList();
 
     return monthlyCountData;
+  }
+
+  // GET : 찜한 책 조회
+  Future<Map<String, dynamic>> getWishlistData({
+    required int page,
+  }) async {
+    const int dataSize = 10;
+    Map<String, String> params = {
+      'page': '$page',
+      'size': '$dataSize',
+    };
+
+    dynamic response = await _apiService.get('/books/like', params);
+
+    final wishlistBooksData = response['content'] as List;
+    List<SimpleBookModel> wishlistBooks = wishlistBooksData
+        .map((book) => SimpleBookModel.fromJson(book))
+        .toList();
+
+    final first = response['first'];
+    final last = response['last'];
+    final numberOfElements = response['numberOfElements'];
+    final isEmpty = response['empty'];
+
+    Map<String, dynamic> pageData = {
+      'numberOfElements': numberOfElements,
+      'isEmpty': isEmpty,
+      'first': first,
+      'last': last,
+    };
+
+    Map<String, dynamic> wishlistData = {
+      'wishlistBooks': wishlistBooks,
+      'pageData': pageData,
+    };
+
+    return wishlistData;
   }
 }

@@ -106,27 +106,25 @@ class _UserMonthCalendarState extends State<UserMonthCalendar> {
               )
           ],
         ),
-        Container(
-          child: Wrap(
-            children: [
-              for (var i = 0; i < days.length; i++)
-                Container(
-                  width: 42,
-                  height: 60,
-                  alignment: Alignment.topCenter,
-                  decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: grayColor200))),
-                  child: days[i]['read']
-                      ? Image.network(days[i]['bookCoverPath'])
-                      : days[i]['inMonth']
-                          ? Paragraph(
-                              text: days[i]['day'].toString(),
-                              size: 12,
-                              color: grayColor300)
-                          : null,
-                )
-            ],
-          ),
+        Wrap(
+          children: [
+            for (var i = 0; i < days.length; i++)
+              Container(
+                width: 42,
+                height: 60,
+                alignment: Alignment.topCenter,
+                decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: grayColor200))),
+                child: days[i]['read']
+                    ? Image.network(days[i]['bookCoverPath'])
+                    : days[i]['inMonth']
+                        ? Paragraph(
+                            text: days[i]['day'].toString(),
+                            size: 12,
+                            color: grayColor300)
+                        : null,
+              )
+          ],
         ),
       ],
     );
