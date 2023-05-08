@@ -112,8 +112,6 @@ public class DiaryController {
 	public ResponseEntity<Map<String, String>> createAIImage(@RequestBody AIImageRequestDto aiImageRequestDto) {
 		// TODO : userId 넣기
 		List<String> imagePath = diaryImageService.createAIImage(1L, aiImageRequestDto);
-		// 테스트
-		//		imagePath = "/default/image.png";
 		Map<String, String> result = new HashMap<>();
 		result.put("diaryImagePath", imagePath.get(0));
 		return ResponseEntity.ok(result);
