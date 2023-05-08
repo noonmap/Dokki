@@ -4,7 +4,6 @@ import 'package:dokki/providers/library_provider.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
-import "package:flutter/foundation.dart" as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,9 +11,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  foundation.defaultTargetPlatform == foundation.TargetPlatform.android
-      ? await dotenv.load(fileName: "assets/config/android/.env")
-      : await dotenv.load(fileName: "assets/config/ios/.env");
+  await dotenv.load(fileName: "assets/config/.env");
 
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
@@ -53,6 +50,7 @@ class MyApp extends StatelessWidget {
           );
         },
         theme: ThemeData(
+          fontFamily: 'Noto',
           scaffoldBackgroundColor: grayColor000,
         ),
         debugShowCheckedModeBanner: false,
