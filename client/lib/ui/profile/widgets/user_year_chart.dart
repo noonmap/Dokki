@@ -12,7 +12,8 @@ class UserYearChart extends StatefulWidget {
   });
 
   final UserProvider up;
-  final int userId, year;
+  final String userId;
+  final int year;
 
   @override
   State<UserYearChart> createState() => _UserYearChartState();
