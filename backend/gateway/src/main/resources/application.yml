@@ -10,7 +10,7 @@ spring:
         - id: user-service-no-filter
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/auth/**, /users/login/**, /users/logout/**
+            - Path=/users/auth/**, /users/login/**, /users/logout/**, /users/refresh/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
