@@ -61,6 +61,7 @@ public class CommentService {
 						.commentId(c.getId())
 						.score(c.getScore().intValue())
 						.content(c.getContent())
+						.created(c.getCreatedAt())
 						.build();
 				}
 			);
@@ -75,6 +76,7 @@ public class CommentService {
 					.commentId(c.getId())
 					.score(c.getScore().intValue())
 					.content(c.getContent())
+					.created(c.getCreatedAt())
 					.build()
 			);
 		}
@@ -162,6 +164,7 @@ public class CommentService {
 						.commentId(c.getId())
 						.score(c.getScore().intValue())
 						.content(c.getContent())
+						.created(c.getCreatedAt())
 						.build();
 				}
 			).collect(Collectors.toList());
@@ -176,6 +179,7 @@ public class CommentService {
 					.commentId(c.getId())
 					.score(c.getScore().intValue())
 					.content(c.getContent())
+					.created(c.getCreatedAt())
 					.build()
 			).collect(Collectors.toList());
 		}
