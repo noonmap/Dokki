@@ -1,5 +1,5 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/ui/common_widgets/paragraph.dart';
+import 'package:dokki/ui/common_widget/paragraph.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 

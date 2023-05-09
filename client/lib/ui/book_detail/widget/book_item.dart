@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/ui/common_widgets/thumb_image.dart';
+import 'package:dokki/ui/common_widget/thumb_image.dart';
 import 'package:flutter/material.dart';
 
 class BookItem extends StatefulWidget {

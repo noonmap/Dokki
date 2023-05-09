@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:dokki/data/model/simple_book_model.dart';
+import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
@@ -18,7 +18,7 @@ class UserProvider extends ChangeNotifier {
   List<UserMonthlyCountModel> userMonthlyCount = [];
 
   bool wishlistLoading = false;
-  List<SimpleBookModel> wishlistBooks = [];
+  List<Book> wishlistBooks = [];
   Map<String, dynamic> pageData = {};
 
   void initProvider() {

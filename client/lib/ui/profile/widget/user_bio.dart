@@ -1,8 +1,8 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/user_provider.dart';
-import 'package:dokki/ui/common_widgets/paragraph.dart';
-import 'package:dokki/ui/profile/widgets/follow_button.dart';
-import 'package:dokki/ui/profile/widgets/logout_button.dart';
+import 'package:dokki/ui/common_widget/paragraph.dart';
+import 'package:dokki/ui/profile/widget/follow_button.dart';
+import 'package:dokki/ui/profile/widget/logout_button.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
