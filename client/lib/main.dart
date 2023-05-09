@@ -11,6 +11,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   await dotenv.load(fileName: "assets/config/.env");
 
@@ -59,6 +61,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: RoutesName.splash,
         onGenerateRoute: Routes.generateRoute,
+        navigatorKey: navigatorKey,
         title: _title,
       ),
     );

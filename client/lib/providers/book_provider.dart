@@ -1,19 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:dokki/constants/common.dart';
-import 'package:dokki/data/model/book/book_simple_model.dart';
-import 'package:dokki/data/model/book_detail_model.dart';
-import 'package:dokki/data/model/book_model.dart';
-import 'package:dokki/data/model/response_modal.dart';
+import 'package:dokki/data/model/book/book_detail_model.dart';
+import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/repository/book_repository.dart';
-import 'package:dokki/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class BookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
   List<Book> _bookList = [];
-  final List<SimpleBook> _likeBookList = [];
-  List<SimpleBook> get likeBookList => _likeBookList;
+  final List<Book> _likeBookList = [];
+  List<Book> get likeBookList => _likeBookList;
   List<Book> get bookList => _bookList;
   Map<String, dynamic> pageData = {};
   BookDetailModel? book;
@@ -68,7 +65,7 @@ class BookProvider extends ChangeNotifier {
       Map<String, dynamic> returnData =
           await _bookRepository.getLikeBookListData(page, size);
 
-      List<SimpleBook> pageBookList = returnData["likeBookList"];
+      List<Book> pageBookList = returnData["likeBookList"];
       pageData = returnData["pageData"];
       for (int i = 0; i < pageBookList.length; i++) {
         _likeBookList.add(pageBookList[i]);

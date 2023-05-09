@@ -1,6 +1,7 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/constants/common.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/ui/book_search/widget/book_list_item.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
+    super.initState();
     Future.delayed(Duration.zero, () {
       final bp = Provider.of<BookProvider>(context, listen: false);
       bp.errorMessage = "";
@@ -87,13 +89,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ],
                   ),
                   Expanded(
-                      child: TabBarView(
-                    controller: tabController,
-                    children: [
-                      Text("ss"),
-                      Text("aa"),
-                    ],
-                  ))
+                    child: TabBarView(
+                      controller: tabController,
+                      children: [
+                        Text("ss"),
+                        ListView.separated(
+                            itemBuilder: (_, index) {
+                              final item = bp.likeBookList[index];
+                              return BookListItem(
+                                bookId: item.bookId,
+                                bookTitle: item.bookTitle,
+                                bookCoverPath: item.bookCoverPath,
+                                bookAuthor: item.bookAuthor,
+                                bookPublisher: item.bookPublisher,
+                                bookPublishYear: item.bookPublishYear,
+                              );
+                            },
+                            separatorBuilder: (_, index) {
+                              return const SizedBox(height: 8.0);
+                            },
+                            itemCount: bp.likeBookList.length),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

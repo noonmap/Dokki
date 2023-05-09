@@ -1,12 +1,12 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/constants/common.dart';
 import 'package:dokki/providers/user_provider.dart';
-import 'package:dokki/ui/common_widgets/paragraph.dart';
-import 'package:dokki/ui/common_widgets/pink_box.dart';
-import 'package:dokki/ui/profile/widgets/profile_menu.dart';
-import 'package:dokki/ui/profile/widgets/user_bio.dart';
-import 'package:dokki/ui/profile/widgets/user_month_calendar.dart';
-import 'package:dokki/ui/profile/widgets/user_year_chart.dart';
+import 'package:dokki/ui/common_widget/paragraph.dart';
+import 'package:dokki/ui/common_widget/pink_box.dart';
+import 'package:dokki/ui/profile/widget/profile_menu.dart';
+import 'package:dokki/ui/profile/widget/user_bio.dart';
+import 'package:dokki/ui/profile/widget/user_month_calendar.dart';
+import 'package:dokki/ui/profile/widget/user_year_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void getUserInfoFromStorage() async {
     String? tmpId = await storage.read(key: 'userId');
 
+    print("userId : $tmpId");
     if (tmpId != null) {
       setState(() {
         myId = tmpId;
