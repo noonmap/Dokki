@@ -45,10 +45,12 @@ public class BookController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
+		Long userId = 0L;   // TODO: user id 가져오기
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
 		if (bookEntity.getStatistics() != null) {
 			try {
+				bookDetailResponseDto.setUserData(bookStatusService.getUserBookInfo(userId, bookId));
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
 			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
@@ -109,7 +111,7 @@ public class BookController {
 	}
 
 
-	@PutMapping("/status/{bookStatusId}/done")
+	@PutMapping("/status/{bookId}/complete")
 	@ApiOperation(value = "책 상태 변경 | 진행중(타이머) → 완독(컬렉션)")
 	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable Long bookStatusId) {
 		Long userId = 0L;   // TODO: user id 가져오기

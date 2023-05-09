@@ -1,9 +1,11 @@
 package com.dokki.book.dto.response;
 
 
+import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatisticsEntity;
 import com.dokki.util.review.dto.response.CommentResponseDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +37,13 @@ public class BookDetailResponseDto {
 	private Float meanScore;
 	private Integer meanReadTime;
 
+	@JsonProperty("isBookMarked")
+	private Boolean isBookMarked;
+	@JsonProperty("isReading")
+	private Boolean isReading;
+	@JsonProperty("isComplete")
+	private Boolean isComplete;
+
 
 	public static BookDetailResponseDto fromEntity(BookEntity item) {
 		String year = Integer.toString(item.getPublishDate().getYear());    // date to year (string)
@@ -65,6 +74,13 @@ public class BookDetailResponseDto {
 
 	public void setReview(List<CommentResponseDto> review) {
 		this.review = review;
+	}
+
+
+	public void setUserData(UserBookInfoDto userData) {
+		this.isBookMarked = userData.isBookMarked();
+		this.isReading = userData.isReading();
+		this.isComplete = userData.isComplete();
 	}
 
 }

@@ -2,6 +2,7 @@ package com.dokki.book.service;
 
 
 import com.dokki.book.config.exception.CustomException;
+import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
@@ -26,6 +27,7 @@ public class BookStatusService {
 
 	private final BookService bookService;
 	private final BookStatusRepository bookStatusRepository;
+	private final BookmarkService bookmarkService;
 
 
 	/**
@@ -62,7 +64,6 @@ public class BookStatusService {
 	 * ⇒ 완독(컬렉션) → 진행중(타이머)
 	 */
 	public void modifyStatusToInprogress(Long userId, BookStatusEntity statusEntity) {
-		//		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
 		// 로그인한 유저의 책이 맞는지 확인
 		if (!Objects.equals(statusEntity.getUserId(), userId)) {
@@ -124,7 +125,7 @@ public class BookStatusService {
 	 */
 	public BookStatusEntity getStatusByUserIdAndBookId(Long userId, String bookId) {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
-		return bookStatusRepository.findByUserIdAndBookId(userId, bookEntity);
+		return bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
 	}
 
 
@@ -133,6 +134,28 @@ public class BookStatusService {
 	 */
 	public BookStatusEntity getBookStatus(Long bookStatusId) {
 		return bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+	}
+
+
+	public UserBookInfoDto getUserBookInfo(Long userId, String bookId) {
+		// 북마크 여부
+		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
+		boolean isBookMarked = bookmarkService.isBookmarkedByUserIdAndBookEntity(userId, bookEntity);
+
+		// 읽고있는, 다읽은 책 여부
+		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
+		boolean isReading = false;
+		boolean isComplete = false;
+		if (bookStatusEntity != null) {
+			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
+			isComplete = !isReading;
+		}
+
+		return UserBookInfoDto.builder()
+			.isReading(isReading)
+			.isComplete(isComplete)
+			.isBookMarked(isBookMarked)
+			.build();
 	}
 
 }
