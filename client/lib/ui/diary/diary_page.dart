@@ -2,7 +2,7 @@ import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/ui/common_widgets/opacity_loading.dart';
 import 'package:dokki/ui/common_widgets/paragraph.dart';
-import 'package:dokki/utils/routes/routes_name.dart';
+import 'package:dokki/ui/diary/widgets/diary_item.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,18 +20,7 @@ class _DiaryPageState extends State<DiaryPage> {
   int page = 0;
   double _dragDistance = 0;
 
-  // 🍇 임시 데이터
-  Map<String, dynamic> tmpData = {
-    'bookId': '1',
-    'bookTitle': '엄청나게 긴 제목으로 테스트를 해야 합니다 더 길어야 해요',
-    'diaryId': 1,
-    'diaryImagePath':
-        'https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/09/18/1e586277-48ba-4e8a-9b98-d8cdbe075d86.jpg',
-    'diaryContent': '예쁜 카리나',
-    'created': '2023-05-09',
-  };
-
-  scrollNotification(notification, dp) {
+  scrollNotification(notification, DiaryProvider dp) {
     // 스크롤 최대 범위
     var containerExtent = notification.metrics.viewportDimension;
 
@@ -66,7 +55,7 @@ class _DiaryPageState extends State<DiaryPage> {
             return;
           }
           page += 1;
-          dp.getDiarys(page: page);
+          dp.getDiaries(page: page);
         }
       }
     }
@@ -76,7 +65,7 @@ class _DiaryPageState extends State<DiaryPage> {
   void initState() {
     final dp = Provider.of<DiaryProvider>(context, listen: false);
     dp.initProvider();
-    dp.getDiarys(page: page);
+    dp.getDiaries(page: page);
     super.initState();
   }
 
@@ -91,116 +80,76 @@ class _DiaryPageState extends State<DiaryPage> {
               padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
               child: Column(
                 children: [
-                  const Row(
+                  // 상단 메뉴바
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 32,
-                        height: 32,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 22,
+                            color: brandColor300,
+                          ),
+                        ),
                       ),
-                      Paragraph(
-                        text: '감정 일기',
+                      const Paragraph(
+                        text: '감정 일기 스크랩 북',
                         size: 18,
                         weightType: WeightType.medium,
                       ),
                       SizedBox(
                         width: 32,
                         height: 32,
-                        child: Icon(
-                          Icons.menu,
-                          size: 32,
-                          color: brandColor300,
-                        ),
+                        child: dp.diaries.isNotEmpty
+                            ? const Icon(
+                                Icons.menu,
+                                size: 32,
+                                color: brandColor300,
+                              )
+                            : null,
                       ),
                     ],
                   ),
                   const SizedBox(height: 40),
                   Expanded(
-                    child: NotificationListener(
-                      onNotification: (ScrollNotification notification) {
-                        scrollNotification(notification, dp);
-                        return false;
-                      },
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 40,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: 0.65,
-                        ),
-                        itemBuilder: (context, idx) {
-                          return DiaryItem(tmpData: tmpData);
-                        },
-                        itemCount: 1,
-                      ),
-                    ),
+                    // 작성된 감정 일기가 없을 때
+                    child: dp.diaries.isEmpty
+                        ? const Center(
+                            child: Paragraph(
+                              text: '작성된 감정 일기가 없습니다.',
+                              color: grayColor300,
+                            ),
+                          )
+                        // 작성된 감정 일기가 있을 때
+                        : NotificationListener(
+                            onNotification: (ScrollNotification notification) {
+                              scrollNotification(notification, dp);
+                              return false;
+                            },
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 40,
+                                crossAxisSpacing: 20,
+                                childAspectRatio: 0.65,
+                              ),
+                              itemBuilder: (context, idx) {
+                                return DiaryItem(diaryData: dp.diaries[idx]);
+                              },
+                              itemCount: dp.diaries.length,
+                            ),
+                          ),
                   )
                 ],
               ),
             ),
-    );
-  }
-}
-
-class DiaryItem extends StatelessWidget {
-  const DiaryItem({
-    super.key,
-    required this.tmpData,
-  });
-
-  final Map<String, dynamic> tmpData;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RoutesName.diaryDetail,
-            arguments: {"diaryId": tmpData['diaryId']});
-      },
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          border: Border.all(color: grayColor100),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            Hero(
-              tag: tmpData['diaryId'],
-              child: Image.network(
-                tmpData['diaryImagePath'],
-                width: 168,
-                height: 168,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Paragraph(
-                        text: tmpData['created'],
-                        size: 12,
-                        color: grayColor300,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Paragraph(
-                    text: tmpData['bookTitle'],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
