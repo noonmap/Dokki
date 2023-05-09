@@ -1,6 +1,7 @@
 package com.dokki.book.repository;
 
 
+import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -17,6 +18,6 @@ public interface BookStatusRepository extends JpaRepository<BookStatusEntity, Lo
 
 	void deleteByIdAndUserId(Long id, Long userId);
 
-	BookStatusEntity findByUserIdAndBookId(Long userId, String bookId);
+	BookStatusEntity findByUserIdAndBookId(Long userId, BookEntity bookId);
 
 }
