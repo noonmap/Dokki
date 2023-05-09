@@ -101,19 +101,10 @@ public class BookController {
 
 
 	@PostMapping("/status")
-	@ApiOperation(value = "유저 책 상태 추가")
+	@ApiOperation(value = "책 타이머뷰에 추가 | 상태 추가 또는 완독 -> 진행중으로 변경")
 	public ResponseEntity<HttpStatus> createStatusToInprogress(@RequestBody Map<String, String> map) {
 		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.createStatus(userId, map.get("bookId"));
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-
-	@PutMapping("/status/{bookStatusId}/reading")
-	@ApiOperation(value = "책 상태 변경 | 완독(컬렉션) → 진행중(타이머)")
-	public ResponseEntity<HttpStatus> modifyStatusToInprogress(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.modifyStatusToInprogress(userId, bookStatusId);
+		bookStatusService.addBookToTimer(userId, map.get("bookId"));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

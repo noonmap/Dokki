@@ -29,7 +29,21 @@ public class BookStatusService {
 
 
 	/**
-	 * 도서 상태 추가 (타이머에 추가하는 경우)
+	 * 타이머에 도서 추가
+	 */
+	public void addBookToTimer(Long userId, String bookId) {
+		BookStatusEntity statusEntity = getStatusByUserIdAndBookId(userId, bookId);
+
+		if (statusEntity == null) {
+			createStatus(userId, bookId);
+		} else {
+			modifyStatusToInprogress(userId, statusEntity);
+		}
+	}
+
+
+	/**
+	 * 도서 상태 추가
 	 *
 	 * @param userId 유저 id
 	 * @param bookId 책 id
@@ -46,11 +60,9 @@ public class BookStatusService {
 	/**
 	 * 도서 상태 변경
 	 * ⇒ 완독(컬렉션) → 진행중(타이머)
-	 *
-	 * @param bookStatusId 유저 책 상태 id
 	 */
-	public void modifyStatusToInprogress(Long userId, Long bookStatusId) {
-		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+	public void modifyStatusToInprogress(Long userId, BookStatusEntity statusEntity) {
+		//		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
 		// 로그인한 유저의 책이 맞는지 확인
 		if (!Objects.equals(statusEntity.getUserId(), userId)) {
@@ -64,7 +76,8 @@ public class BookStatusService {
 
 
 	/**
-	 * 도서 상태 변경
+	 * 완독
+	 * (도서 상태 변경)
 	 * ⇒ 진행중(타이머) → 완독(컬렉션)
 	 *
 	 * @param bookStatusId 유저 책 상태 id
