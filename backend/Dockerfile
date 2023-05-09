@@ -7,12 +7,10 @@ COPY build.gradle .
 COPY settings.gradle .
 
 # 개선할 부분
-COPY ${SERVICE_NAME} ./${SERVICE_NAME}
-#COPY book ./book
-#COPY review ./review
-#COPY timer ./timer
-#COPY user ./user
-#COPY gateway ./gateway
+COPY book ./book
+COPY review ./review
+COPY timer ./timer
+COPY user ./user
 COPY util ./util
 
 # COPY /var/conf/env.properties src/main/resources/properties/

@@ -50,18 +50,6 @@ project(':util') { // 공용 라이브러리 용 모듈
     bootJar { enabled = false }
     jar { enabled = true }
 }
-
-project(":gateway") {
-    bootJar { enabled = true }
-    jar { enabled = false }
-
-    dependencies {
-        implementation project(':util')
-        // eureka
-        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
-    }
-}
-
 project(":book") {
     bootJar { enabled = true }
     jar { enabled = false }
