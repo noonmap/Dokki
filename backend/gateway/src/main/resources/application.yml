@@ -1,4 +1,4 @@
-#spring.main.web-application-type: reactive
+spring.main.web-application-type: reactive
 spring:
   application:
     name: gateway-service
