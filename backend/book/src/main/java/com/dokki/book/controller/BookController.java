@@ -67,22 +67,17 @@ public class BookController {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search.trim(), SearchType.findByName(queryType), pageable);
-		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.toSliceFromApiResponse(apiBookResponseDtoSlice);
+		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.fromApiResponseSlice(apiBookResponseDtoSlice);
 		return ResponseEntity.ok(bookSearchResponseDtoSlice);
 	}
 
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
-	public ResponseEntity<Slice<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
+	public ResponseEntity<Slice<BookSearchResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = 0L;   // TODO: user id 가져오기
-		Slice<BookMarkEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
-		Slice<BookSimpleResponseDto> bookResponseDtoPage =
-			bookEntityPage.map(entity -> BookSimpleResponseDto.builder()
-				.bookId(entity.getBookId().getId())
-				.bookTitle(entity.getBookId().getTitle())
-				.bookCoverPath(entity.getBookId().getCoverFrontImagePath())
-				.build());
+		Slice<BookMarkEntity> bookEntitySlice = bookmarkService.getBookmarkList(userId, pageable);
+		Slice<BookSearchResponseDto> bookResponseDtoPage = BookSearchResponseDto.fromBookMarkEntitySlice(bookEntitySlice);
 		return ResponseEntity.ok(bookResponseDtoPage);
 	}
 

@@ -1,6 +1,8 @@
 package com.dokki.book.dto.response;
 
 
+import com.dokki.book.entity.BookEntity;
+import com.dokki.book.entity.BookMarkEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +24,7 @@ public class BookSearchResponseDto {
 	private String bookPublisher;
 
 
-	private static BookSearchResponseDto fromItem(AladinItemResponseDto item) {
+	private static BookSearchResponseDto fromApiResponse(AladinItemResponseDto item) {
 		String year = Integer.toString(item.getPubDate().getYear());    // date to year (string)
 		return BookSearchResponseDto.builder()
 			.bookId(item.getIsbn13())
@@ -35,8 +37,31 @@ public class BookSearchResponseDto {
 	}
 
 
-	public static Slice<BookSearchResponseDto> toSliceFromApiResponse(Slice<AladinItemResponseDto> aladinItemsSlice) {
-		return aladinItemsSlice.map(BookSearchResponseDto::fromItem);
+	public static Slice<BookSearchResponseDto> fromApiResponseSlice(Slice<AladinItemResponseDto> aladinItemsSlice) {
+		return aladinItemsSlice.map(BookSearchResponseDto::fromApiResponse);
+	}
+
+
+	private static BookSearchResponseDto fromBookEntity(BookEntity entity) {
+		return BookSearchResponseDto.builder()
+			.bookId(entity.getId())
+			.bookTitle(entity.getTitle())
+			.bookAuthor(entity.getAuthor())
+			.bookCoverPath(entity.getCoverFrontImagePath())
+			.bookPublishYear(Integer.toString(entity.getPublishDate().getYear()))
+			.bookPublisher(entity.getPublisher())
+			.build();
+	}
+
+
+	private static BookSearchResponseDto fromBookMarkEntity(BookMarkEntity entity) {
+		BookEntity book = entity.getBookId();
+		return fromBookEntity(book);
+	}
+
+
+	public static Slice<BookSearchResponseDto> fromBookMarkEntitySlice(Slice<BookMarkEntity> bookEntitySlice) {
+		return bookEntitySlice.map(BookSearchResponseDto::fromBookMarkEntity);
 	}
 
 }
