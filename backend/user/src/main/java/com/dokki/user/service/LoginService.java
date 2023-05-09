@@ -42,72 +42,6 @@ public class LoginService {
 
     private final RedisService redisService;
 
-    public UserResponseDto login2(String token) {
-        KakaoRequestDto kakaoDto = KakaoRequestDto.builder()
-                .grant_type("authorization_code")
-                .client_id("9d03d60cc88c7bea2a829ea7d86cd32d")
-                .redirect_uri("http://localhost:5010/users/login/oauth2/kakao/test")
-                .code(token)
-                .build();
-        /** 카카오에게 인가 코드를 보내고 엑세스 토큰을 받아옴 **/
-        KakaoResponseDto kakaoResponseDto = kakaoClient.getAcessToken(kakaoDto.toString());
-        JsonNode jsonNode  = kakaoGetInfoClient.getInfo(kakaoResponseDto.getAccess_token());
-
-        String id = jsonNode.get("id").asText();
-        String email = jsonNode.get("kakao_account").get("email").asText();
-        String nickname = jsonNode.get("kakao_account").get("profile")
-                .get("nickname").asText();
-        String profileImageUrl = jsonNode.get("kakao_account").get("profile")
-                .get("profile_image_url").asText();
-
-        /**유저 Dto 객체 생성 **/
-        UserDto userDto = UserDto.builder()
-                .email(email)
-                .nickname(nickname)
-                .profileImageUrl(profileImageUrl)
-                .providerId(id)
-                .build();
-
-        /** 받아온 정보를 가지고 우리 회원인지 조회 **/
-        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
-        /** db에 없는 회원이라면 회원가입 진행 **/
-        UserEntity tempUser;
-        if(userEntity.orElse(null)==null) {
-            log.info("가입이 필요함");
-            tempUser = signUp(userDto);
-        }else{
-            log.info("가입된 유저");
-            tempUser = userEntity.get();
-        }
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(String.valueOf(tempUser.getId()), "kakao"+tempUser.getEmail());
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        TokenDto tokenDto = new TokenDto();
-        /** 토큰 생성 */
-        String accessToken = tokenProvider.createAccessToken(authentication);
-        String refreshToken = tokenProvider.createRefreshToken(authentication);
-
-        tokenDto.setAccessToken(accessToken);
-        tokenDto.setRefreshToken(refreshToken);
-
-        /** 리프레쉬 토큰 레디스 저장 */
-        redisService.setValues(refreshToken, tempUser.getEmail());
-
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setTokenDto(tokenDto);
-        userDto.setUsername(tempUser.getNickname());
-        //userDto.setProfileImageUrl(fileService.getFileUrl(tempUser.getImage()));
-        userDto.setUserId(tempUser.getId());
-        log.info(userResponseDto.getTokenDto().getAccessToken(),userResponseDto.getTokenDto().getRefreshToken());
-        userResponseDto.setUserDto(userDto);
-        return userResponseDto;
-
-    }
-
     public UserResponseDto login(String token) throws JsonProcessingException {
 
         /** 엑세스 토큰을 이용해서 내 정보를 받아오자 **/
@@ -242,5 +176,4 @@ public class LoginService {
         }
         return responseMessage;
     }
-
 }
