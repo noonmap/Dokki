@@ -43,6 +43,7 @@ class CustomInterceptor extends Interceptor {
       return handler.reject(err);
     }
 
+    print("statusCode : ${err.response?.statusCode}");
     final isStatus401 = err.response?.statusCode == 401;
     final isPathRefresh = err.requestOptions.path == '/users/refresh';
 
