@@ -121,7 +121,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 48),
                   // 메뉴
-                  ProfileMenu(isMine: isMine, keys: keys),
+                  ProfileMenu(
+                      userId: widget.userId, isMine: isMine, keys: keys),
                   const SizedBox(height: 48),
                   // 독서 달력
                   PinkBox(

@@ -13,6 +13,8 @@ class Paragraph extends StatelessWidget {
   final double size;
   final Color color;
   final WeightType weightType;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
   static Map<WeightType, FontWeight> weightInfo = {
     WeightType.bold: FontWeight.w800,
@@ -27,6 +29,8 @@ class Paragraph extends StatelessWidget {
     this.size = 16,
     this.color = grayColor500,
     this.weightType = WeightType.medium,
+    this.maxLines,
+    this.overflow,
   });
 
   @override
@@ -37,7 +41,10 @@ class Paragraph extends StatelessWidget {
         color: color,
         fontSize: size,
         fontWeight: weightInfo[weightType],
+        height: 1.25,
       ),
+      maxLines: maxLines,
+      overflow: overflow,
     );
   }
 }

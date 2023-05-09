@@ -72,20 +72,23 @@ class _WishlistPageState extends State<WishlistPage> {
     final up = Provider.of<UserProvider>(context);
 
     return Scaffold(
-        body: up.wishlistLoading
-            ? const OpacityLoading()
-            : const Padding(
+      body: up.wishlistLoading
+          ? const OpacityLoading()
+          : const Center(
+              child: Padding(
                 padding: EdgeInsets.fromLTRB(28, 40, 28, 40),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Paragraph(
                       text: '찜한 책',
                       size: 18,
                       weightType: WeightType.medium,
-                    )
+                    ),
+                    SizedBox(height: 40),
                   ],
                 ),
-              ));
+              ),
+            ),
+    );
   }
 }

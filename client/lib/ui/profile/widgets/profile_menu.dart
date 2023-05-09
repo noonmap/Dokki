@@ -6,10 +6,12 @@ import 'package:ionicons/ionicons.dart';
 class ProfileMenu extends StatelessWidget {
   const ProfileMenu({
     super.key,
+    required this.userId,
     required this.isMine,
     required this.keys,
   });
 
+  final String userId;
   final bool isMine;
   final Map<String, GlobalKey> keys;
 
@@ -31,13 +33,18 @@ class ProfileMenu extends StatelessWidget {
               : ProfileMenuItem(
                   icon: Ionicons.library_outline,
                   label: '서재',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.library,
+                        arguments: {'userId': userId});
+                  },
                 ),
           isMine
               ? ProfileMenuItem(
                   icon: Ionicons.book_outline,
                   label: '감정 일기',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, RoutesName.diary);
+                  },
                 )
               : ProfileMenuItem(
                   icon: Ionicons.leaf_outline,
