@@ -17,4 +17,6 @@ public interface BookStatusRepository extends JpaRepository<BookStatusEntity, Lo
 
 	void deleteByIdAndUserId(Long id, Long userId);
 
+	BookStatusEntity findByUserIdAndBookId(Long userId, String bookId);
+
 }
