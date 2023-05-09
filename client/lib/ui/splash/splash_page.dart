@@ -15,15 +15,18 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   _asyncLoginCheck() async {
-    dynamic accessToken = await storage.read(key: "ACCESS_TOKEN");
-    if (accessToken != null) {
-      // 로그인 한 상태이면 바로 메인 페이지로 이동
-      Timer(const Duration(milliseconds: 2500), () {
-        Navigator.pushReplacementNamed(context, RoutesName.main);
-      });
-    } else {
+    final accessToken = await storage.read(key: "ACCESS_TOKEN");
+    final refreshToken = await storage.read(key: "REFRESH_TOKEN");
+
+    if (accessToken == null || refreshToken == null) {
+      // 로그인 페이지로
       Timer(const Duration(milliseconds: 2500), () {
         Navigator.popAndPushNamed(context, RoutesName.login);
+      });
+    } else {
+      // 자동 로그인
+      Timer(const Duration(milliseconds: 2500), () {
+        Navigator.pushReplacementNamed(context, RoutesName.main);
       });
     }
   }

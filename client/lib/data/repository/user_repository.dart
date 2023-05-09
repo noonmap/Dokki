@@ -1,4 +1,4 @@
-import 'package:dokki/data/model/simple_book_model.dart';
+import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
@@ -77,9 +77,8 @@ class UserRepository {
     dynamic response = await _apiService.get('/books/like', params);
 
     final wishlistBooksData = response['content'] as List;
-    List<SimpleBookModel> wishlistBooks = wishlistBooksData
-        .map((book) => SimpleBookModel.fromJson(book))
-        .toList();
+    List<Book> wishlistBooks =
+        wishlistBooksData.map((book) => Book.fromJson(book)).toList();
 
     final first = response['first'];
     final last = response['last'];

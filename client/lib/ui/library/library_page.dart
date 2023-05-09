@@ -1,8 +1,8 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/library_provider.dart';
-import 'package:dokki/ui/common_widgets/opacity_loading.dart';
-import 'package:dokki/ui/common_widgets/paragraph.dart';
-import 'package:dokki/ui/library/widgets/library_book_item.dart';
+import 'package:dokki/ui/common_widget/opacity_loading.dart';
+import 'package:dokki/ui/common_widget/paragraph.dart';
+import 'package:dokki/ui/library/widget/library_book_item.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

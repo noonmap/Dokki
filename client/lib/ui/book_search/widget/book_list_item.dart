@@ -1,6 +1,5 @@
 import 'package:dokki/constants/colors.dart';
-import 'package:dokki/ui/common_widgets/bottom_sheet_modal.dart';
-import 'package:dokki/ui/common_widgets/thumb_image.dart';
+import 'package:dokki/ui/common_widget/thumb_image.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 

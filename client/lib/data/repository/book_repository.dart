@@ -1,9 +1,6 @@
-import "package:dio/dio.dart";
 import "package:dokki/constants/common.dart";
-import "package:dokki/data/model/book/book_simple_model.dart";
-import "package:dokki/data/model/book_detail_model.dart";
-import "package:dokki/data/model/book_model.dart";
-import "package:dokki/data/model/response_modal.dart";
+import 'package:dokki/data/model/book/book_detail_model.dart';
+import "package:dokki/data/model/book/book_model.dart";
 import "package:dokki/utils/services/api_service.dart";
 
 class BookRepository {
@@ -75,8 +72,7 @@ class BookRepository {
     };
     dynamic response = await _apiService.get("/books/like", params);
     final booksData = response["content"] as List;
-    List<SimpleBook> bookList =
-        booksData.map((json) => SimpleBook.fromJson(json)).toList();
+    List<Book> bookList = booksData.map((json) => Book.fromJson(json)).toList();
 
     final first = response["first"];
     final last = response["last"];
