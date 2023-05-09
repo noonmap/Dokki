@@ -53,6 +53,7 @@ public class AladinItemResponseDto {
 		return BookEntity.builder()
 			.id(detailResponse.getIsbn13())
 			.title(detailResponse.getTitle())
+			.link(detailResponse.getLink())
 			.coverFrontImagePath(detailResponse.getCover())
 			.coverBackImagePath(otherPath[0])
 			.coverSideImagePath(otherPath[1])

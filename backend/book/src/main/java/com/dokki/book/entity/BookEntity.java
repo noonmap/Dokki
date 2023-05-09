@@ -22,6 +22,8 @@ public class BookEntity {
 	@Column(nullable = false, length = 200)
 	private String title;
 	@Column(length = 500)
+	private String link;
+	@Column(length = 500)
 	private String coverFrontImagePath;
 	@Column(length = 500)
 	private String coverBackImagePath;

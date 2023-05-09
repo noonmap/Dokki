@@ -90,7 +90,7 @@ public class BookController {
 	@PostMapping("/like/{bookId}")
 	@ApiOperation(value = "책 찜하기 추가")
 	public ResponseEntity<HttpStatus> createBookmark(@PathVariable String bookId) {
-		Long userId = 2L;   // TODO: user id 가져오기
+		Long userId = 0L;   // TODO: user id 가져오기
 		bookmarkService.createBookmark(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
