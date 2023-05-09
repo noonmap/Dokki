@@ -1,8 +1,10 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/book_search/widget/book_list_item.dart';
+import 'package:dokki/view/home/widget/reading_book_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,26 +20,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      final bp = Provider.of<BookProvider>(context, listen: false);
-      bp.errorMessage = "";
-      bp.successMessage = "";
-      bp.getLikeBookList("1", PAGE_LIMIT);
+      final sbp = Provider.of<StatusBookProvider>(context, listen: false);
+      sbp.initProvider();
+      Future.wait([
+        sbp.getLikeBookList("0", PAGE_LIMIT),
+        sbp.getReadingBookList("0", PAGE_LIMIT)
+      ]);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final bp = Provider.of<BookProvider>(context);
-
+    final sbp = Provider.of<StatusBookProvider>(context);
     TabController tabController = TabController(length: 2, vsync: this);
     return Container(
       decoration: const BoxDecoration(color: brandColor100),
-      padding: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.only(top: 30),
       child: Column(
         children: [
           Container(
             width: double.maxFinite,
-            height: 220,
+            height: 160,
             decoration: const BoxDecoration(color: brandColor100),
             child: Column(
               children: [
@@ -47,7 +50,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     fontSize: 18,
                   ),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 20),
                 const Text(
                   "00 : 00 : 01",
                   style: TextStyle(
@@ -61,7 +64,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(color: grayColor000),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Column(
                 children: [
                   TabBar(
@@ -70,7 +73,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     labelColor: brandColor300,
                     unselectedLabelColor: brandColor200,
                     controller: tabController,
-                    labelPadding: EdgeInsets.symmetric(vertical: 14),
+                    labelPadding: const EdgeInsets.symmetric(vertical: 8.0),
                     labelStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 17,
@@ -88,14 +91,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16.0),
                   Expanded(
                     child: TabBarView(
                       controller: tabController,
                       children: [
-                        Text("ss"),
+                        ListView.separated(
+                          itemBuilder: (_, index) {
+                            final item = sbp.readingBookList[index];
+                            return ReadingBookItem.fromModel(model: item);
+                          },
+                          separatorBuilder: (_, index) {
+                            return const SizedBox(height: 8.0);
+                          },
+                          itemCount: sbp.readingBookList.length,
+                        ),
                         ListView.separated(
                             itemBuilder: (_, index) {
-                              final item = bp.likeBookList[index];
+                              final item = sbp.likeBookList[index];
                               return BookListItem(
                                 bookId: item.bookId,
                                 bookTitle: item.bookTitle,
@@ -103,15 +116,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 bookAuthor: item.bookAuthor,
                                 bookPublisher: item.bookPublisher,
                                 bookPublishYear: item.bookPublishYear,
+                                imageWidth: 60.0,
+                                imageHeight: 70.0,
+                                isLikeList: true,
                               );
                             },
                             separatorBuilder: (_, index) {
                               return const SizedBox(height: 8.0);
                             },
-                            itemCount: bp.likeBookList.length),
+                            itemCount: sbp.likeBookList.length),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16.0),
                 ],
               ),
             ),

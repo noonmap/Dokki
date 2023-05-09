@@ -147,15 +147,16 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             itemCount: bp.bookList.length,
                             itemBuilder: (context, index) {
                               return BookListItem(
-                                  bookId: bp.bookList[index].bookId,
-                                  bookTitle: bp.bookList[index].bookTitle,
-                                  bookCoverPath:
-                                      bp.bookList[index].bookCoverPath,
-                                  bookAuthor: bp.bookList[index].bookAuthor,
-                                  bookPublisher:
-                                      bp.bookList[index].bookPublisher,
-                                  bookPublishYear:
-                                      bp.bookList[index].bookPublishYear);
+                                bookId: bp.bookList[index].bookId,
+                                bookTitle: bp.bookList[index].bookTitle,
+                                bookCoverPath: bp.bookList[index].bookCoverPath,
+                                bookAuthor: bp.bookList[index].bookAuthor,
+                                bookPublisher: bp.bookList[index].bookPublisher,
+                                bookPublishYear:
+                                    bp.bookList[index].bookPublishYear,
+                                imageHeight: 100.0,
+                                imageWidth: 80.0,
+                              );
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {

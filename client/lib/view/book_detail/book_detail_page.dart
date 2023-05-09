@@ -23,8 +23,8 @@ class _BookDetailPageState extends State<BookDetailPage>
       final bp = Provider.of<BookProvider>(context, listen: false);
       Map<String, dynamic> arg =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-      bp.errorMessage = "";
-      bp.successMessage = "";
+      bp.error = "";
+      bp.success = "";
       bp.getBookById(arg["bookId"]);
     });
   }
@@ -35,7 +35,6 @@ class _BookDetailPageState extends State<BookDetailPage>
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
 
     final bp = Provider.of<BookProvider>(context);
-
     TabController tabController = TabController(length: 2, vsync: this);
     final clientWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -121,20 +120,21 @@ class _BookDetailPageState extends State<BookDetailPage>
                                   const SizedBox(
                                     height: 55,
                                   ),
-                                  const Row(
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       MoreInfo(
                                           icon: Icons.star_border_rounded,
-                                          text: "4.8"),
+                                          text: bp.book!.meanScore.toString()),
                                       SizedBox(width: 10),
                                       MoreInfo(
                                           icon: Icons.people_outline,
-                                          text: "1121"),
+                                          text:
+                                              bp.book!.readerCount.toString()),
                                       SizedBox(width: 10),
                                       MoreInfo(
                                           icon: Icons.av_timer_sharp,
-                                          text: "4.8h"),
+                                          text: "${bp.book!.meanReadTime}h"),
                                     ],
                                   ),
                                   const SizedBox(

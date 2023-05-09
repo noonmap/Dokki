@@ -1,5 +1,6 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
@@ -19,22 +20,22 @@ class BottomSheetModal extends StatefulWidget {
 class _BottomSheetModalState extends State<BottomSheetModal> {
   int selectedIndex = 0;
 
-  void showMessage(BookProvider bp, BuildContext context) {
-    if (bp.errorMessage != "") {
+  void showMessage(StatusBookProvider sbp, BuildContext context) {
+    if (sbp.error != "") {
       Navigator.pop(context);
-      Utils.flushBarErrorMessage(bp.errorMessage, context);
-      bp.errorMessage = "";
+      Utils.flushBarErrorMessage(sbp.error, context);
+      sbp.error = "";
     }
-    if (bp.successMessage != "") {
+    if (sbp.success != "") {
       Navigator.pop(context);
-      Utils.flushBarSuccessMessage(bp.successMessage, context);
-      bp.successMessage = "";
+      Utils.flushBarSuccessMessage(sbp.success, context);
+      sbp.success = "";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bp = Provider.of<BookProvider>(context, listen: false);
+    final sbp = Provider.of<StatusBookProvider>(context, listen: false);
 
     return SizedBox(
       height: 280,
@@ -113,8 +114,8 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                 onPressed: () async {
                   if (selectedIndex == 0) {
                     // 찜 목록 추가
-                    await bp.addLikeBook(widget.bookId!);
-                    showMessage(bp, context);
+                    await sbp.addLikeBook(widget.bookId!);
+                    showMessage(sbp, context);
                   } else if (selectedIndex == 1) {
                     // 읽는 중인 책에 추가 (타이머에 추가)
                   } else {
