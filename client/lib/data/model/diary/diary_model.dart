@@ -10,7 +10,8 @@ class DiaryModel {
 
   final String bookId, bookTitle;
   final int diaryId;
-  final String diaryImagePath, diaryContent, created;
+  final String diaryImagePath, diaryContent;
+  final DateTime created;
 
   DiaryModel.fromJson(Map<String, dynamic> json)
       : bookId = json['bookId'],
@@ -18,5 +19,5 @@ class DiaryModel {
         diaryId = json['diaryId'],
         diaryImagePath = json['diaryImagePath'],
         diaryContent = json['diaryContent'],
-        created = json['created'];
+        created = DateTime.parse(json['created']);
 }

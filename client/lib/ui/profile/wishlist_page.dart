@@ -1,3 +1,4 @@
+import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/ui/common_widget/opacity_loading.dart';
 import 'package:dokki/ui/common_widget/paragraph.dart';
@@ -74,19 +75,59 @@ class _WishlistPageState extends State<WishlistPage> {
     return Scaffold(
       body: up.wishlistLoading
           ? const OpacityLoading()
-          : const Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(28, 40, 28, 40),
-                child: Column(
-                  children: [
-                    Paragraph(
-                      text: '찜한 책',
-                      size: 18,
-                      weightType: WeightType.medium,
-                    ),
-                    SizedBox(height: 40),
-                  ],
-                ),
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 22,
+                            color: brandColor300,
+                          ),
+                        ),
+                      ),
+                      const Paragraph(
+                        text: '찜한 책',
+                        size: 18,
+                        weightType: WeightType.medium,
+                      ),
+                      SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: up.wishlistBooks.isNotEmpty
+                            ? const Icon(
+                                Icons.menu,
+                                size: 32,
+                                color: brandColor300,
+                              )
+                            : null,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Expanded(
+                    // 찜한 책이 없을 때
+                    child: up.wishlistBooks.isEmpty
+                        ? const Center(
+                            child: Paragraph(
+                              text: '찜한 책이 없습니다.',
+                              color: grayColor300,
+                            ),
+                          )
+                        // 찜한 책이 있을 때
+                        : Text(up.wishlistBooks.length.toString()),
+                  )
+                ],
               ),
             ),
     );
