@@ -10,6 +10,7 @@ class RoutesName {
   static const String profile = "profile_page";
   static const String diary = 'diary_page';
   static const String diaryDetail = 'diary_detail_page';
+  static const String diaryCreate = 'diary_create_page';
   static const String wishlist = 'wishlist_page';
   static const String follow = 'follow_page';
 }
