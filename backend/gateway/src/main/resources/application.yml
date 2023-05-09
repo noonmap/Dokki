@@ -1,4 +1,3 @@
-#spring.main.web-application-type: reactive
 spring:
   application:
     name: gateway-service
@@ -7,34 +6,22 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: user-service-no-filter
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/users/auth/**, /users/login/**, /users/logout/**
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/users/**
-          filters:
-            - name: AuthenticationFilterFactory
         - id: book-service
           uri: lb://BOOK-SERVICE
           predicates:
             - Path=/books/**
-          filters:
-            - name: AuthenticationFilterFactory
         - id: review-service
           uri: lb://REVIEW-SERVICE
           predicates:
             - Path=/reviews/**
-          filters:
-            - name: AuthenticationFilterFactory
         - id: timer-service
           uri: lb://TIMER-SERVICE
           predicates:
             - Path=/timers/**
-          filters:
-            - name: AuthenticationFilterFactory
 # Eureka
 eureka:
   client:
