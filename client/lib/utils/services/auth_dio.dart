@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:dokki/main.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -79,7 +81,8 @@ class CustomInterceptor extends Interceptor {
         return handler.resolve(response);
       } on DioError catch (e) {
         print('[ERR] [${e.requestOptions.method}] refreshToken 만료');
-
+        storage.deleteAll();
+        navigatorKey.currentState?.pushNamed(RoutesName.splash);
         // refresh token의 상태가 만료
         // 로그인 페이지로 이동
         return handler.reject(e);
