@@ -45,10 +45,12 @@ public class BookController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
+		Long userId = 0L;   // TODO: user id 가져오기
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
 		if (bookEntity.getStatistics() != null) {
 			try {
+				bookDetailResponseDto.setUserData(bookStatusService.getUserBookInfo(userId, bookId));
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
 			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
@@ -101,24 +103,15 @@ public class BookController {
 
 
 	@PostMapping("/status")
-	@ApiOperation(value = "유저 책 상태 추가")
+	@ApiOperation(value = "책 타이머뷰에 추가 | 상태 추가 또는 완독 -> 진행중으로 변경")
 	public ResponseEntity<HttpStatus> createStatusToInprogress(@RequestBody Map<String, String> map) {
 		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.createStatus(userId, map.get("bookId"));
+		bookStatusService.addBookToTimer(userId, map.get("bookId"));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
-	@PutMapping("/status/{bookStatusId}/reading")
-	@ApiOperation(value = "책 상태 변경 | 완독(컬렉션) → 진행중(타이머)")
-	public ResponseEntity<HttpStatus> modifyStatusToInprogress(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.modifyStatusToInprogress(userId, bookStatusId);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-
-	@PutMapping("/status/{bookStatusId}/done")
+	@PutMapping("/status/{bookId}/complete")
 	@ApiOperation(value = "책 상태 변경 | 진행중(타이머) → 완독(컬렉션)")
 	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable Long bookStatusId) {
 		Long userId = 0L;   // TODO: user id 가져오기
