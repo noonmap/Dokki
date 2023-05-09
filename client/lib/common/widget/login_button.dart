@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/colors.dart';
-import 'package:dokki/common/constant/common.dart';
-import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -21,37 +20,47 @@ class LoginButton extends StatelessWidget {
       onTap: () async {
         final Dio dio = Dio();
         bool isInstalled = await isKakaoTalkInstalled();
-        try {
-          OAuthToken token = isInstalled
-              ? await UserApi.instance.loginWithKakaoTalk()
-              : await UserApi.instance.loginWithKakaoAccount();
-          print("token : $token");
-          dynamic response = await dio.get(
-              "https://dokki.kr/users/login/oauth2/kakao",
-              queryParameters: {"token": token.accessToken});
-          await storage.write(
-              key: "ACCESS_TOKEN",
-              value: response.data["tokenDto"]["accessToken"]);
-          await storage.write(
-              key: "REFRESH_TOKEN",
-              value: response.data["tokenDto"]["refreshToken"]);
-          await storage.write(
-              key: "userId",
-              value: response.data["userDto"]["userId"].toString());
-          await storage.write(
-              key: "username", value: response.data["userDto"]["username"]);
-          await storage.write(
-              key: "email", value: response.data["userDto"]["email"]);
-          await storage.write(
-              key: "nickname", value: response.data["userDto"]["nickname"]);
-          await storage.write(
-              key: "profileImageUrl",
-              value: response.data["userDto"]["profileImageUrl"]);
-          Navigator.popAndPushNamed(context, RoutesName.main);
-        } catch (e) {
-          print(e.toString());
-          Utils.flushBarErrorMessage("네트워크에 문제가 발생했습니다.", context);
-          rethrow;
+        if (isInstalled) {
+          try {
+            print("aa");
+            OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+            print("ss");
+            dynamic response = await dio.get(
+                "https://dokki.kr/users/login/oauth2/kakao",
+                queryParameters: {"token": token.accessToken});
+            Utils.setLoginStorage(response, context);
+          } catch (error) {
+            print('카카오톡 로그인 실패 $error');
+
+            // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+            // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리
+            if (error is PlatformException && error.code == 'CANCELED') {
+              return;
+            }
+
+            // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오 계정으로 로그인
+            try {
+              OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+              dynamic response = await dio.get(
+                  "https://dokki.kr/users/login/oauth2/kakao",
+                  queryParameters: {"token": token.accessToken});
+              Utils.setLoginStorage(response, context);
+
+              print("카카오톡 계정으로 로그인 성공");
+            } catch (error) {
+              print('카카오 계정으로 로그인 실패 $error');
+            }
+          }
+        } else {
+          try {
+            OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+            dynamic response = await dio.get(
+                "https://dokki.kr/users/login/oauth2/kakao",
+                queryParameters: {"token": token.accessToken});
+            Utils.setLoginStorage(response, context);
+          } catch (error) {
+            print("카카오 계정으로 로그인 실패 $error");
+          }
         }
       },
       child: Container(

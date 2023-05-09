@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/common.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -12,6 +13,24 @@ class Utils {
     int day = now.day;
     int weekDay = now.weekday;
     return '$month월 $day일 (${WEEK_DAY[weekDay]})';
+  }
+
+  static void setLoginStorage(dynamic response, BuildContext context) async {
+    await storage.write(
+        key: "ACCESS_TOKEN", value: response.data["tokenDto"]["accessToken"]);
+    await storage.write(
+        key: "REFRESH_TOKEN", value: response.data["tokenDto"]["refreshToken"]);
+    await storage.write(
+        key: "userId", value: response.data["userDto"]["userId"].toString());
+    await storage.write(
+        key: "username", value: response.data["userDto"]["username"]);
+    await storage.write(key: "email", value: response.data["userDto"]["email"]);
+    await storage.write(
+        key: "nickname", value: response.data["userDto"]["nickname"]);
+    await storage.write(
+        key: "profileImageUrl",
+        value: response.data["userDto"]["profileImageUrl"]);
+    Navigator.popAndPushNamed(context, RoutesName.main);
   }
 
   static String secondTimeToFormatString(int second) {
@@ -97,7 +116,7 @@ class Utils {
   }
 
   static EdgeInsets getIosCommonPadding() =>
-      const EdgeInsets.fromLTRB(20, 40, 20, 0);
+      const EdgeInsets.fromLTRB(20, 10, 20, 0);
 
   static EdgeInsets getAndroidCommonPadding() =>
       const EdgeInsets.fromLTRB(20, 40, 20, 0);
