@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,15 +33,16 @@ public class AuthenticationFilterFactory extends AbstractGatewayFilterFactory<Au
 			log.info("[AuthorizationFilter] Request API : {}", exchange.getRequest().getPath());
 			// PreProcessing
 			String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-			//			if (authHeader == null) {
-			//				log.warn("[AuthorizationFilter] AUTHORIZATION is null");
-			//				// Authorization header가 없으면 에러 응답 반환
-			//				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-			//				return exchange.getResponse().setComplete();
-			//			}
+			if (authHeader == null) {
+				log.warn("[AuthorizationFilter] AUTHORIZATION is null");
+				// Authorization header가 없으면 에러 응답 반환
+				exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+				return exchange.getResponse().setComplete();
+			}
 
-			return webClient.build().get()
+			return webClient.defaultHeader(HttpHeaders.AUTHORIZATION, authHeader).build().get()
 				.uri("http://user-service" + "/users/auth")
+				//				.header(HttpHeaders.AUTHORIZATION, authHeader)
 				.retrieve()
 				.bodyToMono(UserSimpleInfoDto.class)
 				.doOnError(throwable -> {
