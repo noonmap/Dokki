@@ -10,6 +10,7 @@ public enum ErrorCode {
 	UNKNOWN_ERROR(400, "C002", "알 수 없는 에러"),
 	NOTFOUND_RESOURCE(404, "C003", "해당 자원이 존재하지 않습니다."),
 	DUPLICATE_RESOURCE(409, "C004", "이미 존재하는 데이터입니다."),
+	UNKNOWN_GATEWAY_ERROR(400, "C005", "Gateway에서 발생한 에러"),
 
 	UNAUTHORIZED(400, "U001", "로그인이 필요합니다."),
 	WRONG_TYPE_TOKEN(400,"U002", "잘못된 타입의 토큰입니다."),
