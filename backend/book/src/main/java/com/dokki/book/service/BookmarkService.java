@@ -48,8 +48,7 @@ public class BookmarkService {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
 
 		// check bookmark already exist
-		boolean isBookmarkExist = bookmarkRepository.existsByUserIdAndBookId(userId, bookEntity);
-		if (isBookmarkExist) {
+		if (isBookmarkedByUserIdAndBookEntity(userId, bookEntity)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 
@@ -65,6 +64,14 @@ public class BookmarkService {
 	@Transactional
 	public void deleteBookmark(Long userId, String bookId) {
 		bookmarkRepository.deleteByUserIdAndBookId(userId, bookService.getBookReferenceIfExist(bookId));
+	}
+
+
+	/**
+	 * 유저 아이디와 책 엔티티로 북마크 여부 확인
+	 */
+	protected Boolean isBookmarkedByUserIdAndBookEntity(Long userId, BookEntity bookEntity) {
+		return bookmarkRepository.existsByUserIdAndBookId(userId, bookEntity);
 	}
 
 }
