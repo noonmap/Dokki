@@ -47,10 +47,9 @@ public interface TimerClient {
 	 * 도서 상태 변경할 때 이용합니다.
 	 *
 	 * @param bookStatusId
-	 * @param done
 	 * @return
 	 */
 	@PutMapping("/timers/{bookStatusId}/complete")
-	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId, @RequestParam("done") Boolean done);
+	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId);
 
 }
