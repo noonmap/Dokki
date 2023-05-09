@@ -2,6 +2,7 @@ package com.dokki.book.service;
 
 
 import com.dokki.book.config.exception.CustomException;
+import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.util.common.error.ErrorCode;
@@ -109,13 +110,16 @@ public class BookStatusService {
 	 * userId, bookId로 status 가져오기
 	 */
 	public BookStatusEntity getStatusByUserIdAndBookId(Long userId, String bookId) {
-		return bookStatusRepository.findByUserIdAndBookId(userId, bookId);
+		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
+		return bookStatusRepository.findByUserIdAndBookId(userId, bookEntity);
 	}
+
 
 	/**
 	 * id로 status 가져오기
 	 */
 	public BookStatusEntity getBookStatus(Long bookStatusId) {
-		return bookStatusRepository.findById(bookStatusId).orElseThrow(()-> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+		return bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 	}
+
 }

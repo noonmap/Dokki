@@ -49,7 +49,7 @@ public class ReadBookController {
 
 
 	@GetMapping("/simple/{bookId}")
-	@ApiOperation(value = "[타이머뷰] 도서 상태 조회 (userId + bookId 조합으로 bookStatusId를 조회)")
+	@ApiOperation(value = "(userId + bookId 조합으로 bookStatusId를 조회)")
 	public ResponseEntity<Map<String, Long>> getBookStatusId(@PathVariable String bookId) {
 		Long userId = 0L;   // TODO: userId 가져오기
 		HashMap<String, Long> map = new HashMap<>();
@@ -57,6 +57,7 @@ public class ReadBookController {
 		map.put("bookStatusId", entity.getId());
 		return ResponseEntity.ok(map);
 	}
+
 
 	@GetMapping("/{bookStatusId}")
 	@ApiOperation(value = "bookStatusId로 책 id 가져오기", notes = "")
