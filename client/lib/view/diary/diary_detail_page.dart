@@ -33,56 +33,58 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
     return Scaffold(
       body: dp.isDetailLoading
           ? const OpacityLoading()
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(72, 80, 72, 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Hero(
-                    tag: dp.diary!.diaryId,
-                    child: Center(
-                      child: Container(
-                        decoration: BoxDecoration(boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            offset: const Offset(4, 4),
-                            color: Colors.black.withOpacity(0.2),
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(72, 80, 72, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Hero(
+                      tag: dp.diary!.diaryId,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                              blurRadius: 10,
+                              offset: const Offset(4, 4),
+                              color: Colors.black.withOpacity(0.2),
+                            ),
+                          ]),
+                          child: Image.network(
+                            dp.diary!.diaryImagePath,
+                            width: 240,
+                            height: 240,
+                            fit: BoxFit.cover,
                           ),
-                        ]),
-                        child: Image.network(
-                          dp.diary!.diaryImagePath,
-                          width: 240,
-                          height: 240,
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  Center(
-                    child: Paragraph(
-                      text: dp.diary!.bookTitle,
-                      size: 20,
-                      weightType: WeightType.semiBold,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Paragraph(
-                    text: dp.diary!.diaryContent,
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Paragraph(
-                        text:
-                            DateFormat('yyyy.MM.dd').format(dp.diary!.created),
-                        size: 14,
-                        color: grayColor300,
+                    const SizedBox(height: 32),
+                    Center(
+                      child: Paragraph(
+                        text: dp.diary!.bookTitle,
+                        size: 20,
+                        weightType: WeightType.semiBold,
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                    const SizedBox(height: 28),
+                    Paragraph(
+                      text: dp.diary!.diaryContent,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Paragraph(
+                          text: DateFormat('yyyy.MM.dd')
+                              .format(dp.diary!.created),
+                          size: 14,
+                          color: grayColor300,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
     );
