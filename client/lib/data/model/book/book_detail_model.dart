@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:dokki/data/model/review_model.dart';
+import 'package:dokki/data/model/review/review_model.dart';
 
 class BookDetailModel {
   BookDetailModel({

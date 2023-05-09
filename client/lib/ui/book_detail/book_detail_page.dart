@@ -1,9 +1,9 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
-import 'package:dokki/ui/book_detail/widgets/book_item.dart';
-import 'package:dokki/ui/book_detail/widgets/review_item.dart';
-import 'package:dokki/ui/common_widgets/bottom_sheet_modal.dart';
-import 'package:dokki/ui/common_widgets/opacity_loading.dart';
+import 'package:dokki/ui/book_detail/widget/book_item.dart';
+import 'package:dokki/ui/book_detail/widget/review_item.dart';
+import 'package:dokki/ui/common_widget/bottom_sheet_modal.dart';
+import 'package:dokki/ui/common_widget/opacity_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

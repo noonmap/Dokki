@@ -1,8 +1,8 @@
 import 'package:dokki/constants/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
-import 'package:dokki/ui/book_search/widgets/book_list_item.dart';
-import 'package:dokki/ui/book_search/widgets/no_search_result_ui.dart';
-import 'package:dokki/ui/common_widgets/opacity_loading.dart';
+import 'package:dokki/ui/book_search/widget/book_list_item.dart';
+import 'package:dokki/ui/book_search/widget/no_search_result_ui.dart';
+import 'package:dokki/ui/common_widget/opacity_loading.dart';
 import 'package:dokki/utils/utils.dart';
 import "package:flutter/foundation.dart" as foundation;
 import 'package:flutter/material.dart';
