@@ -103,6 +103,7 @@ class _LibraryPageState extends State<LibraryPage> {
               padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
               child: Column(
                 children: [
+                  // 상단 메뉴바
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,7 +155,7 @@ class _LibraryPageState extends State<LibraryPage> {
                         ),
                         itemBuilder: (context, idx) {
                           return LibraryBookItem(
-                              libraryBooks: lp.libraryBooks, idx: idx);
+                              bookData: lp.libraryBooks[idx]);
                         },
                         itemCount: lp.libraryBooks.length,
                       ),
