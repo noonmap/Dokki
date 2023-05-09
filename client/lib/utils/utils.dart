@@ -14,6 +14,33 @@ class Utils {
     return '$month월 $day일 (${WEEK_DAY[weekDay]})';
   }
 
+  static String secondTimeToFormatString(int second) {
+    // 초로된 시간을 00:00:00 String 형식으로 변환 하여 return
+    int min = (second / 60).floor();
+    int hour = (min / 60).floor();
+    int sec = second % 60;
+    late String sMin;
+    late String sHour;
+    late String sSec;
+    if (min < 10) {
+      sMin = '0$min';
+    } else {
+      sMin = '$min';
+    }
+    if (hour < 10) {
+      sHour = '0$hour';
+    } else {
+      sHour = '$hour';
+    }
+    if (sec < 10) {
+      sSec = '0$sec';
+    } else {
+      sSec = '$sec';
+    }
+
+    return "$sHour : $sMin : $sSec";
+  }
+
   static toastMessage(String message) {
     Fluttertoast.showToast(
       msg: message,

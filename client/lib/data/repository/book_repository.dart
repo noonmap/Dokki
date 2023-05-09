@@ -1,6 +1,7 @@
 import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
+import "package:dokki/data/model/book/book_timer_model.dart";
 import "package:dokki/utils/services/api_service.dart";
 
 class BookRepository {
@@ -91,11 +92,54 @@ class BookRepository {
     return returnData;
   }
 
+  // GET : 타이머 책 목록 리스트
+  Future<Map<String, dynamic>> getReadingBookList(
+      String page, String size) async {
+    Map<String, String> params = {
+      "page": page,
+      "size": size,
+    };
+    try {
+      dynamic response = await _apiService.get("/books/read-book", params);
+      final booksData = response["content"] as List;
+      List<BookTimerModel> bookList =
+          booksData.map((json) => BookTimerModel.fromJson(json)).toList();
+
+      final first = response["first"];
+      final last = response["last"];
+      final empty = response["empty"];
+      final numberOfElements = response["numberOfElements"];
+      Map<String, dynamic> pagesData = {
+        "numberOfElements": numberOfElements,
+        "empty": empty,
+        "first": first,
+        "last": last,
+      };
+      Map<String, dynamic> returnData = {
+        "readingBookList": bookList,
+        "pageData": pagesData,
+      };
+      return returnData;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // POST : 찜 목록 추가
   Future<dynamic> addLikeBookData(String bookId) async {
     try {
       dynamic response = await _apiService.post("/books/like/$bookId", {});
 
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : 읽는 중인 책 추가
+  Future<dynamic> addReadingBookData(Map<String, dynamic> data) async {
+    try {
+      dynamic response = await _apiService.post("/books/status", data);
       return response;
     } catch (e) {
       rethrow;

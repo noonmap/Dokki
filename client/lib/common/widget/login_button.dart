@@ -25,6 +25,7 @@ class LoginButton extends StatelessWidget {
           OAuthToken token = isInstalled
               ? await UserApi.instance.loginWithKakaoTalk()
               : await UserApi.instance.loginWithKakaoAccount();
+          print("token : $token");
           dynamic response = await dio.get(
               "https://dokki.kr/users/login/oauth2/kakao",
               queryParameters: {"token": token.accessToken});

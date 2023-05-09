@@ -9,13 +9,11 @@ import 'package:flutter/foundation.dart';
 class BookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
   List<Book> _bookList = [];
-  final List<Book> _likeBookList = [];
-  List<Book> get likeBookList => _likeBookList;
   List<Book> get bookList => _bookList;
   Map<String, dynamic> pageData = {};
   BookDetailModel? book;
-  String errorMessage = "";
-  String successMessage = "";
+  String error = "";
+  String success = "";
   bool isListLoading = false;
   bool isDetailLoading = false;
   bool isPostLoading = false;
@@ -28,7 +26,7 @@ class BookProvider extends ChangeNotifier {
           await _bookRepository.getBookByIdData(bookId);
       book = returnData;
     } catch (e) {
-      errorMessage = "errorMessage";
+      error = "error";
       rethrow;
     } finally {
       isDetailLoading = false;
@@ -50,64 +48,17 @@ class BookProvider extends ChangeNotifier {
         _bookList.add(pageBookList[i]);
       }
     } catch (e) {
-      errorMessage = "errorMessage";
+      error = "error";
       rethrow;
     } finally {
       isListLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> getLikeBookList(String page, String size) async {
-    isListLoading = true;
-    notifyListeners();
-    try {
-      Map<String, dynamic> returnData =
-          await _bookRepository.getLikeBookListData(page, size);
-
-      List<Book> pageBookList = returnData["likeBookList"];
-      pageData = returnData["pageData"];
-      for (int i = 0; i < pageBookList.length; i++) {
-        _likeBookList.add(pageBookList[i]);
-      }
-    } catch (e) {
-      errorMessage = "errorMessage";
-      rethrow;
-    } finally {
-      isListLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> addLikeBook(String bookId) async {
-    isPostLoading = true;
-    notifyListeners();
-    try {
-      await _bookRepository.addLikeBookData(bookId);
-      successMessage = '북마크에 추가 했습니다.';
-    } on DioError catch (e) {
-      switch (e.response?.data["code"]) {
-        case "C001":
-          errorMessage = "이미 북마크된 책 입니다.";
-          break;
-        case "C003":
-          errorMessage = "존재 하지 않는 책 ID 입니다.";
-          break;
-        case "U002":
-          errorMessage = e.response?.data["message"];
-          break;
-        default:
-          rethrow;
-      }
-    } finally {
-      isPostLoading = false;
       notifyListeners();
     }
   }
 
   void initProvider() {
-    successMessage = "";
-    errorMessage == "";
+    success = "";
+    error == "";
     _bookList = [];
     pageData = {};
     isListLoading = false;

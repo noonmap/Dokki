@@ -2,6 +2,7 @@ import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/providers/library_provider.dart';
+import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<BookProvider>(
           create: (_) => BookProvider(),
+        ),
+        ChangeNotifierProvider<StatusBookProvider>(
+          create: (_) => StatusBookProvider(),
         ),
         ChangeNotifierProvider<UserProvider>(
           create: (context) => UserProvider(),
