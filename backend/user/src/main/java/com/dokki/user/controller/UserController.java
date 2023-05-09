@@ -41,6 +41,7 @@ public class UserController {
 	private final UserService userService;
 	private final LoginService loginService;
 	private final FollowService followService;
+
     /**
      * 로그인 테스트 미완성
      **/
