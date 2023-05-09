@@ -1,6 +1,6 @@
 import 'package:dokki/providers/user_provider.dart';
-import 'package:dokki/ui/common_widgets/opacity_loading.dart';
-import 'package:dokki/ui/common_widgets/paragraph.dart';
+import 'package:dokki/ui/common_widget/opacity_loading.dart';
+import 'package:dokki/ui/common_widget/paragraph.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

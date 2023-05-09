@@ -1,4 +1,4 @@
-import 'package:dokki/ui/profile/widgets/profile_menu_item.dart';
+import 'package:dokki/ui/profile/widget/profile_menu_item.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
