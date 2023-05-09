@@ -10,9 +10,6 @@ import 'package:dokki/view/profile/widget/user_year_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// 🍇TODO :: userBio - 본인 프로필 여부에 따라 1️⃣팔로우 버튼, 2️⃣메뉴 구성 다르게 하기
-// 🍇TODO :: menuItem - onTap 처리하기
-
 class ProfilePage extends StatefulWidget {
   final String userId;
 
@@ -26,7 +23,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // 🍇 임시 유저 ID
   String myId = '';
   bool isMine = false;
 
@@ -41,7 +37,6 @@ class _ProfilePageState extends State<ProfilePage> {
   void getUserInfoFromStorage() async {
     String? tmpId = await storage.read(key: 'userId');
 
-    print("userId : $tmpId");
     if (tmpId != null) {
       setState(() {
         myId = tmpId;
