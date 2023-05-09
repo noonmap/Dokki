@@ -1,5 +1,6 @@
 import 'package:dokki/ui/book_detail/book_detail_page.dart';
 import 'package:dokki/ui/book_search/search_book_page.dart';
+import 'package:dokki/ui/diary/diary_create_page.dart';
 import 'package:dokki/ui/diary/diary_detail_page.dart';
 import 'package:dokki/ui/diary/diary_page.dart';
 import 'package:dokki/ui/dokki_grass/dokki_grass_page.dart';
@@ -82,7 +83,14 @@ class Routes {
         var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (BuildContext context) =>
-                DiaryDetailPage(diaryId: args['diaryId']),
+                DiaryDetailPage(bookId: args['bookId']),
+            settings: settings);
+
+      case RoutesName.diaryCreate:
+        var args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                DiaryCreatePage(bookId: args['bookId']),
             settings: settings);
 
       default:
