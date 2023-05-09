@@ -41,6 +41,19 @@ public class UserController {
 	private final UserService userService;
 	private final LoginService loginService;
 	private final FollowService followService;
+
+    /**
+     * 백엔드 로그인 테스트용도
+     **/
+    @GetMapping("/login/oauth2/kakao/test")
+    public UserResponseDto login2(@RequestParam String code) throws JsonProcessingException {
+        UserResponseDto userResponseDto = loginService.login2(code);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.ACCESSTOKEN_HEADER, "Bearer " + "temp");
+        httpHeaders.add(JwtFilter.REFRESHTOKEN_HEADER, "Bearer " + "temp");
+        return userResponseDto;
+    }
+
     /**
      * 로그인 테스트 미완성
      **/
