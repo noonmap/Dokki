@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:dokki/constants/common.dart';
+import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/repository/book_repository.dart';

@@ -1,4 +1,4 @@
-import 'package:dokki/constants/colors.dart';
+import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/providers/library_provider.dart';

@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
-import 'package:dokki/constants/colors.dart';
-import 'package:dokki/constants/common.dart';
+import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/constant/common.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

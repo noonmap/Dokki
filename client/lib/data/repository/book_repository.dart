@@ -1,4 +1,4 @@
-import "package:dokki/constants/common.dart";
+import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
 import "package:dokki/utils/services/api_service.dart";

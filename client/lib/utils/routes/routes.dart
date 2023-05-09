@@ -1,18 +1,18 @@
-import 'package:dokki/ui/book_detail/book_detail_page.dart';
-import 'package:dokki/ui/book_search/search_book_page.dart';
-import 'package:dokki/ui/diary/diary_create_page.dart';
-import 'package:dokki/ui/diary/diary_detail_page.dart';
-import 'package:dokki/ui/diary/diary_page.dart';
-import 'package:dokki/ui/dokki_grass/dokki_grass_page.dart';
-import 'package:dokki/ui/home/home_page.dart';
-import 'package:dokki/ui/library/library_page.dart';
-import 'package:dokki/ui/login/login_page.dart';
-import 'package:dokki/ui/main/main_page.dart';
-import 'package:dokki/ui/profile/follow_page.dart';
-import 'package:dokki/ui/profile/profile_page.dart';
-import 'package:dokki/ui/profile/wishlist_page.dart';
-import 'package:dokki/ui/splash/splash_page.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
+import 'package:dokki/view/book_detail/book_detail_page.dart';
+import 'package:dokki/view/book_search/search_book_page.dart';
+import 'package:dokki/view/diary/diary_create_page.dart';
+import 'package:dokki/view/diary/diary_detail_page.dart';
+import 'package:dokki/view/diary/diary_page.dart';
+import 'package:dokki/view/dokki_grass/dokki_grass_page.dart';
+import 'package:dokki/view/home/home_page.dart';
+import 'package:dokki/view/library/library_page.dart';
+import 'package:dokki/view/login/login_page.dart';
+import 'package:dokki/view/main/main_page.dart';
+import 'package:dokki/view/profile/follow_page.dart';
+import 'package:dokki/view/profile/profile_page.dart';
+import 'package:dokki/view/profile/wishlist_page.dart';
+import 'package:dokki/view/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
