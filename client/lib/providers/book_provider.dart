@@ -20,7 +20,7 @@ class BookProvider extends ChangeNotifier {
 
   Future<void> getBookById(String bookId) async {
     isDetailLoading = true;
-    notifyListeners();
+
     try {
       BookDetailModel returnData =
           await _bookRepository.getBookByIdData(bookId);
