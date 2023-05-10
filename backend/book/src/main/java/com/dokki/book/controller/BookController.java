@@ -10,6 +10,7 @@ import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookMarkEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.service.BookService;
+import com.dokki.book.service.BookStatisticsService;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
@@ -41,6 +42,7 @@ public class BookController {
 	private final BookService bookService;
 	private final BookmarkService bookmarkService;
 	private final BookStatusService bookStatusService;
+	private final BookStatisticsService bookStatisticsService;
 
 
 	@GetMapping("/{bookId}")
@@ -155,6 +157,14 @@ public class BookController {
 				.build()
 		).collect(Collectors.toList());
 		return ResponseEntity.ok(result);
+	}
+
+
+	@PutMapping("/statistics/{bookId}/review")
+	@ApiOperation(value = "[내부 호출] 리뷰 평균 점수를 통계에 업데이트합니다.")
+	public ResponseEntity<HttpStatus> modifyStatisticsReviewScore(@PathVariable String bookId, @RequestParam Float avgScore) {
+		bookStatisticsService.modifyReviewScore(bookId, avgScore);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
