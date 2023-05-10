@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'review_model.g.dart';
+
+@JsonSerializable()
 class Review {
   Review({
     required this.userId,
@@ -15,23 +20,9 @@ class Review {
   final String content;
   final String created;
 
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
-        userId: json["userId"],
-        nickname: json["nickname"],
-        profileImagePath: json["profileImagePath"],
-        score: json["score"],
-        content: json["content"],
-        created: json["created"],
-      );
+  factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "nickname": nickname,
-        "profileImagePath": profileImagePath,
-        "score": score,
-        "content": content,
-        "created": created,
-      };
+  Map<String, dynamic> toJson() => _$ReviewToJson(this);
 
   @override
   String toString() {

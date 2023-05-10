@@ -10,7 +10,7 @@ class UserRepository {
   // GET : 유저 상세 조회
   Future<UserBioModel> getUserBioDataById(int userId) async {
     try {
-      dynamic response = await _apiService.get('/users/profile/$userId', null);
+      dynamic response = await _apiService.get('/users/profile/$userId', {});
       UserBioModel userData = UserBioModel.fromJson(response);
       return userData;
     } catch (e) {

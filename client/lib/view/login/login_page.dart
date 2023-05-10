@@ -1,6 +1,6 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/image_strings.dart';
-import 'package:dokki/common/widget/login_button.dart';
+import 'package:dokki/view/login/widget/login_button.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {

@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
@@ -38,7 +40,7 @@ class BookRepository {
 
   // GET : 책 상세 데이터
   Future<BookDetailModel> getBookByIdData(String bookId) async {
-    dynamic response = await _apiService.get("/books/$bookId", null);
+    dynamic response = await _apiService.get("/books/$bookId", {});
     if (response["bookCoverPath"] == null) {
       response["bookCoverPath"] = "";
     }
@@ -48,19 +50,8 @@ class BookRepository {
     if (response["bookCoverSideImagePath"] == null) {
       response["bookCoverSideImagePath"] = "";
     }
-    if (response["readerCount"] == null) {
-      response["readerCount"] = 0;
-    }
-    if (response["meanScore"] == null) {
-      response["meanScore"] = 0;
-    }
-    if (response["meanReadTime"] == null) {
-      response["meanReadTime"] = 0;
-    }
-    if (response["review"] == null) {
-      response["review"] = [];
-    }
     BookDetailModel bookDetailData = BookDetailModel.fromJson(response);
+    print(bookDetailData);
     return bookDetailData;
   }
 

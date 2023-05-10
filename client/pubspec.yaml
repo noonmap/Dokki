@@ -29,7 +29,7 @@ dependencies:
   dio: ^4.0.6
   intl: ^0.17.0
   json_annotation: ^4.8.0
-
+  slider_button: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
