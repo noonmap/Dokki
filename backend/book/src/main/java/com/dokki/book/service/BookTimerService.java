@@ -77,8 +77,8 @@ public class BookTimerService {
 
 		try {
 			timerClient.deleteTimer(bookStatusId);
-		}catch (Exception e){
-			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}",bookStatusId);
+		} catch (Exception e) {
+			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}", bookStatusId);
 		}
 	}
 
