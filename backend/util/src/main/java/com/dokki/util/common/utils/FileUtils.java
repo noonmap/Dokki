@@ -15,6 +15,7 @@ public class FileUtils {
 
 
 	static public String getAbsoluteFilePath(String filePath) {
+		if (filePath == null || filePath.isBlank()) return filePath; // filePath가 비어있는 경우도 있다.
 		if (filePath.startsWith("http")) {
 			return filePath;
 		}
