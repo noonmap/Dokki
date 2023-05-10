@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -25,6 +27,16 @@ public class HistoryController {
 	private final HistoryService historyService;
 
 
+	@GetMapping("/today/{userId}")
+	@ApiOperation(value = "오늘 독서 시간 조회", notes = "유저의 오늘 총 독서시간을 조회합니다")
+	public ResponseEntity<Map<String, Long>> getTodayReadTime(@PathVariable Long userId) {
+		Long time = historyService.getTodayReadTime(userId);
+		Map<String, Long> result = new HashMap<>();
+		result.put("todayTime", time);
+		return ResponseEntity.ok(result);
+	}
+
+
 	@GetMapping("/year/{userId}")
 	@ApiOperation(value = "한 해 독서 시간 조회", notes = "프로필에서 사용, Integer[12]")
 	public ResponseEntity<List<MonthlyStatisticsResponseDto>> getYearHistory(@PathVariable Long userId, @RequestParam int year) {
@@ -34,7 +46,7 @@ public class HistoryController {
 		Long[] yearHistory = new Long[] { 3L, 1L, 0L, 0L, 1L, 1L, 1L, 1L, 4L, 3L, 2L, 1L };
 		result = new ArrayList<>();
 		for (int i = 0; i < 12; i++) {
-			result.add(new MonthlyStatisticsResponseDto(i+1, yearHistory[i]));
+			result.add(new MonthlyStatisticsResponseDto(i + 1, yearHistory[i]));
 		}
 		return ResponseEntity.ok(historyService.getYearHistory(userId, year));
 	}
