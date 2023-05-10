@@ -4,6 +4,7 @@ package com.dokki.book.controller;
 import com.dokki.book.dto.response.CollectionResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.service.BookStatusService;
+import com.dokki.util.common.utils.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class CollectionController {
 	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "다 읽은 책 컬렉션에서 삭제")
 	public ResponseEntity<HttpStatus> deleteCollection(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		bookStatusService.deleteCollection(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
