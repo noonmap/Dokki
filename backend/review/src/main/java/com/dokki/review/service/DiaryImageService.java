@@ -62,7 +62,7 @@ public class DiaryImageService {
 	 * @return 생성한 이미지 경로 반환
 	 */
 	public List<String> createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
-		increaseImageCreationRequestCount(userId); // 더이상 생성할 수 없으면 exception 발생
+		if (isEnableCreateImage(userId) == false) throw new CustomException(ErrorCode.AI_IMAGE_COUNT_LIMIT_REACHED);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -91,6 +91,7 @@ public class DiaryImageService {
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
 		}
 
+		increaseImageCreationRequestCount(userId); // 생성한 카운트 증가
 		return dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
 		/**
 		 * ChatGPT Response Format
@@ -144,7 +145,7 @@ public class DiaryImageService {
 			return 0;
 		}
 		LocalDate requestDate = diaryImageRedis.get().getRequestDate();
-		if (LocalDate.now().isBefore(requestDate)) { // 저장된 날짜가 오늘이 아니면
+		if (requestDate.isBefore(LocalDate.now())) { // 저장된 날짜가 오늘 이전이면
 			diaryImageRedisService.setDiaryImageRedis(userId, 0);
 			return 0;
 		}
