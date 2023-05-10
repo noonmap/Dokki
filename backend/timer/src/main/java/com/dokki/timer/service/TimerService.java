@@ -35,6 +35,8 @@ public class TimerService {
 	private final TimerRedisService timerRedisService;
 
 	private final BookClient bookClient;
+
+
 	/**
 	 * 독서 시간 측정 시작
 	 *
@@ -84,16 +86,16 @@ public class TimerService {
 			// 타이머 종료 및 누적시간 계산
 			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
 
-			// 일일통계 계산
-			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndRecordDateIs(userId, timerEntity.getStartTime());
-			if(dailyStatisticsEntity == null) {
+			// 일일통계 계산 (오늘 통계 가져오기)
+			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
+			if (dailyStatisticsEntity == null) {
 				dailyStatisticsEntity = DailyStatisticsEntity.builder()
 					.userId(userId)
 					.bookId(timerEntity.getBookId())
 					.accumTime(Math.toIntExact(currTime))
-					.recordDate(timerEntity.getStartTime())
+					.recordDate(LocalDate.now())
 					.build();
-			} else{
+			} else {
 				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
 			}
 			dailyStatisticsRepository.save(dailyStatisticsEntity);
