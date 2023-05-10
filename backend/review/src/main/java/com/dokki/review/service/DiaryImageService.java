@@ -117,4 +117,9 @@ public class DiaryImageService {
 		 */
 	}
 
+
+	public Integer getImageCreationRemainCount(Long userId) {
+		return 1;
+	}
+
 }
