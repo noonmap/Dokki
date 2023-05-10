@@ -17,12 +17,8 @@ class DiaryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // 🍇 감정 일기 생성 페이지 위해서 임시 수정
-        Navigator.pushNamed(context, RoutesName.diaryCreate,
+        Navigator.pushNamed(context, RoutesName.diaryDetail,
             arguments: {"bookId": diaryData.bookId});
-
-        // Navigator.pushNamed(context, RoutesName.diaryDetail,
-        //     arguments: {"bookId": diaryData.bookId});
       },
       child: Container(
         clipBehavior: Clip.antiAlias,

@@ -43,7 +43,10 @@ class ProfileMenu extends StatelessWidget {
                   icon: Ionicons.book_outline,
                   label: '감정 일기',
                   onTap: () {
-                    Navigator.pushNamed(context, RoutesName.diary);
+                    // Navigator.pushNamed(context, RoutesName.diary);
+                    // 🍇 감정 일기 생성 페이지 위해서 임시 수정
+                    Navigator.pushNamed(context, RoutesName.diaryCreate,
+                        arguments: {"bookId": '8809894540898'});
                   },
                 )
               : ProfileMenuItem(

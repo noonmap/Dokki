@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:dokki/data/model/diary/diary_image_count_model.dart';
 import 'package:dokki/data/model/diary/diary_model.dart';
 import 'package:dokki/data/repository/diary_repository.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +8,23 @@ class DiaryProvider extends ChangeNotifier {
   bool isLoading = false;
   bool isDetailLoading = false;
   bool isCountLoading = false;
+  bool isImageLoading = false;
+  bool isImageLoaded = false;
 
   List<DiaryModel> diaries = [];
   Map<String, dynamic> pageData = {};
   DiaryModel? diary;
-  DiaryImageCountModel? diaryImageCount;
+  int? diaryImageCount;
+  String? diaryImage;
 
   void initProvider() {
     diaries = [];
     pageData = {};
     isLoading = false;
+    isDetailLoading = false;
+    isCountLoading = false;
+    isImageLoading = false;
+    isImageLoaded = false;
   }
 
   // GET : 감정 일기 목록 조회
@@ -61,14 +67,48 @@ class DiaryProvider extends ChangeNotifier {
     isCountLoading = true;
 
     try {
-      DiaryImageCountModel countData =
-          await _diaryRepository.getDiaryImageCountData();
-      diaryImageCount = countData;
+      diaryImageCount = await _diaryRepository.getDiaryImageCountData();
     } on DioError catch (e) {
       print(e.response);
     } finally {
       isCountLoading = false;
       notifyListeners();
+    }
+  }
+
+  // POST : AI 이미지 생성
+  Future<void> postDiaryImage({
+    required String content,
+  }) async {
+    isImageLoading = true;
+    isImageLoaded = false;
+    isCountLoading = true;
+
+    try {
+      Map<String, dynamic> rst =
+          await _diaryRepository.postDiaryImageData(content: content);
+      diaryImage = rst['diaryImagePath'];
+      diaryImageCount = rst['count'];
+    } on DioError catch (e) {
+      print(e.response);
+    } finally {
+      isImageLoading = false;
+      isImageLoaded = true;
+      isCountLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> postDiary({
+    required String bookId,
+    required String content,
+    required String imagePath,
+  }) async {
+    try {
+      await _diaryRepository.postDiaryData(
+          bookId: bookId, content: content, imagePath: imagePath);
+    } on DioError catch (e) {
+      print(e.response);
     }
   }
 }
