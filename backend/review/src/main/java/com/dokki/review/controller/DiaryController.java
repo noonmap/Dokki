@@ -3,9 +3,11 @@ package com.dokki.review.controller;
 
 import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.request.DiaryRequestDto;
+import com.dokki.review.dto.response.DiaryImageResponseDto;
 import com.dokki.review.dto.response.DiaryResponseDto;
 import com.dokki.review.service.DiaryImageService;
 import com.dokki.review.service.DiaryService;
+import com.dokki.util.common.utils.FileUtils;
 import com.dokki.util.common.utils.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,11 +82,25 @@ public class DiaryController {
 
 	@PostMapping("/image/creation")
 	@ApiOperation(value = "감정 일기 내용을 바탕으로 한 AI 이미지 생성", notes = "")
-	public ResponseEntity<Map<String, String>> createAIImage(@RequestBody AIImageRequestDto aiImageRequestDto) {
+	public ResponseEntity<DiaryImageResponseDto> createAIImage(@RequestBody AIImageRequestDto aiImageRequestDto) {
 		Long userId = SessionUtils.getUserId();
 		List<String> imagePath = diaryImageService.createAIImage(userId, aiImageRequestDto);
-		Map<String, String> result = new HashMap<>();
-		result.put("diaryImagePath", imagePath.get(0));
+		Integer count = diaryImageService.getImageCreationRemainCount(userId);
+		DiaryImageResponseDto diaryImageResponseDto = DiaryImageResponseDto.builder()
+			.diaryImagePath(FileUtils.getAbsoluteFilePath(imagePath.get(0)))
+			.count(count)
+			.build();
+		return ResponseEntity.ok(diaryImageResponseDto);
+	}
+
+
+	@GetMapping("/image/count")
+	@ApiOperation(value = "오늘 유저가 AI 이미지를 생성할 수 있는 남은 횟수를 반환 ", notes = "")
+	public ResponseEntity<Map<String, Integer>> getImageCreationRemainCount() {
+		Long userId = SessionUtils.getUserId();
+		Integer count = diaryImageService.getImageCreationRemainCount(userId);
+		Map<String, Integer> result = new HashMap<>();
+		result.put("count", count);
 		return ResponseEntity.ok(result);
 	}
 
