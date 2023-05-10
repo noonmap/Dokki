@@ -13,6 +13,7 @@ import 'package:dokki/view/profile/follow_page.dart';
 import 'package:dokki/view/profile/profile_page.dart';
 import 'package:dokki/view/profile/wishlist_page.dart';
 import 'package:dokki/view/splash/splash_page.dart';
+import 'package:dokki/view/timer/timer_page.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
@@ -23,13 +24,22 @@ class Routes {
             builder: (BuildContext context) => const MainPage());
 
       case RoutesName.home:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+
         return MaterialPageRoute(
             builder: (BuildContext context) => const HomePage());
-
+      case RoutesName.timer:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (BuildContext context) => TimerPage(
+            bookStatusId: args["bookStatusId"],
+            bookTitle: args["bookTitle"],
+          ),
+          settings: settings,
+        );
       case RoutesName.splash:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashPage());
-
       case RoutesName.login:
         return MaterialPageRoute(
             builder: (BuildContext context) => const LoginPage());
@@ -39,8 +49,11 @@ class Routes {
             builder: (BuildContext context) => const SearchBookPage());
 
       case RoutesName.bookDetail:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const BookDetailPage(),
+            builder: (BuildContext context) => BookDetailPage(
+                  bookId: args['bookId'],
+                ),
             settings: settings);
 
       case RoutesName.library:

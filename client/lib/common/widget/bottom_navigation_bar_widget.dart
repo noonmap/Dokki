@@ -15,7 +15,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
+      type: BottomNavigationBarType.shifting,
       backgroundColor: grayColor000,
       onTap: onTap,
       currentIndex: currentIndex,

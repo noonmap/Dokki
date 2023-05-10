@@ -1,11 +1,16 @@
 import 'package:dokki/data/model/review/review_model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'book_detail_model.g.dart';
+
+@JsonSerializable()
 class BookDetailModel {
   BookDetailModel({
     required this.bookId,
     required this.bookTitle,
-    required this.bookAuthor,
     required this.bookSummary,
+    required this.bookAuthor,
+    required this.bookLink,
     required this.bookCoverPath,
     required this.bookCoverBackImagePath,
     required this.bookCoverSideImagePath,
@@ -16,11 +21,15 @@ class BookDetailModel {
     required this.readerCount,
     required this.meanScore,
     required this.meanReadTime,
+    required this.isBookMarked,
+    required this.isReading,
+    required this.isComplete,
   });
   final String bookId;
   final String bookTitle;
-  final String bookAuthor;
   final String bookSummary;
+  final String bookAuthor;
+  final String bookLink;
   final String bookCoverPath;
   final String bookCoverBackImagePath;
   final String bookCoverSideImagePath;
@@ -31,45 +40,17 @@ class BookDetailModel {
   final int readerCount;
   final double meanScore;
   final double meanReadTime;
+  final bool isBookMarked;
+  final bool isReading;
+  final bool isComplete;
 
   factory BookDetailModel.fromJson(Map<String, dynamic> json) =>
-      BookDetailModel(
-        bookId: json["bookId"],
-        bookTitle: json["bookTitle"],
-        bookAuthor: json["bookAuthor"],
-        bookSummary: json["bookSummary"],
-        bookCoverPath: json["bookCoverPath"],
-        bookCoverBackImagePath: json["bookCoverBackImagePath"],
-        bookCoverSideImagePath: json["bookCoverSideImagePath"],
-        bookPublishYear: json["bookPublishYear"],
-        bookPublisher: json["bookPublisher"],
-        bookTotalPage: json["bookTotalPage"],
-        review:
-            (json["review"] as List).map((e) => Review.fromJson(e)).toList(),
-        readerCount: json["readerCount"],
-        meanScore: json["meanScore"].toDouble(),
-        meanReadTime: json["meanReadTime"].toDouble(),
-      );
+      _$BookDetailModelFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "bookId": bookId,
-        "bookTitle": bookTitle,
-        "bookAuthor": bookAuthor,
-        "bookSummary": bookSummary,
-        "bookCoverPath": bookCoverPath,
-        "bookCoverBackImagePath": bookCoverBackImagePath,
-        "bookCoverSideImagePath": bookCoverSideImagePath,
-        "bookPublishYear": bookPublishYear,
-        "bookPublisher": bookPublisher,
-        "bookTotalPage": bookTotalPage,
-        "review": review.map((e) => e.toJson()).toList(),
-        "readerCount": readerCount,
-        "meanScore": meanScore,
-        "meanReadTime": meanReadTime,
-      };
+  Map<String, dynamic> toJson() => _$BookDetailModelToJson(this);
 
   @override
   String toString() {
-    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookSummary: $bookSummary, bookCoverPath: $bookCoverPath, bookCoverBackImagePath: $bookCoverBackImagePath, bookCoverSideImagePath: $bookCoverSideImagePath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime}';
+    return 'BookDetailModel{bookId: $bookId, bookTitle: $bookTitle, bookSummary: $bookSummary, bookAuthor: $bookAuthor, bookLink: $bookLink, bookCoverPath: $bookCoverPath, bookCoverBackImagePath: $bookCoverBackImagePath, bookCoverSideImagePath: $bookCoverSideImagePath, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookTotalPage: $bookTotalPage, review: $review, readerCount: $readerCount, meanScore: $meanScore, meanReadTime: $meanReadTime, isBookMarked: $isBookMarked, isReading: $isReading, isComplete: $isComplete}';
   }
 }
