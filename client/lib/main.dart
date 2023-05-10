@@ -3,6 +3,7 @@ import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/providers/library_provider.dart';
 import 'package:dokki/providers/status_book_provider.dart';
+import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/routes/routes.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
@@ -49,7 +50,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<DiaryProvider>(
           create: (context) => DiaryProvider(),
-        )
+        ),
+        ChangeNotifierProvider<TimerProvider>(create: (_) => TimerProvider())
       ],
       child: MaterialApp(
         builder: (context, widget) {

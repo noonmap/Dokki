@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BookDetailPage extends StatefulWidget {
-  const BookDetailPage({super.key});
+  final String bookId;
+  const BookDetailPage({super.key, required this.bookId});
 
   @override
   State<BookDetailPage> createState() => _BookDetailPageState();
@@ -21,19 +22,14 @@ class _BookDetailPageState extends State<BookDetailPage>
     super.initState();
     Future.delayed(Duration.zero, () {
       final bp = Provider.of<BookProvider>(context, listen: false);
-      Map<String, dynamic> arg =
-          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
       bp.error = "";
       bp.success = "";
-      bp.getBookById(arg["bookId"]);
+      bp.getBookById(widget.bookId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> arg =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-
     final bp = Provider.of<BookProvider>(context);
     TabController tabController = TabController(length: 2, vsync: this);
     final clientWidth = MediaQuery.of(context).size.width;
@@ -52,7 +48,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                   ),
                 ),
                 builder: (BuildContext context) {
-                  return BottomSheetModal(bookId: arg["bookId"]);
+                  return BottomSheetModal(bookId: widget.bookId);
                 },
               );
             },
