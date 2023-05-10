@@ -93,7 +93,7 @@ public class TimerService {
 					.userId(userId)
 					.bookId(timerEntity.getBookId())
 					.accumTime(Math.toIntExact(currTime))
-					.recordDate(timerEntity.getStartTime())
+					.recordDate(LocalDate.now())
 					.build();
 			} else {
 				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
