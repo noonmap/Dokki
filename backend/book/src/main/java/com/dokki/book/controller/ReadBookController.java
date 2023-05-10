@@ -5,6 +5,7 @@ import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookTimerService;
+import com.dokki.util.common.utils.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class ReadBookController {
 	@GetMapping("")
 	@ApiOperation(value = "[타이머 뷰] 읽고 있는 도서 목록 조회")
 	public ResponseEntity<Slice<BookTimerResponseDto>> getBookTimerList(Pageable pageable) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		Slice<BookTimerResponseDto> bookTimerSlice = bookTimerService.getBookTimerList(userId, pageable);
 		return ResponseEntity.ok(bookTimerSlice);
 	}
@@ -42,7 +43,7 @@ public class ReadBookController {
 	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "[타이머 뷰] 읽고 있는 도서 삭제", notes = "")
 	public ResponseEntity<HttpStatus> deleteBookTimer(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		bookTimerService.deleteBookTimer(bookStatusId, userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -51,7 +52,7 @@ public class ReadBookController {
 	@GetMapping("/simple/{bookId}")
 	@ApiOperation(value = "(userId + bookId 조합으로 bookStatusId를 조회)")
 	public ResponseEntity<Map<String, Long>> getBookStatusId(@PathVariable String bookId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		HashMap<String, Long> map = new HashMap<>();
 		BookStatusEntity entity = bookStatusService.getStatusByUserIdAndBookId(userId, bookId);
 		map.put("bookStatusId", entity.getId());
