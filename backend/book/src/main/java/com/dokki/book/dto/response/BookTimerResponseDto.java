@@ -55,7 +55,7 @@ public class BookTimerResponseDto {
 
 	public static Slice<BookTimerResponseDto> fromStatusAndTimerEntitySlice(Slice<BookStatusEntity> bookStatusEntitySlice, List<TimerSimpleResponseDto> timeList) {
 		// 정렬
-		Collections.sort(timeList, (c1, c2) -> Math.toIntExact(c2.getBookStatusId() - c1.getBookStatusId()));
+		Collections.sort(timeList, (c1, c2) -> Math.toIntExact(c1.getBookStatusId() - c2.getBookStatusId()));
 
 		// book status 정보와 time 맵핑
 		AtomicInteger counter = new AtomicInteger(0); // map()에서 index 역할
@@ -64,7 +64,7 @@ public class BookTimerResponseDto {
 				int idx = counter.getAndIncrement();
 				if (idx >= timeList.size()) {   // out of index
 					return BookTimerResponseDto.fromEntity(c);
-				} else if (c.getId().equals(timeList.get(idx).getBookStatusId())) { // book status id don't match
+				} else if (!c.getId().equals(timeList.get(idx).getBookStatusId())) { // book status id don't match
 					counter.decrementAndGet();
 					return BookTimerResponseDto.fromEntity(c);
 				} else {
