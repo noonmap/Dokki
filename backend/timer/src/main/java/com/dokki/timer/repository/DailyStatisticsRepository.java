@@ -38,4 +38,7 @@ public interface DailyStatisticsRepository extends JpaRepository<DailyStatistics
 	)
 	List<DailyStatisticsEntity> getDailyStatisticsList(@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDateNext);
 
+	@Query("select sum(d.accumTime) from DailyStatisticsEntity d where d.userId = :userId and d.recordDate = current_date")
+	Long getTodayReadTime(@Param("userId") Long userId);
+
 }
