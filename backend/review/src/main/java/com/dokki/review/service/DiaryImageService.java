@@ -5,6 +5,9 @@ import com.dokki.review.config.exception.CustomException;
 import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.response.ChatGPTResponseDto;
 import com.dokki.review.dto.response.DallE2ResponseDto;
+import com.dokki.review.redis.DiaryImageRedis;
+import com.dokki.review.redis.DiaryImageRedisService;
+import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -29,6 +34,8 @@ public class DiaryImageService {
 	private final String CHATGPT_URL = "https://api.openai.com/v1/chat/completions";
 	private final String IMAGE_GENERATION_URL = "https://api.openai.com/v1/images/generations";
 	private final RestTemplate restTemplate;
+	private final DiaryImageRedisService diaryImageRedisService;
+	private final Integer AI_IMAGE_COUNT_MAX = Integer.valueOf(DefaultEnum.AI_IMAGE_COUNT_MAX.getValue());
 	@Value("${OPENAI_API_TOKEN}")
 	private String OPENAI_API_TOKEN;
 
@@ -42,6 +49,7 @@ public class DiaryImageService {
 		try {
 			response = restTemplate.postForObject(requestURL, httpEntity, String.class);
 		} catch (HttpClientErrorException e) {
+			log.error("restTemplate API 호출 과정에서 에러가 발생하였습니다.", e.getMessage());
 			throw new CustomException(e.getStatusCode().value(), e.getMessage());
 		}
 		return response;
@@ -54,9 +62,10 @@ public class DiaryImageService {
 	 * @return 생성한 이미지 경로 반환
 	 */
 	public List<String> createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
+		if (isEnableCreateImage(userId) == false) throw new CustomException(ErrorCode.AI_IMAGE_COUNT_LIMIT_REACHED);
+
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		// TODO : redis에 이미지 생성 횟수 제한 걸어야 한다.
 		// Chat GPT 요청
 		String diaryContent = aiImageRequestDto.getContent();
 		String chatGPTPrompt = String.format("내가 작성한 감상평이야. %s. 이 감상평을 그림으로 그릴 수 있게 100글자 이내의 영어 문장으로 설명해줘.", diaryContent);
@@ -82,6 +91,7 @@ public class DiaryImageService {
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
 		}
 
+		increaseImageCreationRequestCount(userId); // 생성한 카운트 증가
 		return dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
 		/**
 		 * ChatGPT Response Format
@@ -118,8 +128,65 @@ public class DiaryImageService {
 	}
 
 
+	/**
+	 * 오늘 요청한 AI Image 생성 횟수 조회
+	 *
+	 * @param userId
+	 * @return
+	 */
+	private Integer getImageCreationRequestCount(Long userId) {
+		// redis에서 userId로 저장된 값이 있으면 가져옴
+		//      LocalDate를 비교 -> 오늘 날짜이면 return / 이전 날짜이면 0으로 초기화 & return
+		// 없으면 0 return
+		// -> 최대 횟수 - requestCount 한 걸 return
+		Optional<DiaryImageRedis> diaryImageRedis = diaryImageRedisService.getDiaryImageRedis(userId);
+		if (diaryImageRedis.isEmpty()) {
+			diaryImageRedisService.setDiaryImageRedis(userId, 0);
+			return 0;
+		}
+		LocalDate requestDate = diaryImageRedis.get().getRequestDate();
+		if (requestDate.isBefore(LocalDate.now())) { // 저장된 날짜가 오늘 이전이면
+			diaryImageRedisService.setDiaryImageRedis(userId, 0);
+			return 0;
+		}
+		return diaryImageRedis.get().getRequestCount();
+	}
+
+
+	/**
+	 * 해당 유저가 오늘 AI Image 생성 횟수가 남았는지 확인
+	 *
+	 * @param userId
+	 * @return 남았으면 true, 아니면 false
+	 */
+	private boolean isEnableCreateImage(Long userId) {
+		Integer requestCount = getImageCreationRequestCount(userId);
+		if (requestCount < AI_IMAGE_COUNT_MAX) return true;
+		return false;
+	}
+
+
+	/**
+	 * AI Image 생성 횟수를 증가
+	 *
+	 * @param userId
+	 */
+	private void increaseImageCreationRequestCount(Long userId) {
+		if (false == isEnableCreateImage(userId)) throw new CustomException(ErrorCode.AI_IMAGE_COUNT_LIMIT_REACHED);
+		Integer requestCount = getImageCreationRequestCount(userId);
+		diaryImageRedisService.setDiaryImageRedis(userId, requestCount + 1);
+	}
+
+
+	/**
+	 * 오늘 AI 이미지 생성 요청 가능한 남은 횟수를 조회
+	 *
+	 * @param userId
+	 * @return
+	 */
 	public Integer getImageCreationRemainCount(Long userId) {
-		return 1;
+		Integer requestCount = getImageCreationRequestCount(userId);
+		return AI_IMAGE_COUNT_MAX - requestCount;
 	}
 
 }
