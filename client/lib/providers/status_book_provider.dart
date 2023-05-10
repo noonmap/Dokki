@@ -2,15 +2,19 @@ import 'package:dio/dio.dart';
 import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/book/book_timer_model.dart';
 import 'package:dokki/data/repository/book_repository.dart';
+import 'package:dokki/data/repository/timer_repository.dart';
 import 'package:flutter/material.dart';
 
 class StatusBookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
+  final TimerRepository _timerRepository = TimerRepository();
 
   List<Book> _likeBookList = [];
   List<Book> get likeBookList => _likeBookList;
   List<BookTimerModel> _readingBookList = [];
   List<BookTimerModel> get readingBookList => _readingBookList;
+  int _todayReadTime = 0;
+  int get todayReadTime => _todayReadTime;
 
   Map<String, dynamic> pageData = {};
 
@@ -60,6 +64,16 @@ class StatusBookProvider extends ChangeNotifier {
     } finally {
       isReadingLoading = false;
       notifyListeners();
+    }
+  }
+
+  // GET 오늘 누적 독서 시간
+  Future<void> getReadTimeToday(String userId) async {
+    try {
+      dynamic todayTime = await _timerRepository.getReadTimeToday(userId);
+      _todayReadTime = todayTime as int;
+    } on DioError catch (e) {
+      print(e.response!.statusCode);
     }
   }
 

@@ -54,8 +54,11 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(child: pages[currentIndex]),
-        bottomNavigationBar: BottomNavigationBarWidget(
-            currentIndex: currentIndex, onTap: onTap));
+      body: SafeArea(child: pages[currentIndex]),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentIndex: currentIndex,
+        onTap: onTap,
+      ),
+    );
   }
 }

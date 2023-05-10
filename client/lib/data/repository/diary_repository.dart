@@ -44,7 +44,7 @@ class DiaryRepository {
   // GET : 감정 일기 단일 조회
   Future<DiaryModel> getDiaryDataByBookId({required String bookId}) async {
     try {
-      dynamic response = await _apiService.get('/reviews/diary/$bookId', null);
+      dynamic response = await _apiService.get('/reviews/diary/$bookId', {});
       DiaryModel diaryData = DiaryModel.fromJson(response);
       return diaryData;
     } catch (e) {
@@ -56,7 +56,7 @@ class DiaryRepository {
   Future<DiaryImageCountModel> getDiaryImageCountData() async {
     try {
       dynamic response =
-          await _apiService.get('/reviews/diary/image/count', null);
+          await _apiService.get('/reviews/diary/image/count', {});
       DiaryImageCountModel diaryImageCountData =
           DiaryImageCountModel.fromJson(response);
 

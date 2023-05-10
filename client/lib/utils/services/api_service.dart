@@ -4,22 +4,17 @@ import "package:dokki/utils/services/auth_dio.dart";
 import "package:flutter_dotenv/flutter_dotenv.dart";
 
 class APIService {
-  Dio dio = Dio();
+  final Dio _dio = Dio();
 
   APIService() {
-    dio.interceptors.add(CustomInterceptor(storage: storage));
-    dio.options.baseUrl = dotenv.env['BASE_PROD_URL'] as String;
+    _dio.interceptors.add(CustomInterceptor(storage: storage));
+    _dio.options.baseUrl = dotenv.env['BASE_PROD_URL'] as String;
   }
 
-  Future<dynamic> get(String url, Map<String, dynamic>? params) async {
+  Future<dynamic> get(String url, Map<String, dynamic> params) async {
     try {
-      if (params == null) {
-        final response = await dio.get(url);
-        return response.data;
-      } else {
-        final response = await dio.get(url, queryParameters: params);
-        return response.data;
-      }
+      final response = await _dio.get(url, queryParameters: params);
+      return response.data;
     } on DioError catch (error) {
       throw DioError(
           requestOptions: error.requestOptions, response: error.response);
@@ -28,7 +23,7 @@ class APIService {
 
   Future<dynamic> post(String url, Map<String, dynamic> data) async {
     try {
-      final response = await dio.post(url, data: data);
+      final response = await _dio.post(url, data: data);
       return response.data;
     } on DioError catch (error) {
       throw DioError(
@@ -38,7 +33,7 @@ class APIService {
 
   Future<dynamic> put(String url, Map<String, dynamic> data) async {
     try {
-      final response = await dio.put(url, data: data);
+      final response = await _dio.put(url, data: data);
       return response;
     } on DioError catch (error) {
       throw DioError(
@@ -48,7 +43,7 @@ class APIService {
 
   Future<dynamic> delete(String url) async {
     try {
-      final response = await dio.delete(url);
+      final response = await _dio.delete(url);
       return response;
     } on DioError catch (error) {
       throw DioError(
