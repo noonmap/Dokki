@@ -8,6 +8,7 @@ import com.dokki.review.entity.CommentEntity;
 import com.dokki.review.repository.CommentRepository;
 import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.FileUtils;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import feign.FeignException;
@@ -57,7 +58,7 @@ public class CommentService {
 					return CommentResponseDto.builder()
 						.userId(c.getUserId())
 						.nickname(writerInfoList.get(idx).getNickname())
-						.profileImagePath(writerInfoList.get(idx).getProfileImagePath())
+						.profileImagePath(FileUtils.getAbsoluteFilePath(writerInfoList.get(idx).getProfileImagePath()))
 						.commentId(c.getId())
 						.score(c.getScore().intValue())
 						.content(c.getContent())
@@ -72,7 +73,7 @@ public class CommentService {
 				c -> CommentResponseDto.builder()
 					.userId(c.getUserId())
 					.nickname(DefaultEnum.USER_NICKNAME.getValue())
-					.profileImagePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue())
+					.profileImagePath(FileUtils.getAbsoluteFilePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue()))
 					.commentId(c.getId())
 					.score(c.getScore().intValue())
 					.content(c.getContent())
@@ -160,7 +161,7 @@ public class CommentService {
 					return CommentResponseDto.builder()
 						.userId(c.getUserId())
 						.nickname(writerInfoList.get(idx).getNickname())
-						.profileImagePath(writerInfoList.get(idx).getProfileImagePath())
+						.profileImagePath(FileUtils.getAbsoluteFilePath(writerInfoList.get(idx).getProfileImagePath()))
 						.commentId(c.getId())
 						.score(c.getScore().intValue())
 						.content(c.getContent())
@@ -175,7 +176,7 @@ public class CommentService {
 				c -> CommentResponseDto.builder()
 					.userId(c.getUserId())
 					.nickname(DefaultEnum.USER_NICKNAME.getValue())
-					.profileImagePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue())
+					.profileImagePath(FileUtils.getAbsoluteFilePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue()))
 					.commentId(c.getId())
 					.score(c.getScore().intValue())
 					.content(c.getContent())
