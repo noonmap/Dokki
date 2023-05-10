@@ -18,16 +18,25 @@ public class SessionUtils {
 
 
 	static public Long getUserId() {
+		if (getRequest().getHeader("USER_ID") == null) {
+			return 0L;
+		}
 		return Long.valueOf(getRequest().getHeader("USER_ID"));
 	}
 
 
 	static public String getUserNickname() {
+		if (getRequest().getHeader("USER_NICKNAME") == null) {
+			return "EMPTY";
+		}
 		return getRequest().getHeader("USER_NICKNAME");
 	}
 
 
 	static public String getUserProfileImagePath() {
+		if (getRequest().getHeader("USER_PROFILE_IMAGE_PATH") == null) {
+			return "/resources/images/default.png";
+		}
 		return getRequest().getHeader("USER_PROFILE_IMAGE_PATH");
 	}
 
