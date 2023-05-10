@@ -1,7 +1,6 @@
 package com.dokki.user.security.jwt;
 
 import com.dokki.user.config.exception.LogoutException;
-import com.dokki.user.entity.UserEntity;
 import com.dokki.user.redis.RedisService;
 import com.dokki.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -69,6 +68,8 @@ public class TokenProvider implements InitializingBean {
                 .collect(Collectors.joining(","));
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenAccessValidityInMilliseconds);
+
+        /** 여기서 nickname 꺼내서 id 가져오기 **/
 
         LOGGER.info("Access토큰 생성중..");
 
@@ -138,7 +139,9 @@ public class TokenProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
         User principal = new User(claims.getSubject(), "", authorities);
+        log.info("인증정보 조회 : ",claims.getSubject(),authorities);
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+
     }
 
     /**리프레쉬 정보 조회 -일단 보류

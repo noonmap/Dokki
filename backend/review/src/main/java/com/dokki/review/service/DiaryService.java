@@ -3,7 +3,6 @@ package com.dokki.review.service;
 
 import com.dokki.review.client.BookClient;
 import com.dokki.review.config.exception.CustomException;
-import com.dokki.review.dto.request.AIImageRequestDto;
 import com.dokki.review.dto.request.DiaryRequestDto;
 import com.dokki.review.dto.response.DiaryResponseDto;
 import com.dokki.review.entity.DiaryEntity;
@@ -12,6 +11,7 @@ import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import com.dokki.util.book.dto.response.CollectionSimpleResponseDto;
 import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.FileUtils;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -135,7 +135,7 @@ public class DiaryService {
 			.bookId(diary.getBookId())
 			.bookTitle(bookTitle)
 			.diaryId(diary.getId())
-			.diaryImagePath(diary.getDiaryImagePath())
+			.diaryImagePath(FileUtils.getAbsoluteFilePath(diary.getDiaryImagePath()))
 			.diaryContent(diary.getContent())
 			.created(diary.getCreatedAt())
 			.build();
@@ -167,7 +167,7 @@ public class DiaryService {
 						.bookId(d.getBookId())
 						.bookTitle(bookSimpleInfoList.get(idx).getBookTitle())
 						.diaryId(d.getId())
-						.diaryImagePath(d.getDiaryImagePath())
+						.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
 						.diaryContent(d.getContent())
 						.created(d.getCreatedAt())
 						.build();
@@ -180,25 +180,13 @@ public class DiaryService {
 					.bookId(d.getBookId())
 					.bookTitle(DefaultEnum.BOOK_BOOK_TITLE.getValue())
 					.diaryId(d.getId())
-					.diaryImagePath(d.getDiaryImagePath())
+					.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
 					.diaryContent(d.getContent())
 					.created(d.getCreatedAt())
 					.build()
 			);
 		}
 		return diaryResponseDtoSlice;
-	}
-
-
-	/**
-	 * AI 이미지 생성
-	 *
-	 * @return 생성한 이미지 경로 반환
-	 */
-	public String createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
-		// TODO : api 호출
-		// redis에 이미지 생성 횟수 제한 걸어야 한다.
-		return "";
 	}
 
 }

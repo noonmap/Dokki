@@ -1,16 +1,27 @@
 package com.dokki.timer.service;
 
 
+import com.dokki.timer.client.BookClient;
+import com.dokki.timer.config.exception.CustomException;
+import com.dokki.timer.entity.DailyStatisticsEntity;
+import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.TimerRedis;
+import com.dokki.timer.redis.TimerRedisService;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
+import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Log4j2
@@ -21,47 +32,83 @@ public class TimerService {
 	private final TimerRepository timerRepository;
 	private final DailyStatisticsRepository dailyStatisticsRepository;
 
+	private final TimerRedisService timerRedisService;
 
+	private final BookClient bookClient;
 	/**
 	 * 독서 시간 측정 시작
 	 *
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void startTimer(String bookId) {
+	public void startTimer(Long userId, Long bookStatusId) {
+		timerRedisService.setTimerRedis(userId, bookStatusId);
 	}
 
 
 	/**
 	 * 독서 시간 측정 종료
 	 *
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void endTimer(String bookId) {
-	}
+	@Transactional
+	public void endTimer(Long bookStatusId, Long userId) {
+		// 타이머 시작기록 가져온 후 redis에서 삭제
+		TimerRedis getTimer = timerRedisService.getTimerRedis(userId);
+		timerRedisService.deleteTimerRedis(userId);
+		LocalDateTime startTime = getTimer.getStartAt();
 
+		LocalDateTime endTime = LocalDateTime.now();
+		Duration duration = Duration.between(startTime, endTime);
+		Long currTime = duration.getSeconds();
 
-	/**
-	 * 한 달 독서 기록을 조회합니다. (프로필에서 사용, 달력 형태)
-	 * 하루 중 가장 읽은 시간이 긴 책 리스트를 반환합니다.
-	 * 리스트 요소의 형태는 {day: Integer, bookId: String}와 같습니다.
-	 *
-	 * @param userId
-	 * @param year
-	 * @param month
-	 * @return
-	 */
-	public List<Map<String, String>> getMonthlyReadTimeHistory(Long userId, Integer year, Integer month) {
-		return new ArrayList<>();
+		// bookStatusId로 타이머 가져오기, 존재하지 않다면 타이머 새로 만들기
+		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
+		if (optionalTimerEntity.isEmpty()) {
+			// TODO: bookStatusId로 bookId 가져와서 추가하기
+			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
+			timerRepository.save(TimerEntity.builder()
+				.userId(userId)
+				.bookId(bookId)
+				.bookStatusId(bookStatusId)
+				.accumTime(Math.toIntExact(currTime))      // toIntExact -> ArithmeticException (if the argument overflows an int)
+				.startTime(startTime.toLocalDate())
+				.endTime(endTime.toLocalDate())
+				.build());
+		} else {
+			TimerEntity timerEntity = optionalTimerEntity.get();
+			// 로그인한 유저의 타이머가 맞는지 확인
+			if (!userId.equals(timerEntity.getUserId())) {
+				throw new CustomException(ErrorCode.INVALID_REQUEST);
+			}
+
+			// 타이머 종료 및 누적시간 계산
+			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
+
+			// 일일통계 계산
+			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndRecordDateIs(userId, timerEntity.getStartTime());
+			if(dailyStatisticsEntity == null) {
+				dailyStatisticsEntity = DailyStatisticsEntity.builder()
+					.userId(userId)
+					.bookId(timerEntity.getBookId())
+					.accumTime(Math.toIntExact(currTime))
+					.recordDate(timerEntity.getStartTime())
+					.build();
+			} else{
+				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
+			}
+			dailyStatisticsRepository.save(dailyStatisticsEntity);
+		}
+
 	}
 
 
 	/**
 	 * 타이머 정보를 삭제합니다.
 	 *
-	 * @param userId
-	 * @param bookId
+	 * @param bookStatusId
 	 */
-	public void deleteTimer(Integer userId, String bookId) {
+	public void deleteTimer(Long bookStatusId) {
+		timerRepository.deleteByBookStatusId(bookStatusId);
 	}
 
 
@@ -74,7 +121,13 @@ public class TimerService {
 	 * @return
 	 */
 	public List<TimerSimpleResponseDto> getAccumTimeList(List<Long> bookStatusIdList) {
-		return new ArrayList<>();
+		List<TimerEntity> timerList = timerRepository.findByBookStatusIdIn(bookStatusIdList);
+		return timerList.stream().map(
+			o -> TimerSimpleResponseDto.builder()
+				.bookStatusId(o.getBookStatusId())
+				.accumTime(o.getAccumTime())
+				.build()
+		).collect(Collectors.toList());
 	}
 
 
@@ -82,9 +135,14 @@ public class TimerService {
 	 * 독서 완독 시간 정보를 추가 또는 삭제(null)합니다.
 	 *
 	 * @param bookStatusId
-	 * @param done
 	 */
-	public void modifyEndTime(Long bookStatusId, Boolean done) {
+	@Transactional
+	public void modifyEndTime(Long userId, Long bookStatusId) {
+		TimerEntity timerEntity = timerRepository.findTopByBookStatusId(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST));
+		if (!userId.equals(timerEntity.getUserId())) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		timerEntity.updateBookComplete(LocalDate.now());
 	}
 
 }

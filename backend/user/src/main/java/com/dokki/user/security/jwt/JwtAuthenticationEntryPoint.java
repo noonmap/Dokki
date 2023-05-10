@@ -1,6 +1,6 @@
 package com.dokki.user.security.jwt;
 
-import com.dokki.user.error.ErrorCode;
+import com.dokki.util.common.error.ErrorCode;
 import com.google.gson.JsonObject;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -47,7 +47,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("message", exceptionCode.getMessage());
+        responseJson.addProperty("message", exceptionCode.getDescription());
         responseJson.addProperty("code", exceptionCode.getCode());
 
         response.getWriter().print(responseJson);

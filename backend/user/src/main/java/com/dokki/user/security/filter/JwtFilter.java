@@ -1,7 +1,7 @@
 package com.dokki.user.security.filter;
 
 import com.dokki.user.config.exception.LogoutException;
-import com.dokki.user.error.ErrorCode;
+import com.dokki.util.common.error.ErrorCode;
 import com.dokki.user.redis.RedisService;
 import com.dokki.user.security.jwt.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,8 +29,8 @@ import java.util.Optional;
 public class JwtFilter extends GenericFilterBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtFilter.class);
-    public static final String ACCESSTOKEN_HEADER = "AccessToken";
-    public static final String REFRESHTOKEN_HEADER = "RefreshToken";
+    public static final String ACCESSTOKEN_HEADER = "Authorization";
+    public static final String REFRESHTOKEN_HEADER = "Refresh";
 
     private final TokenProvider tokenProvider;
     private final RedisService redisService;
@@ -45,8 +45,6 @@ public class JwtFilter extends GenericFilterBean {
 
         try{
             LOGGER.info("접근중 uri: {}", requestURI);
-            System.out.println(jwt);
-            System.out.println(bearerToken);
             if(StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)){
                 Optional<String> isLogout = Optional.ofNullable(redisService.getValues(jwt));
                 LOGGER.info("토큰검증성공 접근중 uri: {}", requestURI);
