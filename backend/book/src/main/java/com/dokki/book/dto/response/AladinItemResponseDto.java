@@ -2,6 +2,7 @@ package com.dokki.book.dto.response;
 
 
 import com.dokki.book.entity.BookEntity;
+import com.dokki.util.common.utils.FileUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +40,7 @@ public class AladinItemResponseDto {
 		return BookEntity.builder()
 			.id(detailResponse.getIsbn13())
 			.title(detailResponse.getTitle())
-			.coverFrontImagePath(detailResponse.getCover())
+			.coverFrontImagePath(FileUtils.getAbsoluteFilePath(detailResponse.getCover()))
 			.summary(detailResponse.getDescription())
 			.author(detailResponse.getAuthor())
 			.publishDate(detailResponse.pubDate)
@@ -54,9 +55,9 @@ public class AladinItemResponseDto {
 			.id(detailResponse.getIsbn13())
 			.title(detailResponse.getTitle())
 			.link(detailResponse.getLink())
-			.coverFrontImagePath(detailResponse.getCover())
-			.coverBackImagePath(otherPath[0])
-			.coverSideImagePath(otherPath[1])
+			.coverFrontImagePath(FileUtils.getAbsoluteFilePath(detailResponse.getCover()))
+			.coverBackImagePath(FileUtils.getAbsoluteFilePath(otherPath[0]))
+			.coverSideImagePath(FileUtils.getAbsoluteFilePath(otherPath[1]))
 			.summary(detailResponse.getDescription())
 			.author(detailResponse.getAuthor())
 			.publishDate(detailResponse.pubDate)
