@@ -139,7 +139,11 @@ public class BookStatusService {
 	 */
 	public BookStatusEntity getStatusByUserIdAndBookId(Long userId, String bookId) {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
-		return bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		BookStatusEntity result = bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		if (result == null) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		}
+		return result;
 	}
 
 
