@@ -16,6 +16,6 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 	@Transactional
 	@Modifying
 	@Query(value = "update dokki.book_statistics set mean_score = :reviewScore where book_id = :bookId", nativeQuery = true)
-	void updateMeanScore(@Param("bookId") String bookId, @Param("reviewScore") Float reviewScore);
+	int updateMeanScore(@Param("bookId") String bookId, @Param("reviewScore") Float reviewScore);
 
 }

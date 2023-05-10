@@ -139,7 +139,11 @@ public class BookStatusService {
 	 */
 	public BookStatusEntity getStatusByUserIdAndBookId(Long userId, String bookId) {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
-		return bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		BookStatusEntity result = bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		if (result == null) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		}
+		return result;
 	}
 
 
@@ -156,13 +160,16 @@ public class BookStatusService {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
 		boolean isBookMarked = bookmarkService.isBookmarkedByUserIdAndBookEntity(userId, bookEntity);
 
-		// 읽고있는, 다읽은 책 여부
-		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 		boolean isReading = false;
 		boolean isComplete = false;
-		if (bookStatusEntity != null) {
+
+		// 읽고있는, 다읽은 책 여부 가져오기
+		try {
+			BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
 			isComplete = !isReading;
+		} catch (CustomException e) {
+			log.debug("book status 없음 (읽고있거나 완독한 기록 없음) ");
 		}
 
 		return UserBookInfoDto.builder()

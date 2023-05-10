@@ -2,6 +2,7 @@ package com.dokki.book.controller;
 
 
 import com.dokki.book.config.exception.CustomException;
+import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.BookDetailResponseDto;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,16 +51,20 @@ public class BookController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
-		Long userId = SessionUtils.getUserId();
+		Long userId = 0L;
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
-		if (bookEntity.getStatistics() != null) {
+		if (bookEntity.getStatistics() == null) {   // 처음 저장하는 책인 경우
+			bookDetailResponseDto.setUserData(new UserBookInfoDto());
+			bookDetailResponseDto.setReview(Collections.emptyList());
+		} else {
+			bookDetailResponseDto.setUserData(bookStatusService.getUserBookInfo(userId, bookId));
 			try {
-				bookDetailResponseDto.setUserData(bookStatusService.getUserBookInfo(userId, bookId));
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
 			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
 				log.error(e.getMessage());
+				bookDetailResponseDto.setReview(Collections.emptyList());
 			}
 		}
 		return ResponseEntity.ok(bookDetailResponseDto);
