@@ -62,8 +62,12 @@ public class BookDetailResponseDto {
 			.bookTotalPage(item.getTotalPageCount())
 			.build();
 
-		// 통계결과 있을 경우
-		if (item.getStatistics() != null) {
+		// 통계결과 없을 경우 (db에 처음 저장되는 책)
+		if (item.getStatistics() == null) {
+			responseDto.readerCount = 0;
+			responseDto.meanScore = 0.0F;
+			responseDto.meanReadTime = 0;
+		} else {
 			BookStatisticsEntity statistics = item.getStatistics();
 			responseDto.readerCount = statistics.getCompletedUsers();
 			responseDto.meanScore = statistics.getMeanScore();
