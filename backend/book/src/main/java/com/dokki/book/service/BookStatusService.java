@@ -8,6 +8,7 @@ import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
+import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +52,27 @@ public class BookStatusService {
 	/**
 	 * 책 완독 추가
 	 */
+	@Transactional
 	public void createPastBookDone(Long userId, BookCompleteRequestDto dto) {
-		createStatus(userId, dto.getBookId(), STATUS_DONE);
-		System.out.println(dto.getStartTime());
-		//		timerClient 요청하기
+		BookEntity bookEntity = bookService.getBookReferenceIfExist(dto.getBookId());
+		BookStatusEntity result = bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		if (result != null) {
+			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+		}
+
+		BookStatusEntity bookStatusEntity = bookStatusRepository.save(BookStatusEntity.builder()
+			.userId(userId)
+			.bookId(bookService.getBookReferenceIfExist(dto.getBookId()))
+			.status(STATUS_DONE)
+			.build());
+
+		// feign client exception 발생시 완독 추가 불가하므로 catch 하지 않음
+		timerClient.directComplete(BookCompleteDirectRequestDto.builder()
+			.bookId(dto.getBookId())
+			.bookStatusId(bookStatusEntity.getId())
+			.startTime(dto.getStartTime())
+			.endTime(dto.getEndTime())
+			.build());
 	}
 
 
