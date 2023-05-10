@@ -35,10 +35,10 @@ public interface BookClient {
 	/**
 	 * 도서 컬렉션 정보를 조회합니다. (bookStatusId 조회)
 	 *
-	 * @param bookid
+	 * @param bookId
 	 * @return
 	 */
 	@GetMapping("/books/read-book/simple/{bookId}")
-	CollectionSimpleResponseDto getCollectionSimple(@PathVariable String bookid);
+	CollectionSimpleResponseDto getCollectionSimple(@PathVariable String bookId);
 
 }
