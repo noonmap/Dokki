@@ -30,6 +30,7 @@ public class DailyStatisticsEntity {
 	@Column(nullable = false)
 	private LocalDate recordDate;
 
+
 	public void updateTimerStop(int currTime) {
 		this.accumTime += currTime;
 	}
