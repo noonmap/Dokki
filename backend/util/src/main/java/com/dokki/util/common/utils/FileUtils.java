@@ -24,7 +24,7 @@ public class FileUtils {
 		if (filePath.startsWith("/")) {
 			return hostUri + filePath;
 		}
-		return hostUri + File.pathSeparator + filePath;
+		return hostUri + File.separator + filePath;
 	}
 
 }
