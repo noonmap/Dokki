@@ -14,7 +14,8 @@ public enum DefaultEnum {
 	USER_PROFILE_IMAGE_PATH("/default/profile_image.png"),
 	BOOK_BOOK_STATUS_ID("-1"),
 	BOOK_BOOK_TITLE(""),
-	REVIEW_DIARY_IMAGE_PATH("/default/diary_image.png");
+	REVIEW_DIARY_IMAGE_PATH("/default/diary_image.png"),
+	AI_IMAGE_COUNT_MAX("5");
 
 	private String value;
 
