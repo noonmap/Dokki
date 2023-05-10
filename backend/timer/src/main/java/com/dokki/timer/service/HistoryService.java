@@ -12,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 @Slf4j
@@ -30,6 +32,17 @@ public class HistoryService {
 	private final BookClient bookClient;
 
 
+	public static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
+		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+		return t -> {
+			final List<?> keys = Arrays.stream(keyExtractors).map(ke -> ke.apply(t)).collect(Collectors.toList());
+
+			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+		};
+	}
+
+
 	/**
 	 * 한 해 독서 시간 조회 (프로필에서 사용)
 	 *
@@ -40,7 +53,7 @@ public class HistoryService {
 	public List<MonthlyStatisticsResponseDto> getYearHistory(Long userId, int year) {
 		// 통계기록 가져오기
 		List<MonthlyStatisticsResponseDto> monthlyStatisticsList = dailyStatisticsRepository.getMonthlyStatisticsListByYear(userId, year);
-		monthlyStatisticsList.forEach(o -> o.setCount(o.getCount() / (60*60)));
+		monthlyStatisticsList.forEach(o -> o.setCount(o.getCount() / (60 * 60)));
 		// 리스트에 통계기록 추가
 		for (int i = 1; i <= 12; i++) {
 			int finalI = i;
@@ -82,14 +95,9 @@ public class HistoryService {
 		return DailyStatisticsResponseDto.fromEntityList(removeDuplicateList, bookList);
 	}
 
-	public static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
-		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
 
-		return t -> {
-			final List<?> keys = Arrays.stream(keyExtractors).map(ke -> ke.apply(t)).collect(Collectors.toList());
-
-			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
-		};
+	public Long getTodayReadTime(Long userId) {
+		return dailyStatisticsRepository.getTodayReadTime(userId);
 	}
 
 }
