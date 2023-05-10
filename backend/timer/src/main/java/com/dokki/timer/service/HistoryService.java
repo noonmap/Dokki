@@ -12,10 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,26 +38,21 @@ public class HistoryService {
 	 * @return 한 해 독서시간 (월별 통계 리스트)
 	 */
 	public List<MonthlyStatisticsResponseDto> getYearHistory(Long userId, int year) {
-		List<MonthlyStatisticsResponseDto> monthlyStatisticsList = new ArrayList<>();
-
 		// 통계기록 가져오기
-		List<Map<Integer, Integer>> monthlyStatisticsMapList = dailyStatisticsRepository.getMonthlyStatisticsListByYear(userId, year);
-		Map<Integer, Integer> map = new HashMap<>();
-		for (Map<Integer, Integer> m : monthlyStatisticsMapList) {
-			map.putAll(m);
-		}
-
+		List<MonthlyStatisticsResponseDto> monthlyStatisticsList = dailyStatisticsRepository.getMonthlyStatisticsListByYear(userId, year);
+		monthlyStatisticsList.forEach(o -> o.setCount(o.getCount() / (60*60)));
 		// 리스트에 통계기록 추가
-		IntStream.range(1, 13).forEach(i -> {
-				int timeCount = map.getOrDefault(i, 0);
-				if (timeCount != 0) timeCount = timeCount / (60 * 60);
+		for (int i = 1; i <= 12; i++) {
+			int finalI = i;
+			boolean isExist = monthlyStatisticsList.stream()
+				.anyMatch(monthlyStatistics -> monthlyStatistics.getMonth() == finalI);
+
+			if (!isExist)
 				monthlyStatisticsList.add(
-					MonthlyStatisticsResponseDto.builder()
-						.month(i)
-						.count(timeCount)
-						.build());
-			}
-		);
+					new MonthlyStatisticsResponseDto(i, 0L)
+				);
+		}
+		monthlyStatisticsList.sort(Comparator.comparingInt(MonthlyStatisticsResponseDto::getMonth));
 		return monthlyStatisticsList;
 	}
 
@@ -75,13 +70,26 @@ public class HistoryService {
 		LocalDate endDate = LocalDate.of(year, month + 1, 1);
 		List<DailyStatisticsEntity> dailyStatisticsEntityList = dailyStatisticsRepository.getDailyStatisticsList(userId, startDate, endDate);
 
+		List<DailyStatisticsEntity> removeDuplicateList = dailyStatisticsEntityList.stream().filter(distinctByKeys(DailyStatisticsEntity::getRecordDate, DailyStatisticsEntity::getAccumTime))
+			.collect(Collectors.toList());
+
 		// dailyStatisticsEntityList에서 bookId 리스트 만들어서 책 정보 요청
-		List<String> bookIdList = dailyStatisticsEntityList.stream()
+		List<String> bookIdList = removeDuplicateList.stream()
 			.map(DailyStatisticsEntity::getBookId)
 			.collect(Collectors.toList());
 		List<BookSimpleResponseDto> bookList = bookClient.getBookSimple(bookIdList);
 
-		return DailyStatisticsResponseDto.fromEntityList(dailyStatisticsEntityList, bookList);
+		return DailyStatisticsResponseDto.fromEntityList(removeDuplicateList, bookList);
+	}
+
+	public static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors) {
+		final Map<List<?>, Boolean> seen = new ConcurrentHashMap<>();
+
+		return t -> {
+			final List<?> keys = Arrays.stream(keyExtractors).map(ke -> ke.apply(t)).collect(Collectors.toList());
+
+			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+		};
 	}
 
 }
