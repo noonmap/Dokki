@@ -1,8 +1,10 @@
 package com.dokki.book.service;
 
 
+import com.dokki.book.client.TimerClient;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.UserBookInfoDto;
+import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
@@ -29,18 +31,30 @@ public class BookStatusService {
 	private final BookStatusRepository bookStatusRepository;
 	private final BookmarkService bookmarkService;
 
+	private final TimerClient timerClient;
+
 
 	/**
 	 * 타이머에 도서 추가
 	 */
-	public void addBookToTimer(Long userId, String bookId) {
+	public void createBookToTimer(Long userId, String bookId) {
 		BookStatusEntity statusEntity = getStatusByUserIdAndBookId(userId, bookId);
 
 		if (statusEntity == null) {
-			createStatus(userId, bookId);
+			createStatus(userId, bookId, STATUS_IN_PROGRESS);
 		} else {
 			modifyStatusToInprogress(userId, statusEntity);
 		}
+	}
+
+
+	/**
+	 * 책 완독 추가
+	 */
+	public void createPastBookDone(Long userId, BookCompleteRequestDto dto) {
+		createStatus(userId, dto.getBookId(), STATUS_DONE);
+		System.out.println(dto.getStartTime());
+		//		timerClient 요청하기
 	}
 
 
@@ -50,11 +64,11 @@ public class BookStatusService {
 	 * @param userId 유저 id
 	 * @param bookId 책 id
 	 */
-	public void createStatus(Long userId, String bookId) {
-		bookStatusRepository.save(BookStatusEntity.builder()
+	public BookStatusEntity createStatus(Long userId, String bookId, String status) {
+		return bookStatusRepository.save(BookStatusEntity.builder()
 			.userId(userId)
 			.bookId(bookService.getBookReferenceIfExist(bookId))
-			.status(STATUS_IN_PROGRESS)
+			.status(status)
 			.build());
 	}
 

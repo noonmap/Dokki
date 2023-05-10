@@ -2,6 +2,7 @@ package com.dokki.book.controller;
 
 
 import com.dokki.book.config.exception.CustomException;
+import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.dto.response.BookSearchResponseDto;
@@ -103,15 +104,24 @@ public class BookController {
 
 
 	@PostMapping("/status")
-	@ApiOperation(value = "책 타이머뷰에 추가 | 상태 추가 또는 완독 -> 진행중으로 변경")
-	public ResponseEntity<HttpStatus> createStatusToInprogress(@RequestBody Map<String, String> map) {
+	@ApiOperation(value = "책 타이머뷰에 추가 | 진행중 상태 추가 또는 완독 -> 진행중으로 변경")
+	public ResponseEntity<HttpStatus> createOrModifyStatusToInprogress(@RequestBody Map<String, String> map) {
 		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.addBookToTimer(userId, map.get("bookId"));
+		bookStatusService.createBookToTimer(userId, map.get("bookId"));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
-	@PutMapping("/status/{bookId}/complete")
+	@PostMapping("/status/direct-complete")
+	@ApiOperation(value = "책 완독 추가")
+	public ResponseEntity<HttpStatus> createStatusToDone(@RequestBody BookCompleteRequestDto dto) {
+		Long userId = 0L;   // TODO: user id 가져오기
+		bookStatusService.createPastBookDone(userId, dto);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+
+	@PutMapping("/status/{bookStatusId}/complete")
 	@ApiOperation(value = "책 상태 변경 | 진행중(타이머) → 완독(컬렉션)")
 	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable Long bookStatusId) {
 		Long userId = 0L;   // TODO: user id 가져오기
