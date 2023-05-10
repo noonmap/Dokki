@@ -1,6 +1,7 @@
 package com.dokki.book.dto.response;
 
 
+import com.dokki.util.common.utils.FileUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class BookSearchResponseDto {
 			.bookId(item.getIsbn13())
 			.bookTitle(item.getTitle())
 			.bookAuthor(item.getAuthor())
-			.bookCoverPath(item.getCover())
+			.bookCoverPath(FileUtils.getAbsoluteFilePath(item.getCover()))
 			.bookPublishYear(year)
 			.bookPublisher(item.getPublisher())
 			.build();
