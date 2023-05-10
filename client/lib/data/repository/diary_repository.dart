@@ -1,9 +1,9 @@
-import 'package:dokki/data/model/diary/diary_image_count_model.dart';
 import 'package:dokki/data/model/diary/diary_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
 
 class DiaryRepository {
   final APIService _apiService = APIService();
+  final String commonPath = '/reviews/diary';
 
   // GET : 감정 일기 목록 조회
   Future<Map<String, dynamic>> getDiariesData({
@@ -15,7 +15,7 @@ class DiaryRepository {
       'size': '$dataSize',
     };
 
-    dynamic response = await _apiService.get('/reviews/diary', params);
+    dynamic response = await _apiService.get(commonPath, params);
 
     final diariesData = response['content'] as List;
     List<DiaryModel> diaries =
@@ -44,7 +44,7 @@ class DiaryRepository {
   // GET : 감정 일기 단일 조회
   Future<DiaryModel> getDiaryDataByBookId({required String bookId}) async {
     try {
-      dynamic response = await _apiService.get('/reviews/diary/$bookId', null);
+      dynamic response = await _apiService.get('$commonPath/$bookId', null);
       DiaryModel diaryData = DiaryModel.fromJson(response);
       return diaryData;
     } catch (e) {
@@ -53,14 +53,51 @@ class DiaryRepository {
   }
 
   // GET : AI 이미지 생성 가능 횟수 조회
-  Future<DiaryImageCountModel> getDiaryImageCountData() async {
+  Future<int> getDiaryImageCountData() async {
     try {
-      dynamic response =
-          await _apiService.get('/reviews/diary/image/count', null);
-      DiaryImageCountModel diaryImageCountData =
-          DiaryImageCountModel.fromJson(response);
+      dynamic response = await _apiService.get('$commonPath/image/count', null);
+      int diaryImageCountData = response['count'];
 
       return diaryImageCountData;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : AI 이미지 생성
+  Future<Map<String, dynamic>> postDiaryImageData(
+      {required String content}) async {
+    Map<String, String> data = {'content': content};
+
+    try {
+      dynamic response =
+          await _apiService.post('$commonPath/image/creation', data);
+      String diaryImageData = response['diaryImagePath'];
+      int diaryImageCountData = response['count'];
+
+      Map<String, dynamic> rst = {
+        'diaryImagePath': diaryImageData,
+        'count': diaryImageCountData,
+      };
+      return rst;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : 감정 일기 저장
+  Future<void> postDiaryData({
+    required String bookId,
+    required String content,
+    required String imagePath,
+  }) async {
+    Map<String, String> data = {
+      'content': content,
+      'diaryImagePath': imagePath
+    };
+
+    try {
+      await _apiService.post('commonPath/$bookId', data);
     } catch (e) {
       rethrow;
     }
