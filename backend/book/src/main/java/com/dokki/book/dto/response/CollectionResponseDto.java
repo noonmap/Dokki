@@ -3,6 +3,7 @@ package com.dokki.book.dto.response;
 
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
+import com.dokki.util.common.utils.FileUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class CollectionResponseDto {
 			.bookStatusId(entity.getId())
 			.bookId(book.getId())
 			.bookTitle(book.getTitle())
-			.bookCoverPath(book.getCoverFrontImagePath())
+			.bookCoverPath(FileUtils.getAbsoluteFilePath(book.getCoverFrontImagePath()))
 			.build();
 	}
 

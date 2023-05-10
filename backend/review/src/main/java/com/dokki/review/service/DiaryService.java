@@ -11,6 +11,7 @@ import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import com.dokki.util.book.dto.response.CollectionSimpleResponseDto;
 import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.FileUtils;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +135,7 @@ public class DiaryService {
 			.bookId(diary.getBookId())
 			.bookTitle(bookTitle)
 			.diaryId(diary.getId())
-			.diaryImagePath(diary.getDiaryImagePath())
+			.diaryImagePath(FileUtils.getAbsoluteFilePath(diary.getDiaryImagePath()))
 			.diaryContent(diary.getContent())
 			.created(diary.getCreatedAt())
 			.build();
@@ -166,7 +167,7 @@ public class DiaryService {
 						.bookId(d.getBookId())
 						.bookTitle(bookSimpleInfoList.get(idx).getBookTitle())
 						.diaryId(d.getId())
-						.diaryImagePath(d.getDiaryImagePath())
+						.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
 						.diaryContent(d.getContent())
 						.created(d.getCreatedAt())
 						.build();
@@ -179,7 +180,7 @@ public class DiaryService {
 					.bookId(d.getBookId())
 					.bookTitle(DefaultEnum.BOOK_BOOK_TITLE.getValue())
 					.diaryId(d.getId())
-					.diaryImagePath(d.getDiaryImagePath())
+					.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
 					.diaryContent(d.getContent())
 					.created(d.getCreatedAt())
 					.build()
