@@ -9,6 +9,7 @@ import com.dokki.timer.redis.TimerRedis;
 import com.dokki.timer.redis.TimerRedisService;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
+import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,8 @@ public class TimerService {
 	private final TimerRedisService timerRedisService;
 
 	private final BookClient bookClient;
+
+
 	/**
 	 * 독서 시간 측정 시작
 	 *
@@ -86,14 +89,14 @@ public class TimerService {
 
 			// 일일통계 계산
 			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndRecordDateIs(userId, timerEntity.getStartTime());
-			if(dailyStatisticsEntity == null) {
+			if (dailyStatisticsEntity == null) {
 				dailyStatisticsEntity = DailyStatisticsEntity.builder()
 					.userId(userId)
 					.bookId(timerEntity.getBookId())
 					.accumTime(Math.toIntExact(currTime))
 					.recordDate(timerEntity.getStartTime())
 					.build();
-			} else{
+			} else {
 				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
 			}
 			dailyStatisticsRepository.save(dailyStatisticsEntity);
@@ -143,6 +146,33 @@ public class TimerService {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		timerEntity.updateBookComplete(LocalDate.now());
+	}
+
+
+	public void createTimerDirect(Long userId, BookCompleteDirectRequestDto request) {
+		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(request.getBookStatusId());
+
+		if (!optionalTimerEntity.isEmpty()) {// if timer already exist
+			TimerEntity timerEntity = optionalTimerEntity.get();
+			// 로그인한 유저의 타이머가 맞는지 확인
+			if (!userId.equals(timerEntity.getUserId())) {
+				throw new CustomException(ErrorCode.INVALID_REQUEST);
+			}
+			// 시작시간, 종료시간 수정 후 저장
+			timerEntity.setStartTime(request.getStartTime());
+			timerEntity.setEndTime(request.getEndTime());
+			timerRepository.save(timerEntity);
+		} else {
+			timerRepository.save(TimerEntity.builder()
+				.userId(userId)
+				.bookId(request.getBookId())
+				.bookStatusId(request.getBookStatusId())
+				.accumTime(0)
+				.startTime(request.getStartTime())
+				.endTime(request.getEndTime())
+				.build());
+		}
+
 	}
 
 }
