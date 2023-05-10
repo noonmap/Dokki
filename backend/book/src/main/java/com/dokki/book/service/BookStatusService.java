@@ -7,9 +7,12 @@ import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
+import com.dokki.book.repository.BookStatisticsRepository;
 import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -30,6 +34,7 @@ public class BookStatusService {
 
 	private final BookService bookService;
 	private final BookStatusRepository bookStatusRepository;
+	private final BookStatisticsRepository bookStatisticRepository;
 	private final BookmarkService bookmarkService;
 
 	private final TimerClient timerClient;
@@ -43,6 +48,7 @@ public class BookStatusService {
 
 		if (statusEntity == null) {
 			createStatus(userId, bookId, STATUS_IN_PROGRESS);
+			bookStatisticRepository.updateAddOneReadingUser(bookId);
 		} else {
 			modifyStatusToInprogress(userId, statusEntity);
 		}
@@ -60,11 +66,7 @@ public class BookStatusService {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
 
-		BookStatusEntity bookStatusEntity = bookStatusRepository.save(BookStatusEntity.builder()
-			.userId(userId)
-			.bookId(bookService.getBookReferenceIfExist(dto.getBookId()))
-			.status(STATUS_DONE)
-			.build());
+		BookStatusEntity bookStatusEntity = createStatus(userId, dto.getBookId(), STATUS_DONE);
 
 		// feign client exception 발생시 완독 추가 불가하므로 catch 하지 않음
 		timerClient.directComplete(BookCompleteDirectRequestDto.builder()
@@ -73,6 +75,9 @@ public class BookStatusService {
 			.startTime(dto.getStartTime())
 			.endTime(dto.getEndTime())
 			.build());
+
+		// 책 통계에 읽은사람 추가
+		bookStatisticRepository.updateAddOneCompleteUser(bookEntity.getId());
 	}
 
 
@@ -82,6 +87,7 @@ public class BookStatusService {
 	 * @param userId 유저 id
 	 * @param bookId 책 id
 	 */
+	@Transactional
 	public BookStatusEntity createStatus(Long userId, String bookId, String status) {
 		return bookStatusRepository.save(BookStatusEntity.builder()
 			.userId(userId)
@@ -105,6 +111,17 @@ public class BookStatusService {
 		// 상태 변경
 		statusEntity.setStatus(STATUS_IN_PROGRESS);
 		bookStatusRepository.save(statusEntity);
+
+		try {
+			List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(statusEntity.getId()));
+			// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
+			if(!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0){
+				bookStatisticRepository.updateReadDatasReading(statusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
+			}
+		} catch (FeignException e){
+			log.error(e.getMessage());
+		}
+
 	}
 
 
@@ -116,16 +133,26 @@ public class BookStatusService {
 	 * @param bookStatusId 유저 책 상태 id
 	 */
 	public void modifyStatusToDone(Long userId, Long bookStatusId) {
-		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+		BookStatusEntity bookStatusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
 		// 로그인한 유저의 책이 맞는지 확인
-		if (!Objects.equals(statusEntity.getUserId(), userId)) {
+		if (!Objects.equals(bookStatusEntity.getUserId(), userId)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 
 		// 상태 변경
-		statusEntity.setStatus(STATUS_DONE);
-		bookStatusRepository.save(statusEntity);
+		bookStatusEntity.setStatus(STATUS_DONE);
+		bookStatusRepository.save(bookStatusEntity);
+
+		try {
+			List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
+			// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
+			if(!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0){
+				bookStatisticRepository.updateReadDatasComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
+			}
+		} catch (FeignException e){
+			log.error(e.getMessage());
+		}
 	}
 
 
@@ -148,7 +175,21 @@ public class BookStatusService {
 	 */
 	@Transactional
 	public void deleteCollection(Long userId, Long bookStatusId) {
+		BookStatusEntity bookStatusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
+		String bookId = bookStatusEntity.getBookId().getId();
 		bookStatusRepository.deleteByIdAndUserId(bookStatusId, userId);
+
+		// 책 통계 업데이트
+		try {
+			List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
+			// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
+			if(!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0){
+				bookStatisticRepository.updateReadDatasDeleteComplete(bookId, accumTimeList.get(0).getAccumTime());
+			}
+		} catch (FeignException e){
+			log.error(e.getMessage());
+		}
+
 	}
 
 
