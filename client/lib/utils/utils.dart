@@ -120,4 +120,12 @@ class Utils {
 
   static EdgeInsets getAndroidCommonPadding() =>
       const EdgeInsets.fromLTRB(20, 40, 20, 0);
+
+  static scrollToBottom(ScrollController scrollController) {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeOut,
+    );
+  }
 }
