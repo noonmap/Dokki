@@ -3,6 +3,7 @@ package com.dokki.review.controller;
 
 import com.dokki.review.dto.request.CommentRequestDto;
 import com.dokki.review.service.CommentService;
+import com.dokki.util.common.utils.SessionUtils;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,24 +31,6 @@ public class CommentController {
 	@ApiOperation(value = "도서의 리뷰(코멘트) 목록 조회")
 	public ResponseEntity<Slice<CommentResponseDto>> getCommentListForBook(@PathVariable String bookId, Pageable pageable) {
 		Slice<CommentResponseDto> commentResponseDtoSlice = commentService.getCommentListForBook(bookId, pageable);
-		//		// 테스트
-		//		List<CommentResponseDto> testList = new ArrayList<>();
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭").profileImagePath("/default/image.png").score(10).content("아바나아바나촤촤촷").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭22").profileImagePath("/default/image.png").score(5).content("아바나아바나촤촤촷13").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭34").profileImagePath("/default/image.png").score(7).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭35").profileImagePath("/default/image.png").score(7).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭6").profileImagePath("/default/image.png").score(7).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭73").profileImagePath("/default/image.png").score(6).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭38").profileImagePath("/default/image.png").score(9).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭36").profileImagePath("/default/image.png").score(4).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭39").profileImagePath("/default/image.png").score(1).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭37").profileImagePath("/default/image.png").score(2).content("아바나아바나촤촤촷22").build());
-		//		testList.add(CommentResponseDto.builder().userId(1L).nickname("아바낭340").profileImagePath("/default/image.png").score(3).content("아바나아바나촤촤촷22").build());
-		//		boolean hasNext = false;
-		//		if (testList.size() > pageable.getPageSize()) {
-		//			hasNext = true;
-		//		}
-		//		commentResponseDtoSlice = new SliceImpl<>(testList, pageable, hasNext);//CommentResponseDto.fromEntityPage(commentEntityPage);
 		return ResponseEntity.ok(commentResponseDtoSlice);
 	}
 
@@ -55,8 +38,8 @@ public class CommentController {
 	@PostMapping("/{bookId}")
 	@ApiOperation(value = "코멘트 추가")
 	public ResponseEntity<Boolean> createComment(@PathVariable String bookId, @RequestBody CommentRequestDto commentRequestDto) {
-		// TODO : userID를 나중에 채워야 함
-		commentService.createComment(1L, bookId, commentRequestDto);
+		Long userId = SessionUtils.getUserId();
+		commentService.createComment(userId, bookId, commentRequestDto);
 		return ResponseEntity.ok(true);
 	}
 
