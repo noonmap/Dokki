@@ -13,12 +13,14 @@ class StatusBookProvider extends ChangeNotifier {
   List<Book> get likeBookList => _likeBookList;
   List<BookTimerModel> _readingBookList = [];
   List<BookTimerModel> get readingBookList => _readingBookList;
+  set readingBookList(List<BookTimerModel> list) => _readingBookList = list;
   int _todayReadTime = 0;
   int get todayReadTime => _todayReadTime;
 
   Map<String, dynamic> pageData = {};
 
   bool isPostLoading = false;
+  bool isTodayLoading = false;
   bool isReadingLoading = false;
   bool isLikeLoading = false;
   String success = "";
@@ -27,7 +29,6 @@ class StatusBookProvider extends ChangeNotifier {
   // GET 찜 목록 리스트 가져오기
   Future<void> getLikeBookList(String page, String size) async {
     isLikeLoading = true;
-    notifyListeners();
     try {
       Map<String, dynamic> returnData =
           await _bookRepository.getLikeBookListData(page, size);
@@ -48,7 +49,6 @@ class StatusBookProvider extends ChangeNotifier {
 
   Future<void> getReadingBookList(String page, String size) async {
     isReadingLoading = true;
-    notifyListeners();
     try {
       Map<String, dynamic> returnData =
           await _bookRepository.getReadingBookList(page, size);
@@ -69,11 +69,15 @@ class StatusBookProvider extends ChangeNotifier {
 
   // GET 오늘 누적 독서 시간
   Future<void> getReadTimeToday(String userId) async {
+    isTodayLoading = true;
     try {
       dynamic todayTime = await _timerRepository.getReadTimeToday(userId);
       _todayReadTime = todayTime as int;
     } on DioError catch (e) {
       print(e.response!.statusCode);
+    } finally {
+      isTodayLoading = false;
+      notifyListeners();
     }
   }
 

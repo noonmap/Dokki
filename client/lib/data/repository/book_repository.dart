@@ -51,7 +51,6 @@ class BookRepository {
       response["bookCoverSideImagePath"] = "";
     }
     BookDetailModel bookDetailData = BookDetailModel.fromJson(response);
-    print(bookDetailData);
     return bookDetailData;
   }
 

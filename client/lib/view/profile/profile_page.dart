@@ -1,5 +1,6 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/common.dart';
+import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/common/widget/pink_box.dart';
 import 'package:dokki/providers/user_provider.dart';
@@ -104,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       body: up.isLoading || up.isLoading2 || up.isLoading3 || up.userBio == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const OpacityLoading()
           : SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),
               child: Column(

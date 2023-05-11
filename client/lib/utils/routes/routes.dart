@@ -24,8 +24,6 @@ class Routes {
             builder: (BuildContext context) => const MainPage());
 
       case RoutesName.home:
-        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
-
         return MaterialPageRoute(
             builder: (BuildContext context) => const HomePage());
       case RoutesName.timer:
@@ -64,11 +62,9 @@ class Routes {
             settings: settings);
 
       case RoutesName.dokkiGrass:
-        var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                DokkiGrassPage(userId: args['userId']),
-            settings: settings);
+          builder: (BuildContext context) => DokkiGrassPage(),
+        );
 
       case RoutesName.profile:
         var args = settings.arguments as Map<String, dynamic>;

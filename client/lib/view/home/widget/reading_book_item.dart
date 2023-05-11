@@ -1,8 +1,11 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/data/model/book/book_timer_model.dart';
+import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReadingBookItem extends StatelessWidget {
   final int bookStatusId;
@@ -31,6 +34,13 @@ class ReadingBookItem extends StatelessWidget {
         Navigator.pushNamed(context, RoutesName.timer, arguments: {
           "bookStatusId": bookStatusId,
           "bookTitle": bookTitle,
+        }).then((value) {
+          final sbp = Provider.of<StatusBookProvider>(context, listen: false);
+          sbp.readingBookList = [];
+          Future.wait([
+            sbp.getReadTimeToday("0"),
+            sbp.getReadingBookList("0", PAGE_LIMIT),
+          ]);
         });
       },
       child: Container(

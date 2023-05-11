@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const SearchBookPage(),
     const LibraryPage(userId: ''),
-    const DokkiGrassPage(userId: ''),
+    const DokkiGrassPage(),
     const ProfilePage(userId: ''),
   ];
 
@@ -39,7 +39,6 @@ class _MainPageState extends State<MainPage> {
       setState(() {
         userId = tmp;
         pages[2] = LibraryPage(userId: userId);
-        pages[3] = DokkiGrassPage(userId: userId);
         pages[4] = ProfilePage(userId: userId);
       });
     }

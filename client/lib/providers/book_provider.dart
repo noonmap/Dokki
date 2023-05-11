@@ -18,19 +18,14 @@ class BookProvider extends ChangeNotifier {
   bool isDetailLoading = false;
   bool isPostLoading = false;
 
-  Future<void> getBookById(String bookId) async {
-    isDetailLoading = true;
-
+  Future<BookDetailModel> getBookById(String bookId) async {
     try {
       BookDetailModel returnData =
           await _bookRepository.getBookByIdData(bookId);
-      book = returnData;
+      return returnData;
     } catch (e) {
       error = "error";
       rethrow;
-    } finally {
-      isDetailLoading = false;
-      notifyListeners();
     }
   }
 
