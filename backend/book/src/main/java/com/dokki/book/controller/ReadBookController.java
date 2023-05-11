@@ -1,10 +1,12 @@
 package com.dokki.book.controller;
 
 
+import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookTimerService;
+import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.common.utils.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,6 +57,10 @@ public class ReadBookController {
 		Long userId = SessionUtils.getUserId();
 		HashMap<String, Long> map = new HashMap<>();
 		BookStatusEntity entity = bookStatusService.getStatusByUserIdAndBookId(userId, bookId);
+		if (entity == null) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		}
+
 		map.put("bookStatusId", entity.getId());
 		return ResponseEntity.ok(map);
 	}
