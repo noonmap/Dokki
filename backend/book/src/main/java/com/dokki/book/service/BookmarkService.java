@@ -4,7 +4,6 @@ package com.dokki.book.service;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookMarkEntity;
-import com.dokki.book.repository.BookRepository;
 import com.dokki.book.repository.BookStatisticsRepository;
 import com.dokki.book.repository.BookmarkRepository;
 import com.dokki.util.common.error.ErrorCode;
@@ -53,7 +52,7 @@ public class BookmarkService {
 		}
 
 		bookmarkRepository.save(new BookMarkEntity(null, userId, bookEntity));
-		bookStatisticsRepository.updateAddOneBookMarkedUser(bookId);
+		bookStatisticsRepository.updateBookMarkedUser(bookId);
 	}
 
 
@@ -65,8 +64,8 @@ public class BookmarkService {
 	@Transactional
 	public void deleteBookmark(Long userId, String bookId) {
 		int affectedRows = bookmarkRepository.deleteByUserIdAndBookId(userId, bookService.getBookReferenceIfExist(bookId));
-		if(affectedRows != 0){
-			bookStatisticsRepository.updateDeleteOneBookMarkedUser(bookId);
+		if (affectedRows != 0) {
+			bookStatisticsRepository.updateBookMarkedUser(bookId);
 		}
 	}
 

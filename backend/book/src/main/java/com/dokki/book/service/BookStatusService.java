@@ -44,13 +44,13 @@ public class BookStatusService {
 	 * 타이머에 도서 추가
 	 */
 	public void createBookToTimer(Long userId, String bookId) {
-		BookStatusEntity statusEntity = getStatusByUserIdAndBookId(userId, bookId);
+		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 
-		if (statusEntity == null) {
-			createStatus(userId, bookId, STATUS_IN_PROGRESS);
-			bookStatisticRepository.updateAddOneReadingUser(bookId);
+		if (bookStatusEntity == null) {
+			bookStatusEntity = createStatus(userId, bookId, STATUS_IN_PROGRESS);
+			bookStatisticRepository.updateReadCompleteUser(bookStatusEntity.getBookId());
 		} else {
-			modifyStatusToInprogress(userId, statusEntity);
+			modifyStatusToInprogress(userId, bookStatusEntity);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class BookStatusService {
 		BookStatusEntity bookStatusEntity = createStatus(userId, dto.getBookId(), STATUS_DONE);
 
 		// 책 통계에 읽은사람 추가
-		bookStatisticRepository.updateAddOneCompleteUser(bookEntity.getId());
+		bookStatisticRepository.updateReadCompleteUser(bookEntity);
 
 		// feign client exception 발생시 완독 추가 불가하므로 catch 하지 않음
 		timerClient.directComplete(BookCompleteDirectRequestDto.builder()
@@ -117,9 +117,9 @@ public class BookStatusService {
 				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(statusEntity.getId()));
 				// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
 				if (!accumTimeList.isEmpty() && (accumTimeList.get(0).getAccumTime() > 0)) {
-					bookStatisticRepository.updateReadDatasTimeReading(statusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
+					bookStatisticRepository.updateReadDataCompleteToRead(statusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
 				} else {
-					bookStatisticRepository.updateReadDatas(statusEntity.getBookId(), -1);
+					bookStatisticRepository.updateReadCompleteUser(statusEntity.getBookId());
 				}
 			} catch (FeignException e) {
 				log.error(e.getMessage());
@@ -147,16 +147,18 @@ public class BookStatusService {
 			bookStatusEntity.setStatus(STATUS_DONE);
 			bookStatusRepository.save(bookStatusEntity);
 
-			// 통계 수정 - 평균 책 읽은시간에 추가해 계산
+			// 통계 수정 및 완독 날짜 수정
 			try {
+				// 완독 날짜 수정
+				timerClient.modifyEndTime(bookStatusId);
+
 				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
 				// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
 				if (!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0) {
-					bookStatisticRepository.updateReadDatasTimeComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
+					bookStatisticRepository.updateReadDataReadToComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
 				} else {
-					bookStatisticRepository.updateReadDatas(bookStatusEntity.getBookId(), 1);
+					bookStatisticRepository.updateReadCompleteUser(bookStatusEntity.getBookId());
 				}
-
 			} catch (FeignException e) {
 				log.error(e.getMessage());
 			}
