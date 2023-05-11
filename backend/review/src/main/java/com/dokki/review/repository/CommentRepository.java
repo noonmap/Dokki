@@ -5,6 +5,8 @@ import com.dokki.review.entity.CommentEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,5 +20,8 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	boolean existsById(Long commentId);
 
 	void deleteById(Long commentId);
+
+	@Query("select avg(c.score) from CommentEntity c where c.bookId = :bookId")
+	float findAvgScoreByBookId(@Param(value = "bookId") String bookId);
 
 }

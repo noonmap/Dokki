@@ -123,6 +123,11 @@ public class CommentService {
 			.score(commentRequestDto.getScore().floatValue())
 			.build();
 		commentRepository.save(comment);
+
+		// 도서 평균 점수 반영
+		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		bookClient.updateAverageScore(bookId, avgScore);
+		log.info("[CreateComment] avgScore : {}", avgScore);
 	}
 
 
@@ -142,6 +147,12 @@ public class CommentService {
 		comment.updateContent(commentRequestDto.getContent());
 		comment.updateScore(commentRequestDto.getScore().floatValue());
 		commentRepository.save(comment);
+
+		// 도서 평균 점수 반영
+		String bookId = comment.getBookId();
+		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		bookClient.updateAverageScore(bookId, avgScore);
+		log.info("[UpdateComment] avgScore : {}", avgScore);
 	}
 
 
@@ -158,6 +169,12 @@ public class CommentService {
 		}
 		// 삭제
 		commentRepository.deleteById(commentId);
+
+		// 도서 평균 점수 반영
+		String bookId = comment.getBookId();
+		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		bookClient.updateAverageScore(bookId, avgScore);
+		log.info("[DeleteComment] avgScore : {}", avgScore);
 	}
 
 
