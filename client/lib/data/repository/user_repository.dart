@@ -20,17 +20,37 @@ class UserRepository {
   }
 
   // GET : 팔로잉/팔로워 목록 조회
-  Future<List<UserSimpleModel>> getFollowListData(
+  Future<Map<String, dynamic>> getFollowListData(
       {required userId, required category, required page}) async {
     int dataSize = 50;
     Map<String, String> params = {'page': '$page', 'size': '$dataSize'};
     try {
       dynamic response =
-          await _apiService.get('/users/$category/$userId', params) as List;
-      List<UserSimpleModel> followListData =
-          response.map((data) => UserSimpleModel.fromJson(data)).toList();
+          await _apiService.get('/users/$category/$userId', params);
 
-      return followListData;
+      final followListData = response['content'] as List;
+
+      List<UserSimpleModel> followList =
+          followListData.map((data) => UserSimpleModel.fromJson(data)).toList();
+
+      final first = response['first'];
+      final last = response['last'];
+      final numberOfElements = response['numberOfElements'];
+      final isEmpty = response['empty'];
+
+      Map<String, dynamic> pageData = {
+        'numberOfElements': numberOfElements,
+        'isEmpty': isEmpty,
+        'first': first,
+        'last': last,
+      };
+
+      Map<String, dynamic> rst = {
+        'followList': followList,
+        'pageData': pageData,
+      };
+
+      return rst;
     } catch (e) {
       rethrow;
     }
