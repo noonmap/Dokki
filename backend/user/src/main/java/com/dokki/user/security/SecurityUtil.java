@@ -13,7 +13,7 @@ public class SecurityUtil {
 
     private SecurityUtil(){}
 
-    public static Optional<String> getCurrentEmail() {
+    public static Optional<String> getCurrentId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
@@ -21,14 +21,14 @@ public class SecurityUtil {
             return Optional.empty();
         }
 
-        String email = null;
+        String id = null;
         if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-            email = springSecurityUser.getUsername();
+            id = springSecurityUser.getUsername();
         } else if (authentication.getPrincipal() instanceof String) {
-            email = (String) authentication.getPrincipal();
+            id = (String) authentication.getPrincipal();
         }
 
-        return Optional.ofNullable(email);
+        return Optional.ofNullable(id);
     }
 }

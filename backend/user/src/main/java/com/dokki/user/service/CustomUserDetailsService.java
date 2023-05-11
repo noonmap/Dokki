@@ -26,19 +26,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserDetails userDetails = userRepository.findByemail(email)
-                .map(user -> createUser(email, user))
-                .orElseThrow(() -> new UsernameNotFoundException(email + "->데이터베이스에서 찾을 수 없습니다."));
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        log.info(String.valueOf(id));
+        UserDetails userDetails = userRepository.findById(Long.valueOf(id))
+                .map(user -> createUser(user))
+                .orElseThrow(() -> new UsernameNotFoundException(id + "->데이터베이스에서 찾을 수 없습니다."));
         return userDetails;
     }
 
-    private User createUser(String email, UserEntity userEntity) {
+    private User createUser(UserEntity userEntity) {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        User user = new User(userEntity.getEmail(),
+        User user = new User(String.valueOf(userEntity.getId()),
                 userEntity.getPassword(),
                 authorities);
         return user;

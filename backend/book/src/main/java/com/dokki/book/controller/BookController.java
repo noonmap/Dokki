@@ -13,6 +13,7 @@ import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.SessionUtils;
 import feign.FeignException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -75,7 +76,7 @@ public class BookController {
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
 	public ResponseEntity<Slice<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
-		Long userId = 0L;   // TODO: user id 가져오기
+		Long userId = SessionUtils.getUserId();
 		Slice<BookMarkEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
 		Slice<BookSimpleResponseDto> bookResponseDtoPage =
 			bookEntityPage.map(entity -> BookSimpleResponseDto.builder()
@@ -90,7 +91,7 @@ public class BookController {
 	@PostMapping("/like/{bookId}")
 	@ApiOperation(value = "책 찜하기 추가")
 	public ResponseEntity<HttpStatus> createBookmark(@PathVariable String bookId) {
-		Long userId = 2L;   // TODO: user id 가져오기
+		Long userId = SessionUtils.getUserId();
 		bookmarkService.createBookmark(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
