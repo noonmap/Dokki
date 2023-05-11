@@ -20,18 +20,20 @@ class UserProvider extends ChangeNotifier {
 
   bool wishlistLoading = false;
   List<Book> wishlistBooks = [];
-  Map<String, dynamic> pageData = {};
+  Map<String, dynamic> wishlistPageData = {};
 
   bool followListLoading = false;
   List<UserSimpleModel> followList = [];
+  Map<String, dynamic> followListPageData = {};
 
   void initProvider() {
     wishlistBooks = [];
-    pageData = {};
+    wishlistPageData = {};
     wishlistLoading = false;
 
-    followListLoading = false;
     followList = [];
+    followListPageData = {};
+    followListLoading = false;
   }
 
   // GET : 프로필 바이오 조회
@@ -57,9 +59,10 @@ class UserProvider extends ChangeNotifier {
   }) async {
     followListLoading = true;
     try {
-      List<UserSimpleModel> followListData = await _userRepository
+      Map<String, dynamic> followListData = await _userRepository
           .getFollowListData(userId: userId, category: category, page: page);
-      followList = followListData;
+      followList.addAll(followListData['followList']);
+      followListPageData = followListData['pageData'];
     } on DioError catch (e) {
       print(e.response);
     } finally {
@@ -116,7 +119,7 @@ class UserProvider extends ChangeNotifier {
       Map<String, dynamic> wishlistData =
           await _userRepository.getWishlistData(page: page);
       wishlistBooks.addAll(wishlistData['wishlistBooks']);
-      pageData = wishlistData['pageData'];
+      wishlistPageData = wishlistData['pageData'];
     } finally {
       wishlistLoading = false;
       notifyListeners();
