@@ -9,12 +9,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 
 public interface DailyStatisticsRepository extends JpaRepository<DailyStatisticsEntity, Long> {
 
-	DailyStatisticsEntity getByUserIdAndRecordDateIs(Long userId, LocalDate recordDate);
+	DailyStatisticsEntity getByUserIdAndBookIdAndRecordDateIs(Long userId, String bookId, LocalDate recordDate);
 
 	@Query(value = "select new com.dokki.timer.dto.response.MonthlyStatisticsResponseDto( month(d.recordDate), sum(d.accumTime) ) from DailyStatisticsEntity d"
 		+ " where d.userId = :userId "
@@ -38,5 +37,8 @@ public interface DailyStatisticsRepository extends JpaRepository<DailyStatistics
 		+ ")"
 	)
 	List<DailyStatisticsEntity> getDailyStatisticsList(@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDateNext);
+
+	@Query("select sum(d.accumTime) from DailyStatisticsEntity d where d.userId = :userId and d.recordDate = current_date")
+	Long getTodayReadTime(@Param("userId") Long userId);
 
 }
