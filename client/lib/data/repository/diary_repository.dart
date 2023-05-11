@@ -56,8 +56,7 @@ class DiaryRepository {
   Future<int> getDiaryImageCountData() async {
     try {
       dynamic response = await _apiService.get('$commonPath/image/count', {});
-      DiaryImageCountModel diaryImageCountData =
-          DiaryImageCountModel.fromJson(response);
+      int diaryImageCountData = response['count'];
 
       return diaryImageCountData;
     } catch (e) {
