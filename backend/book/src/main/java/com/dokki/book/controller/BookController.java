@@ -167,10 +167,11 @@ public class BookController {
 	}
 
 
-	@PutMapping("/statistics/{bookId}/review")
+	@PostMapping("/statistics/{bookId}/review")
 	@ApiOperation(value = "[내부 호출] 리뷰 평균 점수를 통계에 업데이트합니다.")
-	public ResponseEntity<HttpStatus> modifyStatisticsReviewScore(@PathVariable String bookId, @RequestParam Float avgScore) {
-		bookStatisticsService.modifyReviewScore(bookId, avgScore);
+	public ResponseEntity<HttpStatus> modifyStatisticsReviewScore(@PathVariable String bookId, @RequestParam float avgScore) {
+		float score = (float) (Math.round(avgScore * 100) / 100.0);
+		bookStatisticsService.modifyReviewScore(bookId, score);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
