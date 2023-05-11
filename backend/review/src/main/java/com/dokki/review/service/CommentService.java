@@ -140,7 +140,7 @@ public class CommentService {
 	public void modifyComment(Long userId, Long commentId, CommentRequestDto commentRequestDto) {
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 		// 본인이 맞는지 확인
-		if (comment.getUserId() != userId) {
+		if (comment.getUserId().equals(userId) == false) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		// 수정
@@ -164,7 +164,7 @@ public class CommentService {
 	public void deleteComment(Long userId, Long commentId) {
 		CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 		// 본인이 맞는지 확인
-		if (comment.getUserId() != userId) {
+		if (comment.getUserId().equals(userId) == false) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		// 삭제
