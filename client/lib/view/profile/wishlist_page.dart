@@ -3,6 +3,7 @@ import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/utils.dart';
+import 'package:dokki/view/book_search/widget/book_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -125,7 +126,33 @@ class _WishlistPageState extends State<WishlistPage> {
                             ),
                           )
                         // 찜한 책이 있을 때
-                        : Text(up.wishlistBooks.length.toString()),
+                        : NotificationListener(
+                            child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  return BookListItem(
+                                    bookId: up.wishlistBooks[index].bookId,
+                                    bookTitle:
+                                        up.wishlistBooks[index].bookTitle,
+                                    bookCoverPath:
+                                        up.wishlistBooks[index].bookCoverPath,
+                                    bookAuthor:
+                                        up.wishlistBooks[index].bookAuthor,
+                                    bookPublisher:
+                                        up.wishlistBooks[index].bookPublisher,
+                                    bookPublishYear:
+                                        up.wishlistBooks[index].bookPublishYear,
+                                    imageHeight: 100.0,
+                                    imageWidth: 80.0,
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                    height: 10,
+                                  );
+                                },
+                                itemCount: up.wishlistBooks.length),
+                          ),
                   )
                 ],
               ),
