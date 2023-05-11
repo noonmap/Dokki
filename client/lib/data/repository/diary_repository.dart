@@ -15,7 +15,7 @@ class DiaryRepository {
       'size': '$dataSize',
     };
 
-    dynamic response = await _apiService.get(commonPath, params);
+    dynamic response = await _apiService.get('/$commonPath', params);
 
     final diariesData = response['content'] as List;
     List<DiaryModel> diaries =
@@ -44,7 +44,7 @@ class DiaryRepository {
   // GET : 감정 일기 단일 조회
   Future<DiaryModel> getDiaryDataByBookId({required String bookId}) async {
     try {
-      dynamic response = await _apiService.get('$commonPath/$bookId', {});
+      dynamic response = await _apiService.get('/$commonPath/$bookId', {});
       DiaryModel diaryData = DiaryModel.fromJson(response);
       return diaryData;
     } catch (e) {
@@ -55,9 +55,8 @@ class DiaryRepository {
   // GET : AI 이미지 생성 가능 횟수 조회
   Future<int> getDiaryImageCountData() async {
     try {
-      dynamic response = await _apiService.get('$commonPath/image/count', {});
-      DiaryImageCountModel diaryImageCountData =
-          DiaryImageCountModel.fromJson(response);
+      dynamic response = await _apiService.get('/$commonPath/image/count', {});
+      int diaryImageCountData = response['count'];
 
       return diaryImageCountData;
     } catch (e) {
@@ -72,7 +71,7 @@ class DiaryRepository {
 
     try {
       dynamic response =
-          await _apiService.post('$commonPath/image/creation', data);
+          await _apiService.post('/$commonPath/image/creation', data);
       String diaryImageData = response['diaryImagePath'];
       int diaryImageCountData = response['count'];
 
@@ -98,7 +97,7 @@ class DiaryRepository {
     };
 
     try {
-      await _apiService.post('commonPath/$bookId', data);
+      await _apiService.post('/$commonPath/$bookId', data);
     } catch (e) {
       rethrow;
     }
