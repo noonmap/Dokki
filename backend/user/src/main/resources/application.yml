@@ -53,7 +53,7 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 25261a4eb8b0b5ef403c907b35df3724
+            client-id: 9d03d60cc88c7bea2a829ea7d86cd32d
             redirect-uri: http://localhost:5010/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
@@ -97,5 +97,5 @@ springfox:
 # file path
 app:
   fileupload:
-    uploadPath: ${UPLOAD_PATH}
-    uploadDir: ${UPLOAD_DIR}
+    uploadPath: static
+    uploadDir: upload
