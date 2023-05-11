@@ -51,7 +51,7 @@ public class BookController {
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
-		Long userId = 0L;
+		Long userId = SessionUtils.getUserId();
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
 		if (bookEntity.getStatistics() == null) {   // 처음 저장하는 책인 경우
@@ -75,7 +75,7 @@ public class BookController {
 	@ApiOperation(value = "도서 검색")
 	public ResponseEntity<Slice<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) throws CustomException {
 		// 검색어 없거나 빈 값일 경우
-		if (StringUtils.isEmpty(search.trim())) {
+		if (!StringUtils.hasText(search)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search.trim(), SearchType.findByName(queryType), pageable);

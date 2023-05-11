@@ -21,30 +21,18 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 
 	@Transactional
 	@Modifying
-	@Query(value = "update dokki.book_statistics set reading_users = reading_users + 1 where book_id = :bookId", nativeQuery = true)
-	int updateAddOneReadingUser(@Param("bookId") String bookId);
+	@Query(value = "update dokki.book_statistics "
+		+ " set bookmarked_users = (select count(*) from bookmark where book_id = :bookId) "
+		+ " where book_id = :bookId", nativeQuery = true)
+	int updateBookMarkedUser(@Param("bookId") String bookId);
 
 	@Transactional
 	@Modifying
-	@Query(value = "update dokki.book_statistics set complete_users = complete_users + 1 where book_id = :bookId", nativeQuery = true)
-	int updateAddOneCompleteUser(@Param("bookId") String bookId);
-
-	@Transactional
-	@Modifying
-	@Query(value = "update dokki.book_statistics set bookmarked_users = bookmarked_users + 1 where book_id = :bookId", nativeQuery = true)
-	int updateAddOneBookMarkedUser(@Param("bookId") String bookId);
-
-	@Transactional
-	@Modifying
-	@Query(value = "update dokki.book_statistics set bookmarked_users = bookmarked_users - 1 where book_id = :bookId", nativeQuery = true)
-	int updateDeleteOneBookMarkedUser(@Param("bookId") String bookId);
-
-	@Transactional
-	@Modifying
-	@Query("update BookStatisticsEntity b set b.completedUsers = b.completedUsers + :complete, "
-		+ " b.readingUsers = b.readingUsers - :complete "
-		+ " where b.bookId = :bookId")
-	int updateReadDatas(@Param("bookId") BookEntity bookId, @Param("complete") int complete);
+	@Query(value = "update dokki.book_statistics "
+		+ " set completed_users = (select count(*) from book_status where book_id = :bookId and status = \"F\"), "
+		+ " reading_users = (select count(*) from book_status where book_id = :bookId and status = \"T\") "
+		+ " where b.bookId = :bookId", nativeQuery = true)
+	int updateReadCompleteUser(@Param("bookId") BookEntity bookId);
 
 	@Transactional
 	@Modifying
@@ -55,18 +43,18 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 		+ " reading_users = reading_users - 1"
 		+ " where book_id = :bookId",
 		nativeQuery = true)
-	void updateReadDatasTimeComplete(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
+	void updateReadDataReadToComplete(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
 
 	@Transactional
 	@Modifying
 	@Query(value = "update dokki.book_statistics "
 		+ "set mean_read_time = "
-		+ "ifnull((mean_read_time * completed_users) - :accumTime) / (completed_users - 1), 0)"
-		+ ", completed_users = completed_users - 1,"
+		+ "ifnull(((mean_read_time * completed_users) - :accumTime) / (completed_users - 1), 0), "
+		+ " completed_users = completed_users - 1,"
 		+ " reading_users = reading_users + 1"
 		+ " where book_id = :bookId",
 		nativeQuery = true)
-	void updateReadDatasTimeReading(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
+	void updateReadDataCompleteToRead(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
 
 	@Transactional
 	@Modifying
