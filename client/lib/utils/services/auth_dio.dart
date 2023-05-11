@@ -15,7 +15,6 @@ class CustomInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     final token = await storage.read(key: 'ACCESS_TOKEN');
     print('[REQ] [${options.method}] ${options.uri}');
-    print('[REQ] [ACCESSTOKEN] $token');
     options.headers.addAll({'authorization': 'Bearer $token'});
     return super.onRequest(options, handler);
   }
@@ -24,7 +23,6 @@ class CustomInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print(
         '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
-
     super.onResponse(response, handler);
   }
 
@@ -89,6 +87,18 @@ class CustomInterceptor extends Interceptor {
         return handler.reject(e);
       }
     }
+
+    // if (err.response?.statusCode == 500) {
+    //   final dio = Dio();
+    //   dio.options.baseUrl = baseUrl;
+    //   dio.options.headers = {
+    //     'Authorization': 'Bearer $accessToken',
+    //     'Refresh': 'Bearer $refreshToken'
+    //   };
+    //
+    //   final response = await dio.fetch(err.requestOptions);
+    //   return handler.resolve(response);
+    // }
     // Token과 관련된 에러가 아닌 경우
     return handler.reject(err);
   }

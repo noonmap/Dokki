@@ -26,6 +26,9 @@ class TimerRepository {
     try {
       dynamic response =
           await _apiService.get("/timers/history/today/$userId", {});
+      if (response["todayTime"] == null) {
+        response["todayTime"] = 0;
+      }
       return response["todayTime"];
     } catch (e) {
       rethrow;
