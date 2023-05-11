@@ -10,10 +10,10 @@ class OpacityLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: 0.4,
+      opacity: 0.2,
       child: Container(
         alignment: Alignment.center,
-        color: grayColor200,
+        color: grayColor100,
         child: const SpinKitFadingFour(
           color: brandColor500,
           size: 50.0,

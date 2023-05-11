@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class DokkiGrassPage extends StatelessWidget {
   const DokkiGrassPage({
     Key? key,
-    required this.userId,
   }) : super(key: key);
-
-  final String userId;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("독끼풀"));
+    return ModelViewer(src: "assets/3d/RockWalkway01.glb");
   }
 }

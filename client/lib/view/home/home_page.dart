@@ -1,7 +1,6 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
-import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/book_search/widget/book_list_item.dart';
@@ -20,24 +19,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      final sbp = Provider.of<StatusBookProvider>(context, listen: false);
 
-      sbp.initProvider();
-      final userId = await storage.read(key: "userId");
-      await Future.wait([
-        sbp.getReadTimeToday(userId as String),
-        sbp.getLikeBookList("0", PAGE_LIMIT),
-        sbp.getReadingBookList("0", PAGE_LIMIT)
-      ]);
-    });
+    fetchData("0");
+  }
+
+  void fetchData(String userId) async {
+    final sbp = Provider.of<StatusBookProvider>(context, listen: false);
+
+    sbp.initProvider();
+    sbp.getReadTimeToday(userId);
+    sbp.getLikeBookList("0", PAGE_LIMIT);
+    sbp.getReadingBookList("0", PAGE_LIMIT);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("home build");
     final sbp = Provider.of<StatusBookProvider>(context);
     TabController tabController = TabController(length: 2, vsync: this);
-    return sbp.isReadingLoading
+    return sbp.isTodayLoading || sbp.isLikeLoading || sbp.isReadingLoading
         ? const OpacityLoading()
         : Container(
             decoration: const BoxDecoration(color: brandColor100),

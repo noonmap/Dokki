@@ -1,13 +1,9 @@
-import 'dart:async';
-
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/custom_app_bar.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
-import 'package:slider_button/slider_button.dart';
 
 class TimerPage extends StatefulWidget {
   final int bookStatusId;
@@ -32,7 +28,6 @@ class _TimerPageState extends State<TimerPage> {
   @override
   Widget build(BuildContext context) {
     Color c = Color(0XFFE57373);
-    print("build");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
@@ -45,7 +40,10 @@ class _TimerPageState extends State<TimerPage> {
           size: 24,
         ),
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            context.read<TimerProvider>().exit();
+            Navigator.pop(context);
+          },
           icon: const Icon(
             Icons.home,
             color: grayColor000,
@@ -80,25 +78,26 @@ class _TimerPageState extends State<TimerPage> {
                     topRight: Radius.circular(20.0),
                     topLeft: Radius.circular(20.0))),
             child: Consumer<TimerProvider>(builder: (context, provider, child) {
-              print("consumer");
               final time = provider.currentTime;
               final isPlaying = provider.timerPlaying;
               return Column(
                 children: [
                   Text(
                     Utils.secondTimeToFormatString(time),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 50,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
-                      isPlaying ? provider.pause() : provider.start();
+                      isPlaying
+                          ? provider.pause(widget.bookStatusId)
+                          : provider.start(widget.bookStatusId);
                     },
                     icon: isPlaying
-                        ? Icon(Icons.play_circle, size: 56)
-                        : Icon(Icons.stop_circle, size: 56),
+                        ? const Icon(Icons.stop_circle, size: 56)
+                        : const Icon(Icons.play_circle, size: 56),
                   ),
                 ],
               );
