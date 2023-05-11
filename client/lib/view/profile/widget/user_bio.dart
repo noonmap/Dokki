@@ -18,6 +18,14 @@ class userBio extends StatelessWidget {
   final String userId;
   final bool isMine;
 
+  void onFollowButtonTap() {
+    if (up.userBio?.isFollowed == true) {
+      up.followById(userId: userId, category: 'unfollow');
+    } else if (up.userBio?.isFollowed == false) {
+      up.followById(userId: userId, category: 'follow');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -51,7 +59,10 @@ class userBio extends StatelessWidget {
                     // 팔로우 버튼
                     isMine
                         ? const LogoutButton()
-                        : FollowButton(isFollowed: up.userBio!.isFollowed),
+                        : FollowButton(
+                            isFollowed: up.userBio!.isFollowed,
+                            onTap: onFollowButtonTap,
+                          ),
                   ],
                 ),
                 Row(

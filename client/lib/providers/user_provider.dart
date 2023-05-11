@@ -3,6 +3,7 @@ import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
+import 'package:dokki/data/model/user/user_simple_model.dart';
 import 'package:dokki/data/repository/user_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -21,13 +22,19 @@ class UserProvider extends ChangeNotifier {
   List<Book> wishlistBooks = [];
   Map<String, dynamic> pageData = {};
 
+  bool followListLoading = false;
+  List<UserSimpleModel> followList = [];
+
   void initProvider() {
     wishlistBooks = [];
     pageData = {};
     wishlistLoading = false;
+
+    followListLoading = false;
+    followList = [];
   }
 
-  // GET : 프로필 바이오
+  // GET : 프로필 바이오 조회
   Future<void> getUserBioById(String userId) async {
     isLoading = true;
     try {
@@ -38,6 +45,25 @@ class UserProvider extends ChangeNotifier {
       print(e.response);
     } finally {
       isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // GET : 팔로잉/팔로워 목록 조회
+  Future<void> getFollowList({
+    required userId,
+    required category,
+    required page,
+  }) async {
+    followListLoading = true;
+    try {
+      List<UserSimpleModel> followListData = await _userRepository
+          .getFollowListData(userId: userId, category: category, page: page);
+      followList = followListData;
+    } on DioError catch (e) {
+      print(e.response);
+    } finally {
+      followListLoading = false;
       notifyListeners();
     }
   }
@@ -94,6 +120,19 @@ class UserProvider extends ChangeNotifier {
     } finally {
       wishlistLoading = false;
       notifyListeners();
+    }
+  }
+
+  // POST, DELETE : 팔로우, 언팔로우
+  Future<void> followById({required userId, required category}) async {
+    try {
+      if (category == 'follow') {
+        _userRepository.followById(userId: userId);
+      } else {
+        _userRepository.unfollowById(userId: userId);
+      }
+    } on DioError catch (e) {
+      print(e.response);
     }
   }
 }
