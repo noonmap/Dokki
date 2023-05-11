@@ -1,6 +1,7 @@
 package com.dokki.review.service;
 
 
+import com.dokki.review.client.BookClient;
 import com.dokki.review.client.UserClient;
 import com.dokki.review.config.exception.CustomException;
 import com.dokki.review.dto.request.CommentRequestDto;
@@ -32,6 +33,46 @@ public class CommentService {
 
 	private final UserClient userClient;
 
+	private final BookClient bookClient;
+
+
+	/**
+	 * commentEntity의 필드 값을 사용해서 CommentResponseDto 객체를 생성한 후 반환
+	 * user정보는 Default값으로 채움
+	 *
+	 * @param commentEntity
+	 * @return
+	 */
+	private CommentResponseDto createCommentResponseDto(CommentEntity commentEntity) {
+		// user 정보를 default 값으로 대체
+		UserSimpleInfoDto defaultUserInfo = UserSimpleInfoDto.builder()
+			.userId(commentEntity.getUserId())
+			.nickname(DefaultEnum.USER_NICKNAME.getValue())
+			.profileImagePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue())
+			.build();
+		return createCommentResponseDto(commentEntity, defaultUserInfo);
+	}
+
+
+	/**
+	 * commentEntity와 userSimpleInfoDto의 필드 값을 사용해서 CommentResponseDto 객체를 생성한 후 반환
+	 *
+	 * @param commentEntity
+	 * @param userSimpleInfoDto
+	 * @return
+	 */
+	private CommentResponseDto createCommentResponseDto(CommentEntity commentEntity, UserSimpleInfoDto userSimpleInfoDto) {
+		return CommentResponseDto.builder()
+			.userId(commentEntity.getUserId())
+			.nickname(userSimpleInfoDto.getNickname())
+			.profileImagePath(FileUtils.getAbsoluteFilePath(userSimpleInfoDto.getProfileImagePath()))
+			.commentId(commentEntity.getId())
+			.score(commentEntity.getScore().intValue())
+			.content(commentEntity.getContent())
+			.created(commentEntity.getCreatedAt())
+			.build();
+	}
+
 
 	/**
 	 * 도서의 코멘트 목록 조회
@@ -55,31 +96,13 @@ public class CommentService {
 			commentResponseDtoSlice = commentEntityPage.map(
 				c -> {
 					int idx = counter.getAndIncrement();
-					return CommentResponseDto.builder()
-						.userId(c.getUserId())
-						.nickname(writerInfoList.get(idx).getNickname())
-						.profileImagePath(FileUtils.getAbsoluteFilePath(writerInfoList.get(idx).getProfileImagePath()))
-						.commentId(c.getId())
-						.score(c.getScore().intValue())
-						.content(c.getContent())
-						.created(c.getCreatedAt())
-						.build();
+					return createCommentResponseDto(c, writerInfoList.get(idx));
 				}
 			);
 		} catch (FeignException e) {
 			log.error(e.getMessage());
 			// 조회 실패한 경우, 빈 값은 default value로 채움
-			commentResponseDtoSlice = commentEntityPage.map(
-				c -> CommentResponseDto.builder()
-					.userId(c.getUserId())
-					.nickname(DefaultEnum.USER_NICKNAME.getValue())
-					.profileImagePath(FileUtils.getAbsoluteFilePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue()))
-					.commentId(c.getId())
-					.score(c.getScore().intValue())
-					.content(c.getContent())
-					.created(c.getCreatedAt())
-					.build()
-			);
+			commentResponseDtoSlice = commentEntityPage.map(c -> createCommentResponseDto(c));
 		}
 
 		return commentResponseDtoSlice;
@@ -158,31 +181,13 @@ public class CommentService {
 			commentResponseDtoList = commentTop3.stream().map(
 				c -> {
 					int idx = counter.getAndIncrement();
-					return CommentResponseDto.builder()
-						.userId(c.getUserId())
-						.nickname(writerInfoList.get(idx).getNickname())
-						.profileImagePath(FileUtils.getAbsoluteFilePath(writerInfoList.get(idx).getProfileImagePath()))
-						.commentId(c.getId())
-						.score(c.getScore().intValue())
-						.content(c.getContent())
-						.created(c.getCreatedAt())
-						.build();
+					return createCommentResponseDto(c, writerInfoList.get(idx));
 				}
 			).collect(Collectors.toList());
 		} catch (FeignException e) {
 			log.error(e.getMessage());
 			// 조회 실패한 경우, 빈 값은 default value로 채움
-			commentResponseDtoList = commentTop3.stream().map(
-				c -> CommentResponseDto.builder()
-					.userId(c.getUserId())
-					.nickname(DefaultEnum.USER_NICKNAME.getValue())
-					.profileImagePath(FileUtils.getAbsoluteFilePath(DefaultEnum.USER_PROFILE_IMAGE_PATH.getValue()))
-					.commentId(c.getId())
-					.score(c.getScore().intValue())
-					.content(c.getContent())
-					.created(c.getCreatedAt())
-					.build()
-			).collect(Collectors.toList());
+			commentResponseDtoList = commentTop3.stream().map(c -> createCommentResponseDto(c)).collect(Collectors.toList());
 		}
 		return commentResponseDtoList;
 	}
