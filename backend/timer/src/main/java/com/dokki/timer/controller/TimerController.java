@@ -2,6 +2,8 @@ package com.dokki.timer.controller;
 
 
 import com.dokki.timer.service.TimerService;
+import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
+import com.dokki.util.common.utils.SessionUtils;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +28,7 @@ public class TimerController {
 	@PostMapping("/{bookStatusId}/start")
 	@ApiOperation(value = "독서 시간 측정을 시작합니다.")
 	public ResponseEntity<Boolean> startTimer(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		timerService.startTimer(userId, bookStatusId);
 		return ResponseEntity.ok(null);
 	}
@@ -35,7 +37,7 @@ public class TimerController {
 	@PostMapping("/{bookStatusId}/end")
 	@ApiOperation(value = "독서 시간 측정을 종료합니다.", notes = "시작 시간과 종료 시간을 저장하고, 두 시간의 차를 독서 누적 시간에 추가합니다.")
 	public ResponseEntity<Boolean> endTimer(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		timerService.endTimer(bookStatusId, userId);
 		return ResponseEntity.ok(null);
 	}
@@ -52,7 +54,7 @@ public class TimerController {
 	@PutMapping("/{bookStatusId}/complete")
 	@ApiOperation(value = "독서 완독 시간 수정", notes = "도서 상태 변경할 때 이용합니다.")
 	public ResponseEntity<Boolean> modifyEndTime(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: userId 가져오기
+		Long userId = SessionUtils.getUserId();
 		timerService.modifyEndTime(userId, bookStatusId);
 		return ResponseEntity.ok(null);
 	}
@@ -63,6 +65,15 @@ public class TimerController {
 	public ResponseEntity<List<TimerSimpleResponseDto>> getAccumTime(@RequestBody List<Long> bookStatusIdList) {
 		List<TimerSimpleResponseDto> result = timerService.getAccumTimeList(bookStatusIdList);
 		return ResponseEntity.ok(result);
+	}
+
+
+	@PutMapping("/direct-complete")
+	@ApiOperation(value = "[내부호출] 날짜, bookId, bookStatusId 로 타이머 테이블에 추가 또는 update")
+	public ResponseEntity<Boolean> startTimer(@RequestBody BookCompleteDirectRequestDto request) {
+		Long userId = SessionUtils.getUserId();
+		timerService.createTimerDirect(userId, request);
+		return ResponseEntity.ok(null);
 	}
 
 }
