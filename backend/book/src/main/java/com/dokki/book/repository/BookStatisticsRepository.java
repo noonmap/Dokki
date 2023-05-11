@@ -41,11 +41,10 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 
 	@Transactional
 	@Modifying
-	@Query("update BookStatisticsEntity b set b.meanReadTime = :meanReadTime,"
-		+ " b.completedUsers = b.completedUsers + :complete, "
+	@Query("update BookStatisticsEntity b set b.completedUsers = b.completedUsers + :complete, "
 		+ " b.readingUsers = b.readingUsers - :complete "
 		+ " where b.bookId = :bookId")
-	int updateReadDatas(@Param("bookId") BookEntity bookId, @Param("meanReadTime") int meanReadTime, @Param("complete") int complete);
+	int updateReadDatas(@Param("bookId") BookEntity bookId, @Param("complete") int complete);
 
 	@Transactional
 	@Modifying
@@ -56,7 +55,7 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 		+ " reading_users = reading_users - 1"
 		+ " where book_id = :bookId",
 		nativeQuery = true)
-	void updateReadDatasComplete(String bookId, Integer accumTime);
+	void updateReadDatasTimeComplete(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
 
 	@Transactional
 	@Modifying
@@ -67,7 +66,7 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 		+ " reading_users = reading_users + 1"
 		+ " where book_id = :bookId",
 		nativeQuery = true)
-	void updateReadDatasReading(String bookId, Integer accumTime);
+	void updateReadDatasTimeReading(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
 
 	@Transactional
 	@Modifying
@@ -77,6 +76,6 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 		+ ", completed_users = completed_users - 1 "
 		+ " where book_id = :bookId",
 		nativeQuery = true)
-	void updateReadDatasDeleteComplete(String bookId, Integer accumTime);
+	void updateReadDatasDeleteComplete(@Param("bookId") String bookId, @Param("accumTime") Integer accumTime);
 
 }
