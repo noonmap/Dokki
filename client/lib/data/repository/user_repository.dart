@@ -2,6 +2,7 @@ import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
 import 'package:dokki/data/model/user/user_monthly_count_model.dart';
+import 'package:dokki/data/model/user/user_simple_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
 
 class UserRepository {
@@ -13,6 +14,23 @@ class UserRepository {
       dynamic response = await _apiService.get('/users/profile/$userId', {});
       UserBioModel userData = UserBioModel.fromJson(response);
       return userData;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // GET : 팔로잉/팔로워 목록 조회
+  Future<List<UserSimpleModel>> getFollowListData(
+      {required userId, required category, required page}) async {
+    int dataSize = 50;
+    Map<String, String> params = {'page': '$page', 'size': '$dataSize'};
+    try {
+      dynamic response =
+          await _apiService.get('/users/$category/$userId', params) as List;
+      List<UserSimpleModel> followListData =
+          response.map((data) => UserSimpleModel.fromJson(data)).toList();
+
+      return followListData;
     } catch (e) {
       rethrow;
     }
@@ -98,5 +116,23 @@ class UserRepository {
     };
 
     return wishlistData;
+  }
+
+  // POST : 팔로우
+  Future<void> followById({required userId}) async {
+    try {
+      await _apiService.post('/users/follow/$userId', {});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // DELETE : 언팔로우
+  Future<void> unfollowById({required userId}) async {
+    try {
+      await _apiService.delete('/users/follow/$userId');
+    } catch (e) {
+      rethrow;
+    }
   }
 }
