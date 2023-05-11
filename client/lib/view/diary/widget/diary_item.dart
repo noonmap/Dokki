@@ -57,11 +57,13 @@ class DiaryItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Paragraph(
-                        text: diaryData.bookTitle,
-                        weightType: WeightType.semiBold,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Paragraph(
+                          text: diaryData.bookTitle,
+                          weightType: WeightType.semiBold,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),

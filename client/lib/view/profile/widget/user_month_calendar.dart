@@ -116,7 +116,12 @@ class _UserMonthCalendarState extends State<UserMonthCalendar> {
                 decoration: const BoxDecoration(
                     border: Border(bottom: BorderSide(color: grayColor200))),
                 child: days[i]['read']
-                    ? Image.network(days[i]['bookCoverPath'])
+                    ? Image.network(
+                        days[i]['bookCoverPath'],
+                        width: 42,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      )
                     : days[i]['inMonth']
                         ? Paragraph(
                             text: days[i]['day'].toString(),
