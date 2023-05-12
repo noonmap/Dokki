@@ -57,7 +57,7 @@ public interface TimerClient {
 	 * 책 바로 완독으로 추가에서 사용
 	 * bookId, bookStatusId, 시작날짜와 종료날짜를 받아서 저장
 	 */
-	@PutMapping("/timers/direct-complete")
+	@PostMapping("/timers/direct-complete")
 	Boolean directComplete(@RequestBody BookCompleteDirectRequestDto request);
 
 }
