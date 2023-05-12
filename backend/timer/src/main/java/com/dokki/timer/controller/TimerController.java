@@ -68,7 +68,7 @@ public class TimerController {
 	}
 
 
-	@PutMapping("/direct-complete")
+	@PostMapping("/direct-complete")
 	@ApiOperation(value = "[내부호출] 날짜, bookId, bookStatusId 로 타이머 테이블에 추가 또는 update")
 	public ResponseEntity<Boolean> startTimer(@RequestBody BookCompleteDirectRequestDto request) {
 		Long userId = SessionUtils.getUserId();
