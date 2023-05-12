@@ -44,6 +44,7 @@ public class GlobalFilterExceptionHandler implements ErrorWebExceptionHandler {
 		if (ex instanceof CustomException) { // Custom Exception이 throw 된 경우
 			customEx = (CustomException) ex;
 		} else { // Custom Exception이 throw 되지 않은 경우
+			log.error(ex.getMessage());
 			customEx = new CustomException(ErrorCode.UNKNOWN_GATEWAY_ERROR);
 		}
 		response.setStatusCode(HttpStatus.valueOf(customEx.getStatus()));
