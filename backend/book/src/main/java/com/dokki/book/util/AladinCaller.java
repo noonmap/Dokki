@@ -50,6 +50,7 @@ public class AladinCaller {
 		Map<String, String> params = new HashMap<>();
 		params.put("ttbkey", ALADIN_API_KEY);
 		params.put("QueryType", "Bestseller");
+		params.put("SearchTarget", "Book");
 		params.put("MaxResults", Integer.toString(pageable.getPageSize()));
 		params.put("start", Integer.toString(pageable.getPageNumber()));
 
