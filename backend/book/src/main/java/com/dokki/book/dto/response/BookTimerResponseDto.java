@@ -3,6 +3,7 @@ package com.dokki.book.dto.response;
 
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
+import com.dokki.util.common.utils.FileUtils;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,36 +25,30 @@ public class BookTimerResponseDto {
 	private Long bookStatusId;
 	private String bookTitle;
 	private Integer accumReadTime;
-
-
-	public static BookTimerResponseDto fromEntity(BookStatusEntity bookStatusEntity) {
-		// TODO : 채우기 및 파라미터 수정 (accumReadTime 정보 있는 파라미터 추가)
-		BookEntity book = bookStatusEntity.getBookId();
-		return BookTimerResponseDto.builder()
-			.bookStatusId(bookStatusEntity.getId())
-			.bookTitle(book.getTitle())
-			.accumReadTime(0)
-			.build();
-	}
+	private String bookCoverPath;
+	private String bookCoverBackImagePath;
+	private String bookCoverSideImagePath;
 
 
 	public static Slice<BookTimerResponseDto> fromEntitySlice(Slice<BookStatusEntity> bookEntityPage) {
-		return bookEntityPage.map(BookTimerResponseDto::fromEntity);
+		return bookEntityPage.map(o -> fromEntityandAccumTime(o, 0));
 	}
 
 
-	public static BookTimerResponseDto fromStatusAndTimerEntity(BookStatusEntity bookStatusEntity, int time) {
-		// TODO : 채우기 및 파라미터 수정 (accumReadTime 정보 있는 파라미터 추가)
+	public static BookTimerResponseDto fromEntityandAccumTime(BookStatusEntity bookStatusEntity, int accumTime) {
 		BookEntity book = bookStatusEntity.getBookId();
 		return BookTimerResponseDto.builder()
 			.bookStatusId(bookStatusEntity.getId())
 			.bookTitle(book.getTitle())
-			.accumReadTime(time)
+			.accumReadTime(accumTime)
+			.bookCoverPath(FileUtils.getAbsoluteFilePath(book.getCoverFrontImagePath()))
+			.bookCoverBackImagePath(FileUtils.getAbsoluteFilePath(book.getCoverBackImagePath()))
+			.bookCoverSideImagePath(FileUtils.getAbsoluteFilePath(book.getCoverSideImagePath()))
 			.build();
 	}
 
 
-	public static Slice<BookTimerResponseDto> fromStatusAndTimerEntitySlice(Slice<BookStatusEntity> bookStatusEntitySlice, List<TimerSimpleResponseDto> timeList) {
+	public static Slice<BookTimerResponseDto> fromStatusEntityAndTimeListSlice(Slice<BookStatusEntity> bookStatusEntitySlice, List<TimerSimpleResponseDto> timeList) {
 		// 정렬
 		Collections.sort(timeList, (c1, c2) -> Math.toIntExact(c1.getBookStatusId() - c2.getBookStatusId()));
 
@@ -62,14 +57,15 @@ public class BookTimerResponseDto {
 		return bookStatusEntitySlice.map(
 			c -> {
 				int idx = counter.getAndIncrement();
-				if (idx >= timeList.size()) {   // out of index
-					return BookTimerResponseDto.fromEntity(c);
-				} else if (!c.getId().equals(timeList.get(idx).getBookStatusId())) { // book status id don't match
-					counter.decrementAndGet();
-					return BookTimerResponseDto.fromEntity(c);
-				} else {
-					return BookTimerResponseDto.fromStatusAndTimerEntity(c, timeList.get(idx).getAccumTime());
+				int accumTime = 0;
+				if (idx < timeList.size()) {   // index 넘지 않을 경우
+					if (!c.getId().equals(timeList.get(idx).getBookStatusId())) { // book status id don't match
+						counter.decrementAndGet();
+					} else {
+						accumTime = timeList.get(idx).getAccumTime();
+					}
 				}
+				return BookTimerResponseDto.fromEntityandAccumTime(c, accumTime);
 			}
 		);
 	}
