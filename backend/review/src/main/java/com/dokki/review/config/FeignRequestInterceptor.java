@@ -17,7 +17,7 @@ public class FeignRequestInterceptor {
 			requestTemplate.header("USER_ID", String.valueOf(SessionUtils.getUserId()));
 			requestTemplate.header("USER_NICKNAME", SessionUtils.getUserNickname());
 			requestTemplate.header("USER_PROFILE_IMAGE_PATH", SessionUtils.getUserProfileImagePath());
-			requestTemplate.header(HttpHeaders.AUTHORIZATION, HttpHeaders.AUTHORIZATION);
+			requestTemplate.header(HttpHeaders.AUTHORIZATION, SessionUtils.getAuthorization());
 		};
 	}
 
