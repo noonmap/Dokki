@@ -2,6 +2,8 @@ package com.dokki.book.controller;
 
 
 import com.dokki.book.config.exception.CustomException;
+import com.dokki.book.dto.UserBookInfoDto;
+import com.dokki.book.dto.request.BookCompleteRequestDto;
 import com.dokki.book.dto.response.AladinItemResponseDto;
 import com.dokki.book.dto.response.BookDetailResponseDto;
 import com.dokki.book.dto.response.BookSearchResponseDto;
@@ -9,6 +11,7 @@ import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookMarkEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.service.BookService;
+import com.dokki.book.service.BookStatisticsService;
 import com.dokki.book.service.BookStatusService;
 import com.dokki.book.service.BookmarkService;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
@@ -26,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,19 +45,35 @@ public class BookController {
 	private final BookService bookService;
 	private final BookmarkService bookmarkService;
 	private final BookStatusService bookStatusService;
+	private final BookStatisticsService bookStatisticsService;
+
+
+	@GetMapping("")
+	@ApiOperation(value = "추천 도서 조회")
+	public ResponseEntity<Slice<BookSearchResponseDto>> getRecommendBookList(Pageable pageable) {
+		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.recommendBookList(pageable);
+		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.fromApiResponseSlice(apiBookResponseDtoSlice);
+		return ResponseEntity.ok(bookSearchResponseDtoSlice);
+	}
 
 
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
+		Long userId = SessionUtils.getUserId();
 		BookEntity bookEntity = bookService.getBook(bookId);
 		BookDetailResponseDto bookDetailResponseDto = BookDetailResponseDto.fromEntity(bookEntity);
-		if (bookEntity.getStatistics() != null) {
+		if (bookEntity.getStatistics() == null) {   // 처음 저장하는 책인 경우
+			bookDetailResponseDto.setUserData(new UserBookInfoDto());
+			bookDetailResponseDto.setReview(Collections.emptyList());
+		} else {
+			bookDetailResponseDto.setUserData(bookStatusService.getUserBookInfo(userId, bookId));
 			try {
 				bookDetailResponseDto.setReview(bookService.get3Comment(bookId));
 			} catch (FeignException e) {
 				log.error("리뷰 조회 실패 - bookId : {}", bookId);
 				log.error(e.getMessage());
+				bookDetailResponseDto.setReview(Collections.emptyList());
 			}
 		}
 		return ResponseEntity.ok(bookDetailResponseDto);
@@ -64,26 +84,21 @@ public class BookController {
 	@ApiOperation(value = "도서 검색")
 	public ResponseEntity<Slice<BookSearchResponseDto>> searchBookList(@RequestParam String search, @RequestParam String queryType, Pageable pageable) throws CustomException {
 		// 검색어 없거나 빈 값일 경우
-		if (StringUtils.isEmpty(search.trim())) {
+		if (!StringUtils.hasText(search)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.searchBookList(search.trim(), SearchType.findByName(queryType), pageable);
-		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.toSliceFromApiResponse(apiBookResponseDtoSlice);
+		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.fromApiResponseSlice(apiBookResponseDtoSlice);
 		return ResponseEntity.ok(bookSearchResponseDtoSlice);
 	}
 
 
 	@GetMapping("/like")
 	@ApiOperation(value = "찜한 책 조회")
-	public ResponseEntity<Slice<BookSimpleResponseDto>> getBookmarkListByUserId(Pageable pageable) {
+	public ResponseEntity<Slice<BookSearchResponseDto>> getBookmarkListByUserId(Pageable pageable) {
 		Long userId = SessionUtils.getUserId();
-		Slice<BookMarkEntity> bookEntityPage = bookmarkService.getBookmarkList(userId, pageable);
-		Slice<BookSimpleResponseDto> bookResponseDtoPage =
-			bookEntityPage.map(entity -> BookSimpleResponseDto.builder()
-				.bookId(entity.getBookId().getId())
-				.bookTitle(entity.getBookId().getTitle())
-				.bookCoverPath(entity.getBookId().getCoverFrontImagePath())
-				.build());
+		Slice<BookMarkEntity> bookEntitySlice = bookmarkService.getBookmarkList(userId, pageable);
+		Slice<BookSearchResponseDto> bookResponseDtoPage = BookSearchResponseDto.fromBookMarkEntitySlice(bookEntitySlice);
 		return ResponseEntity.ok(bookResponseDtoPage);
 	}
 
@@ -100,34 +115,34 @@ public class BookController {
 	@DeleteMapping("/like/{bookId}")
 	@ApiOperation(value = "책 찜하기 취소")
 	public ResponseEntity<HttpStatus> deleteBookmark(@PathVariable String bookId) {
-		Long userId = 0L;   // TODO: user id 가져오기
+		Long userId = SessionUtils.getUserId();
 		bookmarkService.deleteBookmark(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
 	@PostMapping("/status")
-	@ApiOperation(value = "유저 책 상태 추가")
-	public ResponseEntity<HttpStatus> createStatusToInprogress(@RequestBody Map<String, String> map) {
-		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.createStatus(userId, map.get("bookId"));
+	@ApiOperation(value = "책 타이머뷰에 추가 | 진행중 상태 추가 또는 완독 -> 진행중으로 변경")
+	public ResponseEntity<HttpStatus> createOrModifyStatusToInprogress(@RequestBody Map<String, String> map) {
+		Long userId = SessionUtils.getUserId();
+		bookStatusService.createBookToTimer(userId, map.get("bookId"));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
-	@PutMapping("/status/{bookStatusId}/reading")
-	@ApiOperation(value = "책 상태 변경 | 완독(컬렉션) → 진행중(타이머)")
-	public ResponseEntity<HttpStatus> modifyStatusToInprogress(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: user id 가져오기
-		bookStatusService.modifyStatusToInprogress(userId, bookStatusId);
+	@PostMapping("/status/direct-complete")
+	@ApiOperation(value = "책 완독 추가")
+	public ResponseEntity<HttpStatus> createStatusToDone(@RequestBody BookCompleteRequestDto dto) {
+		Long userId = SessionUtils.getUserId();
+		bookStatusService.createPastBookDone(userId, dto);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
-	@PutMapping("/status/{bookStatusId}/done")
+	@PutMapping("/status/{bookStatusId}/complete")
 	@ApiOperation(value = "책 상태 변경 | 진행중(타이머) → 완독(컬렉션)")
 	public ResponseEntity<HttpStatus> modifyStatusToDone(@PathVariable Long bookStatusId) {
-		Long userId = 0L;   // TODO: user id 가져오기
+		Long userId = SessionUtils.getUserId();
 		bookStatusService.modifyStatusToDone(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -158,6 +173,15 @@ public class BookController {
 				.build()
 		).collect(Collectors.toList());
 		return ResponseEntity.ok(result);
+	}
+
+
+	@PostMapping("/statistics/{bookId}/review")
+	@ApiOperation(value = "[내부 호출] 리뷰 평균 점수를 통계에 업데이트합니다.")
+	public ResponseEntity<HttpStatus> modifyStatisticsReviewScore(@PathVariable String bookId, @RequestParam float avgScore) {
+		float score = (float) (Math.round(avgScore * 100) / 100.0);
+		bookStatisticsService.modifyReviewScore(bookId, score);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

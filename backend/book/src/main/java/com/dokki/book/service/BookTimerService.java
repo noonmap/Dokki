@@ -8,6 +8,7 @@ import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,7 @@ public class BookTimerService {
 	 */
 
 	public Slice<BookTimerResponseDto> getBookTimerList(Long userId, Pageable pageable) {
+		Slice<BookTimerResponseDto> resultList;
 		Slice<BookStatusEntity> bookTimerSlice = bookStatusRepository.getByUserIdAndStatusEquals(userId, STATUS_IN_PROGRESS, pageable);
 
 		// bookTimerSlice에서 statusId 리스트 추출
@@ -47,14 +49,15 @@ public class BookTimerService {
 			.map(BookStatusEntity::getId)
 			.collect(Collectors.toList());
 
-		// timer 서버에서 각 statusId마다 time 가져오기
-		List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
+		try {
+			// timer 서버에서 각 statusId마다 time 가져오기
+			List<TimerSimpleResponseDto> timeList = timerClient.getAccumTime(statusIdList);
+			resultList = BookTimerResponseDto.fromStatusEntityAndTimeListSlice(bookTimerSlice, timeList);
+		} catch (FeignException e) {
+			log.error(e.getMessage());
 
-		Slice<BookTimerResponseDto> resultList;
-		if (timeList.isEmpty()) {
+			// timer 정보 없을 경우 time 이 default값인 변환메소드 호출
 			resultList = BookTimerResponseDto.fromEntitySlice(bookTimerSlice);
-		} else {
-			resultList = BookTimerResponseDto.fromStatusAndTimerEntitySlice(bookTimerSlice, timeList);
 		}
 		return resultList;
 	}
@@ -77,8 +80,8 @@ public class BookTimerService {
 
 		try {
 			timerClient.deleteTimer(bookStatusId);
-		}catch (Exception e){
-			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}",bookStatusId);
+		} catch (Exception e) {
+			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}", bookStatusId);
 		}
 	}
 
