@@ -2,6 +2,7 @@ package com.dokki.timer.controller;
 
 
 import com.dokki.timer.service.TimerService;
+import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.utils.SessionUtils;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import io.swagger.annotations.Api;
@@ -64,6 +65,15 @@ public class TimerController {
 	public ResponseEntity<List<TimerSimpleResponseDto>> getAccumTime(@RequestBody List<Long> bookStatusIdList) {
 		List<TimerSimpleResponseDto> result = timerService.getAccumTimeList(bookStatusIdList);
 		return ResponseEntity.ok(result);
+	}
+
+
+	@PutMapping("/direct-complete")
+	@ApiOperation(value = "[내부호출] 날짜, bookId, bookStatusId 로 타이머 테이블에 추가 또는 update")
+	public ResponseEntity<Boolean> startTimer(@RequestBody BookCompleteDirectRequestDto request) {
+		Long userId = SessionUtils.getUserId();
+		timerService.createTimerDirect(userId, request);
+		return ResponseEntity.ok(null);
 	}
 
 }
