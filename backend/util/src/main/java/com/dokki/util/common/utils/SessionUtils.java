@@ -2,6 +2,7 @@ package com.dokki.util.common.utils;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -16,6 +17,11 @@ public class SessionUtils {
 	static private HttpServletRequest getRequest() {
 		// HttpServlet을 쓰려면spring-boot-starter-web 의존성을 추가해줘야 한다.
 		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+	}
+
+
+	static public String getAuthorization() {
+		return getRequest().getHeader(HttpHeaders.AUTHORIZATION);
 	}
 
 

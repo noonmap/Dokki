@@ -31,7 +31,7 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 	@Query(value = "update dokki.book_statistics "
 		+ " set completed_users = (select count(*) from book_status where book_id = :bookId and status = \"F\"), "
 		+ " reading_users = (select count(*) from book_status where book_id = :bookId and status = \"T\") "
-		+ " where b.bookId = :bookId", nativeQuery = true)
+		+ " where book_id = :bookId", nativeQuery = true)
 	int updateReadCompleteUser(@Param("bookId") BookEntity bookId);
 
 	@Transactional
