@@ -48,6 +48,15 @@ public class BookController {
 	private final BookStatisticsService bookStatisticsService;
 
 
+	@GetMapping("")
+	@ApiOperation(value = "추천 도서 조회")
+	public ResponseEntity<Slice<BookSearchResponseDto>> getRecommendBookList(Pageable pageable) {
+		Slice<AladinItemResponseDto> apiBookResponseDtoSlice = bookService.recommendBookList(pageable);
+		Slice<BookSearchResponseDto> bookSearchResponseDtoSlice = BookSearchResponseDto.fromApiResponseSlice(apiBookResponseDtoSlice);
+		return ResponseEntity.ok(bookSearchResponseDtoSlice);
+	}
+
+
 	@GetMapping("/{bookId}")
 	@ApiOperation(value = "도서 상세 조회")
 	public ResponseEntity<BookDetailResponseDto> getBook(@PathVariable String bookId) {
