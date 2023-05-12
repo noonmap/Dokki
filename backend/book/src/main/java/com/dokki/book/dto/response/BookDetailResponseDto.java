@@ -3,6 +3,7 @@ package com.dokki.book.dto.response;
 
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatisticsEntity;
+import com.dokki.util.common.utils.FileUtils;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,9 +45,9 @@ public class BookDetailResponseDto {
 			.bookSummary(item.getSummary())
 			.bookAuthor(item.getAuthor())
 			.bookLink(item.getLink())
-			.bookCoverPath(item.getCoverFrontImagePath())
-			.bookCoverBackImagePath(item.getCoverBackImagePath())
-			.bookCoverSideImagePath(item.getCoverSideImagePath())
+			.bookCoverPath(FileUtils.getAbsoluteFilePath(item.getCoverFrontImagePath()))
+			.bookCoverBackImagePath(FileUtils.getAbsoluteFilePath(item.getCoverBackImagePath()))
+			.bookCoverSideImagePath(FileUtils.getAbsoluteFilePath(item.getCoverSideImagePath()))
 			.bookPublishYear(year)
 			.bookPublisher(item.getPublisher())
 			.bookTotalPage(item.getTotalPageCount())
