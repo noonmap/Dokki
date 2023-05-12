@@ -36,6 +36,25 @@ public class BookService {
 
 
 	/**
+	 * 추천 도서 리스트
+	 */
+	public Slice<AladinItemResponseDto> recommendBookList(Pageable pageable) {
+		AladinSearchResponseDto result;
+		try {
+			result = AladinCaller.bestSeller(pageable);
+		} catch (RuntimeException e) {
+			log.error("BookService - 알라딘 api 에러 {}", e.getMessage());
+			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+		} catch (IOException e) {
+			log.error("BookService - {}", e.getMessage());
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		boolean hasNext = pageable.getPageSize() * pageable.getPageNumber() < result.getTotalResults(); // 다음 slice 있는지 확인 계산
+		return new SliceImpl<>(result.getItem(), pageable, hasNext);
+	}
+
+
+	/**
 	 * 책 검색
 	 *
 	 * @param search    검색어
