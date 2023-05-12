@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.TimeZone;
 
 
@@ -28,7 +28,7 @@ public class ReviewApplication {
 	@PostConstruct
 	void started() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-		log.info("Current Time : {}", LocalDate.now());
+		log.info("Current Time : {}", LocalDateTime.now());
 	}
 
 }
