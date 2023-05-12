@@ -1,5 +1,6 @@
 import "dart:math";
 
+import "package:dio/dio.dart";
 import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
@@ -126,8 +127,18 @@ class BookRepository {
     }
   }
 
+  // DELETE : /books/like/:bookId
+  Future<void> deleteLikeBookData(String bookId) async {
+    try {
+      final response = await _apiService.delete("/books/like/$bookId");
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // POST : 읽는 중인 책 추가
-  Future<dynamic> addReadingBookData(Map<String, dynamic> data) async {
+  Future<void> addReadingBookData(Map<String, dynamic> data) async {
     try {
       dynamic response = await _apiService.post("/books/status", data);
       return response;

@@ -13,7 +13,7 @@ class OpacityLoading extends StatelessWidget {
       opacity: 0.2,
       child: Container(
         alignment: Alignment.center,
-        color: grayColor100,
+        color: grayColor300,
         child: const SpinKitFadingFour(
           color: brandColor500,
           size: 50.0,

@@ -37,9 +37,9 @@ class _BookItemState extends State<BookItem> {
           boxShadow: [
             BoxShadow(
               color: grayColor200,
-              blurRadius: 12.0,
+              blurRadius: 10.0,
               spreadRadius: 2.0,
-              offset: Offset(0, 14),
+              offset: Offset(0, 10),
             ),
           ],
         ),
@@ -59,9 +59,9 @@ class _BookItemState extends State<BookItem> {
           boxShadow: [
             BoxShadow(
               color: grayColor200,
-              blurRadius: 12.0,
+              blurRadius: 10.0,
               spreadRadius: 2.0,
-              offset: Offset(0, 14),
+              offset: Offset(0, 10),
             ),
           ],
         ),
@@ -129,7 +129,7 @@ class _BookItemState extends State<BookItem> {
       child: Container(
         width: double.infinity,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(color: brandColor100),
+        decoration: const BoxDecoration(color: Colors.transparent),
         child: Transform(
           transform: Matrix4.identity()
             ..setEntry(3, 2, 0.001)
@@ -141,9 +141,9 @@ class _BookItemState extends State<BookItem> {
                 boxShadow: [
                   BoxShadow(
                     color: grayColor200,
-                    blurRadius: 12.0,
+                    blurRadius: 10.0,
                     spreadRadius: 2.0,
-                    offset: Offset(0, 14),
+                    offset: Offset(0, 10),
                   ),
                 ],
               ),
@@ -195,9 +195,9 @@ class _BookItemState extends State<BookItem> {
                   decoration: const BoxDecoration(boxShadow: [
                     BoxShadow(
                       color: grayColor200,
-                      blurRadius: 12.0,
+                      blurRadius: 10.0,
                       spreadRadius: 2.0,
-                      offset: Offset(0, 14),
+                      offset: Offset(0, 10),
                     ),
                   ]),
                   child: ThumbImage(
@@ -216,9 +216,9 @@ class _BookItemState extends State<BookItem> {
                     boxShadow: [
                       BoxShadow(
                         color: grayColor200,
-                        blurRadius: 12.0,
+                        blurRadius: 10.0,
                         spreadRadius: 2.0,
-                        offset: Offset(0, 14),
+                        offset: Offset(0, 10),
                       ),
                     ],
                   ),

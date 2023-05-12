@@ -81,43 +81,16 @@ class StatusBookProvider extends ChangeNotifier {
     }
   }
 
-  // 찜 목록에 책 추가
-  Future<void> addLikeBook(String bookId) async {
-    isPostLoading = true;
-    notifyListeners();
-    try {
-      await _bookRepository.addLikeBookData(bookId);
-      success = '북마크에 추가 했습니다.';
-    } on DioError catch (e) {
-      switch (e.response?.data["code"]) {
-        case "C001":
-          error = "이미 북마크된 책 입니다.";
-          break;
-        case "C003":
-          error = "존재 하지 않는 책 ID 입니다.";
-          break;
-        case "U002":
-          error = e.response?.data["message"];
-          break;
-        default:
-          rethrow;
-      }
-    } finally {
-      isPostLoading = false;
-      notifyListeners();
-    }
-  }
-
   // POST : 타이머에 책 추가
   Future<void> addReadingBook(Map<String, dynamic> data) async {
     isPostLoading = true;
     notifyListeners();
     try {
+      print(data);
       await _bookRepository.addReadingBookData(data);
       // 성공 한 경우
       success = "타이머에 추가 했습니다.";
     } on DioError catch (e) {
-      print(e.response!.statusCode);
       error = "타이머에 추가 하지 못했습니다.";
     } finally {
       isPostLoading = false;

@@ -18,14 +18,19 @@ class BookProvider extends ChangeNotifier {
   bool isDetailLoading = false;
   bool isPostLoading = false;
 
-  Future<BookDetailModel> getBookById(String bookId) async {
+  Future<void> getBookById(String bookId) async {
+    isDetailLoading = true;
+    notifyListeners();
     try {
       BookDetailModel returnData =
           await _bookRepository.getBookByIdData(bookId);
-      return returnData;
+      book = returnData;
     } catch (e) {
       error = "error";
       rethrow;
+    } finally {
+      isDetailLoading = false;
+      notifyListeners();
     }
   }
 
@@ -47,6 +52,47 @@ class BookProvider extends ChangeNotifier {
       rethrow;
     } finally {
       isListLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 찜 목록에 책 추가
+  Future<void> addLikeBook(String bookId) async {
+    isPostLoading = true;
+    try {
+      await _bookRepository.addLikeBookData(bookId);
+      success = '북마크에 추가 했습니다.';
+    } on DioError catch (e) {
+      switch (e.response?.data["code"]) {
+        case "C001":
+          error = "이미 북마크된 책 입니다.";
+          break;
+        case "C003":
+          error = "존재 하지 않는 책 ID 입니다.";
+          break;
+        case "U002":
+          error = e.response?.data["message"];
+          break;
+        default:
+          rethrow;
+      }
+    } finally {
+      isPostLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 찜 목록에 책 삭제
+  Future<void> deleteLikeBook(String bookId) async {
+    isPostLoading = true;
+    try {
+      await _bookRepository.deleteLikeBookData(bookId);
+      success = '북마크에 추가 했습니다.';
+    } on DioError catch (e) {
+      error = "북마크 삭제에 실패 했습니다.";
+      rethrow;
+    } finally {
+      isPostLoading = false;
       notifyListeners();
     }
   }

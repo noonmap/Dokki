@@ -8,9 +8,11 @@ import 'package:provider/provider.dart';
 
 class BottomSheetModal extends StatefulWidget {
   final String? bookId;
+  final int currentStatusIndex;
   const BottomSheetModal({
     super.key,
     this.bookId,
+    required this.currentStatusIndex,
   });
 
   @override
@@ -34,9 +36,16 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedIndex = widget.currentStatusIndex;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final sbp = Provider.of<StatusBookProvider>(context, listen: false);
-
+    print(selectedIndex);
     return SizedBox(
       height: 280,
       child: Stack(children: [
@@ -114,10 +123,11 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                 onPressed: () async {
                   if (selectedIndex == 0) {
                     // 찜 목록 추가
-                    await sbp.addLikeBook(widget.bookId!);
                     showMessage(sbp, context);
                   } else if (selectedIndex == 1) {
                     // 읽는 중인 책에 추가 (타이머에 추가)
+                    await sbp.addReadingBook({"bookId": widget.bookId!});
+                    showMessage(sbp, context);
                   } else {
                     // 완독에 추가
                   }

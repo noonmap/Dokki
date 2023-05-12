@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print("home build");
     final sbp = Provider.of<StatusBookProvider>(context);
     TabController tabController = TabController(length: 2, vsync: this);
     return sbp.isTodayLoading || sbp.isLikeLoading || sbp.isReadingLoading

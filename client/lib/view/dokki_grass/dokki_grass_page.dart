@@ -1,3 +1,4 @@
+import 'package:dokki/common/constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
@@ -8,6 +9,8 @@ class DokkiGrassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ModelViewer(src: "assets/3d/RockWalkway01.glb");
+    return Container(
+      decoration: BoxDecoration(color: brandColor100),
+    );
   }
 }
