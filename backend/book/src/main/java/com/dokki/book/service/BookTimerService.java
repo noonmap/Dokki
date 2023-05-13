@@ -6,6 +6,7 @@ import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
+import com.dokki.book.util.ServiceUtil;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import feign.FeignException;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -72,10 +72,8 @@ public class BookTimerService {
 	public void deleteBookTimer(Long bookStatusId, Long userId) {
 		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
-		// 로그인한 유저의 책이 맞는지 확인
-		if (!Objects.equals(statusEntity.getUserId(), userId)) {
-			throw new CustomException(ErrorCode.INVALID_REQUEST);
-		}
+		// 로그인한 유저의 책이 맞는지 확인 후 삭제
+		ServiceUtil.isSameUser(userId, statusEntity.getUserId());
 		bookStatusRepository.deleteById(bookStatusId);
 
 		try {

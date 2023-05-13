@@ -9,6 +9,7 @@ import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatisticsRepository;
 import com.dokki.book.repository.BookStatusRepository;
+import com.dokki.book.util.ServiceUtil;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 
 @Slf4j
@@ -61,8 +61,8 @@ public class BookStatusService {
 	@Transactional
 	public void createPastBookDone(Long userId, BookCompleteRequestDto dto) {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(dto.getBookId());
-		BookStatusEntity result = bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
-		if (result != null) {
+		BookStatusEntity pastBookStatusEntity = bookStatusRepository.findTopByUserIdAndBookId(userId, bookEntity);
+		if (pastBookStatusEntity != null) {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
 
@@ -103,10 +103,7 @@ public class BookStatusService {
 	 */
 	public void modifyStatusToInprogress(Long userId, BookStatusEntity statusEntity) {
 
-		// 로그인한 유저의 책이 맞는지 확인
-		if (!Objects.equals(statusEntity.getUserId(), userId)) {
-			throw new CustomException(ErrorCode.INVALID_REQUEST);
-		}
+		ServiceUtil.isSameUser(statusEntity.getUserId(), userId);
 		if (STATUS_DONE.equals(statusEntity.getStatus())) { // 완료 상태인 경우
 			// 상태 변경
 			statusEntity.setStatus(STATUS_IN_PROGRESS);
@@ -138,10 +135,7 @@ public class BookStatusService {
 	public void modifyStatusToDone(Long userId, Long bookStatusId) {
 		BookStatusEntity bookStatusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
-		// 로그인한 유저의 책이 맞는지 확인
-		if (!Objects.equals(bookStatusEntity.getUserId(), userId)) {
-			throw new CustomException(ErrorCode.INVALID_REQUEST);
-		}
+		ServiceUtil.isSameUser(bookStatusEntity.getUserId(), userId);
 		if (STATUS_IN_PROGRESS.equals(bookStatusEntity.getStatus())) { // 진행중 상태인 경우
 			// 상태 변경
 			bookStatusEntity.setStatus(STATUS_DONE);
