@@ -36,6 +36,7 @@ public class BookStatusService {
 	private final BookStatusRepository bookStatusRepository;
 	private final BookStatisticsRepository bookStatisticRepository;
 	private final BookmarkService bookmarkService;
+	private final BookTimerService bookTimerService;
 
 	private final TimerClient timerClient;
 
@@ -98,11 +99,26 @@ public class BookStatusService {
 
 
 	/**
+	 * 도서 상태 삭제
+	 */
+	@Transactional
+	public void deleteStatus(Long userId, Long bookStatusId) {
+		BookStatusEntity bookStatusEntity = getBookStatus(bookStatusId);
+		ServiceUtil.isSameUser(bookStatusEntity.getUserId(), userId);
+
+		if (STATUS_IN_PROGRESS.equals(bookStatusEntity.getStatus())) {
+			bookTimerService.deleteBookTimer(bookStatusEntity);
+		} else {
+			deleteCollection(userId, bookStatusEntity);
+		}
+	}
+
+
+	/**
 	 * 도서 상태 변경
 	 * ⇒ 완독(컬렉션) → 진행중(타이머)
 	 */
 	public void modifyStatusToInprogress(Long userId, BookStatusEntity statusEntity) {
-
 		ServiceUtil.isSameUser(statusEntity.getUserId(), userId);
 		if (STATUS_DONE.equals(statusEntity.getStatus())) { // 완료 상태인 경우
 			// 상태 변경
@@ -175,20 +191,19 @@ public class BookStatusService {
 	/**
 	 * 다 읽은 책 컬렉션에서 삭제
 	 *
-	 * @param bookStatusId 책 상태 id
+	 * @param userId           유저 id
+	 * @param bookStatusEntity 책 상태 entity
 	 */
 	@Transactional
-	public void deleteCollection(Long userId, Long bookStatusId) {
-		BookStatusEntity bookStatusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
-		String bookId = bookStatusEntity.getBookId().getId();
-		bookStatusRepository.deleteByIdAndUserId(bookStatusId, userId);
+	public void deleteCollection(Long userId, BookStatusEntity bookStatusEntity) {
+		bookStatusRepository.deleteByIdAndUserId(bookStatusEntity.getId(), userId);
 
 		// 책 통계 업데이트
 		try {
-			List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
+			List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusEntity.getId()));
 			// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
 			if (!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0) {
-				bookStatisticRepository.updateReadDatasDeleteComplete(bookId, accumTimeList.get(0).getAccumTime());
+				bookStatisticRepository.updateReadDatasDeleteComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
 			}
 		} catch (FeignException e) {
 			log.error(e.getMessage());

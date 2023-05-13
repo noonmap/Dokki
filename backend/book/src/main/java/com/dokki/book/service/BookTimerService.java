@@ -2,12 +2,9 @@ package com.dokki.book.service;
 
 
 import com.dokki.book.client.TimerClient;
-import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.response.BookTimerResponseDto;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatusRepository;
-import com.dokki.book.util.ServiceUtil;
-import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -66,20 +63,14 @@ public class BookTimerService {
 	/**
 	 * [타이머 뷰] 읽고 있는 도서 삭제
 	 *
-	 * @param bookStatusId
-	 * @param userId       유저 id
+	 * @param bookStatusEntity 책 상태 entity
 	 */
-	public void deleteBookTimer(Long bookStatusId, Long userId) {
-		BookStatusEntity statusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
-
-		// 로그인한 유저의 책이 맞는지 확인 후 삭제
-		ServiceUtil.isSameUser(userId, statusEntity.getUserId());
-		bookStatusRepository.deleteById(bookStatusId);
-
+	void deleteBookTimer(BookStatusEntity bookStatusEntity) {
+		bookStatusRepository.delete(bookStatusEntity);
 		try {
-			timerClient.deleteTimer(bookStatusId);
+			timerClient.deleteTimer(bookStatusEntity.getId());
 		} catch (Exception e) {
-			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}", bookStatusId);
+			log.info("BookTimerService - 타이머 테이블 x, bookStatusId:{}", bookStatusEntity.getBookId());
 		}
 	}
 
