@@ -130,6 +130,15 @@ public class BookController {
 	}
 
 
+	@DeleteMapping("/status/{bookStatusId}")
+	@ApiOperation(value = "책 상태 삭제 | 타이머 또는 컬렉션에서 삭제")
+	public ResponseEntity<HttpStatus> deleteStatus(@PathVariable Long bookStatusId) {
+		Long userId = SessionUtils.getUserId();
+		bookStatusService.deleteStatus(userId, bookStatusId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+
 	@PostMapping("/status/direct-complete")
 	@ApiOperation(value = "책 완독 추가")
 	public ResponseEntity<HttpStatus> createStatusToDone(@RequestBody BookCompleteRequestDto dto) {
