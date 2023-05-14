@@ -1,6 +1,3 @@
-import "dart:math";
-
-import "package:dio/dio.dart";
 import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
@@ -93,8 +90,15 @@ class BookRepository {
     try {
       dynamic response = await _apiService.get("/books/read-book", params);
       final booksData = response["content"] as List;
-      List<BookTimerModel> bookList =
-          booksData.map((json) => BookTimerModel.fromJson(json)).toList();
+      List<BookTimerModel> bookList = booksData.map((json) {
+        if (json["bookCoverBackImagePath"] == null) {
+          json["bookCoverBackImagePath"] = "";
+        }
+        if (json["bookCoverSideImagePath"] == null) {
+          json["bookCoverSideImagePath"] = "";
+        }
+        return BookTimerModel.fromJson(json);
+      }).toList();
 
       final first = response["first"];
       final last = response["last"];
@@ -127,7 +131,7 @@ class BookRepository {
     }
   }
 
-  // DELETE : /books/like/:bookId
+  // DELETE : /books/like/:bookId -> 찜 목록 삭제
   Future<void> deleteLikeBookData(String bookId) async {
     try {
       final response = await _apiService.delete("/books/like/$bookId");
@@ -141,6 +145,39 @@ class BookRepository {
   Future<void> addReadingBookData(Map<String, dynamic> data) async {
     try {
       dynamic response = await _apiService.post("/books/status", data);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : /books/status/direct-complete -> 완독서에 바로 책 추가
+  Future<void> addDirectCompleteBookData(Map<String, dynamic> data) async {
+    try {
+      dynamic response =
+          await _apiService.post("/books/status/direct-complete", data);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // PUT : /books/status/{bookStatusId}/complete -> 진행중에서 완독서로 상태 변경
+  Future<void> updateCompleteBookData(String bookStatusId) async {
+    try {
+      dynamic response =
+          await _apiService.put("/books/status/$bookStatusId/complete", {});
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // DELETE : /books/status/{bookStatusId} -> 도서 상태 삭제
+  Future<void> deleteBookStatusData(String bookStatusId) async {
+    try {
+      dynamic response =
+          await _apiService.delete("/books/status/$bookStatusId");
       return response;
     } catch (e) {
       rethrow;

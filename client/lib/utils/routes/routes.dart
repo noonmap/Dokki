@@ -32,6 +32,9 @@ class Routes {
           builder: (BuildContext context) => TimerPage(
             bookStatusId: args["bookStatusId"],
             bookTitle: args["bookTitle"],
+            bookCoverPath: args["bookCoverPath"],
+            bookCoverSideImagePath: args["bookCoverSideImagePath"],
+            bookCoverBackImagePath: args["bookCoverBackImagePath"],
           ),
           settings: settings,
         );

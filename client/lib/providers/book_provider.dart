@@ -97,6 +97,66 @@ class BookProvider extends ChangeNotifier {
     }
   }
 
+  // 읽는 중인 책 추가
+  Future<void> addReadingBook(Map<String, dynamic> data) async {
+    isPostLoading = true;
+    try {
+      await _bookRepository.addReadingBookData(data);
+      success = "읽는 중인 책(타이머)에 추가 되었습니다.";
+    } on DioError catch (e) {
+      error = "읽는 중인 책(타이머) 추가에 실패했습니다.";
+      rethrow;
+    }finally{
+      isPostLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 완독서 다이렉트 추가
+  Future<void> addDirectCompleteBook(Map<String, dynamic> data) async {
+    isPostLoading = true;
+    try {
+      await _bookRepository.addDirectCompleteBookData(data);
+      success = "완독서에 추가 되었습니다.";
+    } on DioError catch (e) {
+      error = "완독서 추가에 실패 했습니다.";
+      rethrow;
+    } finally {
+      isPostLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 진행중에서 완독서로 상태 변경
+  Future<void> updateCompleteBook(String bookStatusId) async {
+    isPostLoading = true;
+    try {
+      await _bookRepository.updateCompleteBookData(bookStatusId);
+      success = "완독서에 추가 되었습니다.";
+    } on DioError catch (e) {
+      error = "완독서 추가에 실패 했습니다.";
+      rethrow;
+    } finally {
+      isPostLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 도서 상태 삭제
+  Future<void> deleteBookStatus(String bookStatusId) async{
+    isPostLoading = true;
+    try{
+      await _bookRepository.deleteBookStatusData(bookStatusId);
+      success = "도서 상태가 삭제 되었습니다.";
+    }on DioError catch(e){
+      error = "도서 상태 삭제에 실패 했습니다.";
+      rethrow;
+    }finally{
+      isPostLoading = false;
+      notifyListeners();
+    }
+  }
+
   void initProvider() {
     success = "";
     error == "";
