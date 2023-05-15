@@ -3,16 +3,18 @@ import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 
 class LibraryBookItem extends StatelessWidget {
-  const LibraryBookItem({super.key, required this.bookData});
+  const LibraryBookItem(
+      {super.key, required this.bookData, required this.loginUserId});
 
   final LibraryBookModel bookData;
+  final String loginUserId;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.bookDetail,
-            arguments: {'bookId': bookData.bookId});
+            arguments: {'bookId': bookData.bookId, "loginUserId": loginUserId});
       },
       child: Container(
         decoration: BoxDecoration(

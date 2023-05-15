@@ -24,14 +24,21 @@ class Routes {
             builder: (BuildContext context) => const MainPage());
 
       case RoutesName.home:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) => const HomePage());
+          builder: (BuildContext context) => HomePage(
+            userId: args["userId"],
+          ),
+          settings: settings,
+        );
       case RoutesName.timer:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (BuildContext context) => TimerPage(
+            bookId: args["bookId"],
             bookStatusId: args["bookStatusId"],
             bookTitle: args["bookTitle"],
+            accumReadTime: args["accumReadTime"],
             bookCoverPath: args["bookCoverPath"],
             bookCoverSideImagePath: args["bookCoverSideImagePath"],
             bookCoverBackImagePath: args["bookCoverBackImagePath"],
@@ -46,14 +53,20 @@ class Routes {
             builder: (BuildContext context) => const LoginPage());
 
       case RoutesName.searchBook:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+
         return MaterialPageRoute(
-            builder: (BuildContext context) => const SearchBookPage());
+          builder: (BuildContext context) => SearchBookPage(
+            userId: args["userId"],
+          ),
+        );
 
       case RoutesName.bookDetail:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (BuildContext context) => BookDetailPage(
                   bookId: args['bookId'],
+                  loginUserId: args["loginUserId"],
                 ),
             settings: settings);
 
@@ -86,8 +99,13 @@ class Routes {
             settings: settings);
 
       case RoutesName.wishlist:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+
         return MaterialPageRoute(
-            builder: (BuildContext context) => const WishlistPage());
+          builder: (BuildContext context) => WishlistPage(
+            loginUserId: args["loginUserId"],
+          ),
+        );
 
       case RoutesName.diary:
         return MaterialPageRoute(

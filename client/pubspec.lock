@@ -310,6 +310,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.19"
+  flutter_rating_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar
+      sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -905,10 +913,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: daadc9baabec998b062c9091525aa95786508b1c48e9c30f1f891b8bf6ff2e64
+      sha256: eb6ac1540b26de412b3403a163d919ba86f6a973fe6cc50ae3541b80092fdcfb
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.1"
   timer_builder:
     dependency: "direct main"
     description:

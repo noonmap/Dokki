@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String userId;
+
+  const HomePage({super.key, required this.userId});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -117,6 +119,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   itemBuilder: (_, index) {
                                     final item = sbp.likeBookList[index];
                                     return BookListItem(
+                                      loginUserId: widget.userId,
                                       bookId: item.bookId,
                                       bookTitle: item.bookTitle,
                                       bookCoverPath: item.bookCoverPath,

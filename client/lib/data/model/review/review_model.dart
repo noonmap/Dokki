@@ -5,6 +5,7 @@ part 'review_model.g.dart';
 @JsonSerializable()
 class Review {
   Review({
+    required this.commentId,
     required this.userId,
     required this.nickname,
     required this.profileImagePath,
@@ -16,6 +17,7 @@ class Review {
   final int userId;
   final String nickname;
   final String profileImagePath;
+  final int commentId;
   final int score;
   final String content;
   final String created;
