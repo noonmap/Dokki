@@ -11,6 +11,7 @@ import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +37,37 @@ public class TimerService {
 	private final TimerRedisService timerRedisService;
 
 	private final BookClient bookClient;
+
+
+	/**
+	 * 타이머 정보 가져오기
+	 *
+	 * @param bookStatusId
+	 */
+	public TimerResponseDto getTimerByBookStatusId(Long userId, Long bookStatusId) {
+		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
+		TimerResponseDto response;
+		
+		if (optionalTimerEntity.isEmpty()) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		} else {
+			TimerEntity timerEntity = optionalTimerEntity.get();
+			// 로그인한 유저의 타이머가 맞는지 확인
+			if (!userId.equals(timerEntity.getUserId())) {
+				throw new CustomException(ErrorCode.INVALID_REQUEST);
+			}
+			response = TimerResponseDto.builder()
+				.id(timerEntity.getId())
+				.bookStatusId(timerEntity.getBookStatusId())
+				.userId(timerEntity.getUserId())
+				.bookId(timerEntity.getBookId())
+				.accumTime(timerEntity.getAccumTime())
+				.startTime(timerEntity.getStartTime())
+				.endTime(timerEntity.getEndTime())
+				.build();
+		}
+		return response;
+	}
 
 
 	/**

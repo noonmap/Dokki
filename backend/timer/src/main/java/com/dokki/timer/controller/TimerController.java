@@ -4,6 +4,7 @@ package com.dokki.timer.controller;
 import com.dokki.timer.service.TimerService;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.utils.SessionUtils;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +24,14 @@ import java.util.List;
 public class TimerController {
 
 	private final TimerService timerService;
+
+
+	@GetMapping("/{bookStatusId}")
+	@ApiOperation(value = "bookStatusId로 타이머 정보 조회")
+	public ResponseEntity<TimerResponseDto> getTimerByBookStatusId(@PathVariable Long bookStatusId) {
+		Long userId = SessionUtils.getUserId();
+		return ResponseEntity.ok(timerService.getTimerByBookStatusId(userId, bookStatusId));
+	}
 
 
 	@PostMapping("/{bookStatusId}/start")
