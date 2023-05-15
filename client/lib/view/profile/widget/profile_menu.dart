@@ -7,11 +7,12 @@ class ProfileMenu extends StatelessWidget {
   const ProfileMenu({
     super.key,
     required this.userId,
+    required this.nickname,
     required this.isMine,
     required this.keys,
   });
 
-  final String userId;
+  final String userId, nickname;
   final bool isMine;
   final Map<String, GlobalKey> keys;
 
@@ -35,7 +36,7 @@ class ProfileMenu extends StatelessWidget {
                   label: '서재',
                   onTap: () {
                     Navigator.pushNamed(context, RoutesName.library,
-                        arguments: {'userId': userId});
+                        arguments: {'userId': userId, 'nickname': nickname});
                   },
                 ),
           isMine

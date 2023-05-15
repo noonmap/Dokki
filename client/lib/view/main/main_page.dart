@@ -16,12 +16,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final storage = const FlutterSecureStorage();
-  late String userId;
+  late String userId, nickname;
 
   List pages = [
     const HomePage(),
     const SearchBookPage(),
-    const LibraryPage(userId: ''),
+    const LibraryPage(
+      userId: '',
+      nickname: '',
+    ),
     const DokkiGrassPage(),
     const ProfilePage(userId: ''),
   ];
@@ -34,11 +37,17 @@ class _MainPageState extends State<MainPage> {
   }
 
   void getUserIdFromStorage() async {
-    String? tmp = await storage.read(key: "userId");
-    if (tmp != null) {
+    String? tmpId = await storage.read(key: "userId");
+    String? tmpName = await storage.read(key: 'nickname');
+    if (tmpId != null && tmpName != null) {
       setState(() {
-        userId = tmp;
-        pages[2] = LibraryPage(userId: userId);
+        userId = tmpId;
+        nickname = tmpName;
+
+        pages[2] = LibraryPage(
+          userId: userId,
+          nickname: nickname,
+        );
         pages[4] = ProfilePage(userId: userId);
       });
     }
