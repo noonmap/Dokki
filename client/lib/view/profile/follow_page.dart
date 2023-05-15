@@ -128,29 +128,30 @@ class _FollowPageState extends State<FollowPage> {
                     return false;
                   },
                   child: ListView.separated(
-                      itemBuilder: (context, idx) {
-                        return FollowListItem(user: up.followList[idx]);
-                      },
-                      separatorBuilder: (context, idx) {
-                        return Column(
-                          children: [
-                            const SizedBox(height: 12),
-                            Container(
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: grayColor100,
-                                    width: 1,
-                                  ),
+                    itemBuilder: (context, idx) {
+                      return FollowListItem(user: up.followList[idx]);
+                    },
+                    separatorBuilder: (context, idx) {
+                      return Column(
+                        children: [
+                          const SizedBox(height: 12),
+                          Container(
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: grayColor100,
+                                  width: 1,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 12),
-                          ],
-                        );
-                      },
-                      itemCount: up.followList.length),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      );
+                    },
+                    itemCount: up.followList.length,
+                  ),
                 ),
               )
           ],
