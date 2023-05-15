@@ -10,7 +10,8 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class SearchBookPage extends StatefulWidget {
-  const SearchBookPage({Key? key}) : super(key: key);
+  final String userId;
+  const SearchBookPage({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<SearchBookPage> createState() => _SearchBookPageState();
@@ -147,6 +148,7 @@ class _SearchBookPageState extends State<SearchBookPage> {
                             itemCount: bp.bookList.length,
                             itemBuilder: (context, index) {
                               return BookListItem(
+                                loginUserId: widget.userId,
                                 bookId: bp.bookList[index].bookId,
                                 bookTitle: bp.bookList[index].bookTitle,
                                 bookCoverPath: bp.bookList[index].bookCoverPath,

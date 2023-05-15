@@ -2,9 +2,9 @@ import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/thumb_image.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 
 class BookListItem extends StatelessWidget {
+  final String loginUserId;
   final String bookId;
   final String bookTitle;
   final String bookCoverPath;
@@ -17,6 +17,7 @@ class BookListItem extends StatelessWidget {
 
   const BookListItem({
     super.key,
+    required this.loginUserId,
     required this.bookId,
     required this.bookTitle,
     required this.bookCoverPath,
@@ -34,7 +35,7 @@ class BookListItem extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, RoutesName.bookDetail,
-              arguments: {"bookId": bookId});
+              arguments: {"bookId": bookId, "loginUserId": loginUserId});
         },
         child: Container(
           decoration: const BoxDecoration(

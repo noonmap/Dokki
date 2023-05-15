@@ -3,13 +3,16 @@ import 'package:dokki/common/widget/custom_app_bar.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
+import 'package:dokki/view/timer/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TimerPage extends StatefulWidget {
   final int bookStatusId;
+  final String bookId;
   final String bookTitle;
   final String bookCoverPath;
+  final int accumReadTime;
   final String bookCoverBackImagePath;
   final String bookCoverSideImagePath;
   const TimerPage({
@@ -19,6 +22,8 @@ class TimerPage extends StatefulWidget {
     required this.bookCoverPath,
     required this.bookCoverBackImagePath,
     required this.bookCoverSideImagePath,
+    required this.accumReadTime,
+    required this.bookId,
   }) : super(key: key);
 
   @override
@@ -59,7 +64,21 @@ class _TimerPageState extends State<TimerPage> {
         ),
         showActionIcon: true,
         onMenuActionTap: () {
-          print("메뉴 버튼 클릭");
+          // 모달 띄우기
+          // 책을 다읽으셨습니까 ? 서재에 등록하시겠습니까 ?
+          // title : bookTitle
+          // 총 읽은 시간 : accumReadTime
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                bookId: widget.bookId,
+                title: widget.bookTitle,
+                accumReadTime: widget.accumReadTime,
+                bookStatusId: widget.bookStatusId,
+              );
+            },
+          );
         },
       ),
       body: Stack(
@@ -68,8 +87,8 @@ class _TimerPageState extends State<TimerPage> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              color: grayColor600,
+            decoration: const BoxDecoration(
+              color: Color(0XFF2C3A47),
             ),
             child: CustomPaint(
               painter: BackgroundPainter(),
@@ -78,9 +97,9 @@ class _TimerPageState extends State<TimerPage> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height - 80,
-            decoration: BoxDecoration(
-                color: grayColor600,
-                borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+                color: Color(0XFF2C3A47),
+                borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20.0),
                     topLeft: Radius.circular(20.0))),
             child: Consumer<TimerProvider>(builder: (context, provider, child) {
@@ -144,14 +163,14 @@ class BackgroundPainter extends CustomPainter {
     final path = Path();
 
     path.moveTo(0, 0);
-    path.lineTo(size.width * 0.2, 0);
+    path.lineTo(size.width * 0.25, 0);
     path.lineTo(0, size.height * 0.5);
     path.close();
 
     final path2 = Path();
 
     path2.moveTo(size.width, 0);
-    path2.lineTo(size.width * 0.8, 0);
+    path2.lineTo(size.width * 0.79, 0);
     path2.lineTo(size.width * 0.5, size.height);
     path2.lineTo(size.width, size.height);
     path2.close();

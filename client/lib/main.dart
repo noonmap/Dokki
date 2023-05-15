@@ -1,7 +1,9 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/date_provider.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/providers/library_provider.dart';
+import 'package:dokki/providers/review_provider.dart';
 import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/providers/user_provider.dart';
@@ -51,7 +53,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<DiaryProvider>(
           create: (context) => DiaryProvider(),
         ),
-        ChangeNotifierProvider<TimerProvider>(create: (_) => TimerProvider())
+        ChangeNotifierProvider<TimerProvider>(
+          create: (_) => TimerProvider(),
+        ),
+        ChangeNotifierProvider<DateProvider>(
+          create: (_) => DateProvider(),
+        ),
+        ChangeNotifierProvider<ReviewProvider>(
+          create: (_) => ReviewProvider(),
+        )
       ],
       child: MaterialApp(
         builder: (context, widget) {
