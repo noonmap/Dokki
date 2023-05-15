@@ -102,16 +102,9 @@ class _WishlistPageState extends State<WishlistPage> {
                         size: 18,
                         weightType: WeightType.medium,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 32,
                         height: 32,
-                        child: up.wishlistBooks.isNotEmpty
-                            ? const Icon(
-                                Icons.menu,
-                                size: 32,
-                                color: brandColor300,
-                              )
-                            : null,
                       ),
                     ],
                   ),

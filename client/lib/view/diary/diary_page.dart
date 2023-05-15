@@ -103,16 +103,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         size: 18,
                         weightType: WeightType.medium,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 32,
                         height: 32,
-                        child: dp.diaries.isNotEmpty
-                            ? const Icon(
-                                Icons.menu,
-                                size: 32,
-                                color: brandColor300,
-                              )
-                            : null,
                       ),
                     ],
                   ),
