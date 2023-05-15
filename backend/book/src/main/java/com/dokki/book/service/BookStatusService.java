@@ -150,6 +150,7 @@ public class BookStatusService {
 	 *
 	 * @param bookStatusId 유저 책 상태 id
 	 */
+	@Transactional
 	public void modifyStatusToDone(Long userId, Long bookStatusId) {
 		BookStatusEntity bookStatusEntity = bookStatusRepository.findById(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 
@@ -243,13 +244,23 @@ public class BookStatusService {
 		// 읽고있는, 다읽은 책 여부 가져오기
 		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 		if (bookStatusEntity != null) {
-			TimerResponseDto timerResponseDto = timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
 			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
 			isComplete = !isReading;
-			completeDate = StartEndDateResponseDto.builder()
-				.startTime(timerResponseDto.getStartTime())
-				.endTime(timerResponseDto.getEndTime())
-				.build();
+			if (isComplete) {
+				try {
+					TimerResponseDto timerResponseDto = timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
+					completeDate = StartEndDateResponseDto.builder()
+						.startTime(timerResponseDto.getStartTime())
+						.endTime(timerResponseDto.getEndTime())
+						.build();
+				} catch (FeignException e) {    // 완독 결과 조회 불가할 경우
+					log.error(e.getMessage());
+					isComplete = false;
+
+					log.info("잘못된 bookStatusEntity 삭제 - id: {} bookId: {} userId: {}", bookStatusEntity.getId(), bookStatusEntity.getBookId(), userId);
+					bookStatusRepository.delete(bookStatusEntity);
+				}
+			}
 		}
 
 		return UserBookInfoDto.builder()
