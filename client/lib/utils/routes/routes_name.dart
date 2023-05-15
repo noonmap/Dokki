@@ -9,6 +9,7 @@ class RoutesName {
   static const String library = "library_page";
   static const String dokkiGrass = "dokki_grass_page";
   static const String profile = "profile_page";
+  static const String profileEdit = 'profile_edit_page';
   static const String diary = 'diary_page';
   static const String diaryDetail = 'diary_detail_page';
   static const String diaryCreate = 'diary_create_page';
