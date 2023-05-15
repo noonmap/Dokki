@@ -1,9 +1,9 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/paragraph.dart';
+import 'package:dokki/common/widget/pink_button.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/view/profile/widget/follow_button.dart';
-import 'package:dokki/view/profile/widget/logout_button.dart';
 import 'package:flutter/material.dart';
 
 class userBio extends StatelessWidget {
@@ -18,16 +18,20 @@ class userBio extends StatelessWidget {
   final String userId;
   final bool isMine;
 
-  void onFollowButtonTap() {
-    if (up.userBio?.isFollowed == true) {
-      up.followById(userId: userId, category: 'unfollow');
-    } else if (up.userBio?.isFollowed == false) {
-      up.followById(userId: userId, category: 'follow');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    void onFollowButtonTap() {
+      if (up.userBio?.isFollowed == true) {
+        up.followById(userId: userId, category: 'unfollow');
+      } else if (up.userBio?.isFollowed == false) {
+        up.followById(userId: userId, category: 'follow');
+      }
+    }
+
+    void onEditButtonTap() {
+      Navigator.pushNamed(context, RoutesName.profileEdit);
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -58,7 +62,10 @@ class userBio extends StatelessWidget {
                     ),
                     // 팔로우 버튼
                     isMine
-                        ? const LogoutButton()
+                        ? PinkButton(
+                            text: '프로필 편집',
+                            onTap: onEditButtonTap,
+                          )
                         : FollowButton(
                             isFollowed: up.userBio!.isFollowed,
                             onTap: onFollowButtonTap,
