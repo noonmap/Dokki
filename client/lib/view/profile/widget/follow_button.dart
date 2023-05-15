@@ -26,7 +26,7 @@ class FollowButton extends StatelessWidget {
             text: isFollowed ? '팔로잉' : '팔로우',
             color: brandColor300,
             size: 16,
-            weightType: WeightType.semiBold,
+            weightType: WeightType.medium,
           ),
         ),
       ),

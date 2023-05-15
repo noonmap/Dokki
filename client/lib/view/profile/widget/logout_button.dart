@@ -23,6 +23,7 @@ class LogoutButton extends StatelessWidget {
       child: const Icon(
         Icons.logout,
         color: brandColor300,
+        size: 16,
       ),
     );
   }
