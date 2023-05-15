@@ -10,7 +10,7 @@ import com.dokki.book.entity.BookStatisticsEntity;
 import com.dokki.book.enums.SearchType;
 import com.dokki.book.repository.BookRepository;
 import com.dokki.book.repository.BookStatisticsRepository;
-import com.dokki.book.util.AladinCaller;
+import com.dokki.book.util.AladinUtil;
 import com.dokki.util.common.error.ErrorCode;
 import com.dokki.util.review.dto.response.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,8 @@ public class BookService {
 
 	private final BookRepository bookRepository;
 	private final BookStatisticsRepository bookStatisticsRepository;
+
+	private final AladinService aladinService;
 	private final ReviewClient reviewClient;
 
 
@@ -41,13 +43,10 @@ public class BookService {
 	public Slice<AladinItemResponseDto> recommendBookList(Pageable pageable) {
 		AladinSearchResponseDto result;
 		try {
-			result = AladinCaller.bestSeller(pageable);
+			result = aladinService.getBestSellerList(pageable);
 		} catch (RuntimeException e) {
 			log.error("BookService - 알라딘 api 에러 {}", e.getMessage());
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
-		} catch (IOException e) {
-			log.error("BookService - {}", e.getMessage());
-			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		boolean hasNext = pageable.getPageSize() * pageable.getPageNumber() < result.getTotalResults(); // 다음 slice 있는지 확인 계산
 		return new SliceImpl<>(result.getItem(), pageable, hasNext);
@@ -65,7 +64,7 @@ public class BookService {
 		AladinSearchResponseDto result;
 		try {
 			search = search.replaceAll(" ", "%20"); // url상에 공백 -> URL escape code로 대체
-			result = AladinCaller.searchBook(search, queryType, pageable);
+			result = aladinService.searchBookList(search, queryType, pageable);
 		} catch (RuntimeException e) {
 			log.error("BookService - 알라딘 api 에러 {}", e.getMessage());
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
@@ -131,16 +130,12 @@ public class BookService {
 	 * 서비스 내부에서 사용
 	 */
 	protected BookEntity saveBookUseAladin(String bookId) {
-		AladinItemResponseDto detailResponse;
-		try {
-			detailResponse = AladinCaller.getBook(bookId);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		AladinItemResponseDto detailResponse = aladinService.getBook(bookId);
+
 		// 책 뒷면, 옆면 이미지 url 유효 확인
-		String[] otherPath = AladinCaller.getOtherCoverPath(detailResponse.getCover());
-		boolean isValidCoverBackImagePath = AladinCaller.isValidUrl(otherPath[0]);
-		boolean isValidCoverSideImagePath = AladinCaller.isValidUrl(otherPath[1]);
+		String[] otherPath = AladinUtil.getOtherCoverPath(detailResponse.getCover());
+		boolean isValidCoverBackImagePath = AladinUtil.isValidUrl(otherPath[0]);
+		boolean isValidCoverSideImagePath = AladinUtil.isValidUrl(otherPath[1]);
 
 		// 유효하지 않은 url은 null 처리
 		if (!isValidCoverBackImagePath) otherPath[0] = null;
