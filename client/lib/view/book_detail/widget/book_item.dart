@@ -2,13 +2,17 @@ import 'dart:math';
 
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/thumb_image.dart';
+import 'package:dokki/providers/timer_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BookItem extends StatefulWidget {
   final String imagePath;
   final String sideImagePath;
   final String backImagePath;
   final double width, height, depth;
+  final bool isDetail;
+  final int bookStatusId;
   const BookItem({
     Key? key,
     required this.width,
@@ -17,6 +21,8 @@ class BookItem extends StatefulWidget {
     required this.imagePath,
     required this.sideImagePath,
     required this.backImagePath,
+    required this.isDetail,
+    this.bookStatusId = -1,
   }) : super(key: key);
 
   @override
@@ -27,19 +33,19 @@ class _BookItemState extends State<BookItem> {
   late double _sry;
 
   double rotateY = -0.6;
-
   @override
   Widget build(BuildContext context) {
+    final tp = Provider.of<TimerProvider>(context);
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, widget.depth / -2),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: grayColor200,
-              blurRadius: 10.0,
-              spreadRadius: 2.0,
-              offset: Offset(0, 10),
+              blurRadius: widget.isDetail ? 4.0 : 0,
+              spreadRadius: widget.isDetail ? 1.0 : 0,
+              offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
             ),
           ],
         ),
@@ -55,13 +61,13 @@ class _BookItemState extends State<BookItem> {
       transform: Matrix4.translationValues(0.0, 0.0, widget.depth / 2),
       alignment: Alignment.center,
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: grayColor200,
-              blurRadius: 10.0,
-              spreadRadius: 2.0,
-              offset: Offset(0, 10),
+              blurRadius: widget.isDetail ? 4.0 : 0,
+              spreadRadius: widget.isDetail ? 1.0 : 0,
+              offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
             ),
           ],
         ),
@@ -137,13 +143,13 @@ class _BookItemState extends State<BookItem> {
             ..rotateY(rotateY),
           alignment: Alignment.center,
           child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
                     color: grayColor200,
-                    blurRadius: 10.0,
-                    spreadRadius: 2.0,
-                    offset: Offset(0, 10),
+                    blurRadius: widget.isDetail ? 4.0 : 0,
+                    spreadRadius: widget.isDetail ? 1.0 : 0,
+                    offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
                   ),
                 ],
               ),
@@ -192,12 +198,12 @@ class _BookItemState extends State<BookItem> {
         child: Center(
           child: isPort
               ? Container(
-                  decoration: const BoxDecoration(boxShadow: [
+                  decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
                       color: grayColor200,
-                      blurRadius: 10.0,
-                      spreadRadius: 2.0,
-                      offset: Offset(0, 10),
+                      blurRadius: widget.isDetail ? 4.0 : 0,
+                      spreadRadius: widget.isDetail ? 1.0 : 0,
+                      offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
                     ),
                   ]),
                   child: ThumbImage(
@@ -211,14 +217,14 @@ class _BookItemState extends State<BookItem> {
               : Container(
                   width: topOrBottom ? widget.width : widget.depth,
                   height: topOrBottom ? widget.depth : widget.height,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Color(0xFFFFFEFC),
                     boxShadow: [
                       BoxShadow(
                         color: grayColor200,
-                        blurRadius: 10.0,
-                        spreadRadius: 2.0,
-                        offset: Offset(0, 10),
+                        blurRadius: widget.isDetail ? 4.0 : 0,
+                        spreadRadius: widget.isDetail ? 1.0 : 0,
+                        offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
                       ),
                     ],
                   ),

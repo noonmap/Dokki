@@ -11,12 +11,18 @@ class ReadingBookItem extends StatelessWidget {
   final int bookStatusId;
   final String bookTitle;
   final int accumReadTime;
+  final String bookCoverPath;
+  final String bookCoverBackImagePath;
+  final String bookCoverSideImagePath;
 
   const ReadingBookItem({
     Key? key,
     required this.bookStatusId,
     required this.bookTitle,
     required this.accumReadTime,
+    required this.bookCoverPath,
+    required this.bookCoverBackImagePath,
+    required this.bookCoverSideImagePath,
   }) : super(key: key);
 
   factory ReadingBookItem.fromModel({required BookTimerModel model}) {
@@ -24,6 +30,9 @@ class ReadingBookItem extends StatelessWidget {
       bookStatusId: model.bookStatusId,
       bookTitle: model.bookTitle,
       accumReadTime: model.accumReadTime,
+      bookCoverPath: model.bookCoverPath,
+      bookCoverBackImagePath: model.bookCoverBackImagePath,
+      bookCoverSideImagePath: model.bookCoverSideImagePath,
     );
   }
 
@@ -34,6 +43,9 @@ class ReadingBookItem extends StatelessWidget {
         Navigator.pushNamed(context, RoutesName.timer, arguments: {
           "bookStatusId": bookStatusId,
           "bookTitle": bookTitle,
+          "bookCoverPath": bookCoverPath,
+          "bookCoverBackImagePath": bookCoverBackImagePath,
+          "bookCoverSideImagePath": bookCoverSideImagePath,
         }).then((value) {
           final sbp = Provider.of<StatusBookProvider>(context, listen: false);
           sbp.readingBookList = [];

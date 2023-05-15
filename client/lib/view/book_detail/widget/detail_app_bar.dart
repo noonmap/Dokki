@@ -1,11 +1,14 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/widget/bottom_sheet_modal.dart';
 import 'package:flutter/material.dart';
 
-class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
+class DetailAppBar extends StatefulWidget implements PreferredSizeWidget {
   const DetailAppBar({
     super.key,
     required this.bookId,
     required this.isBookMarked,
+    required this.isReading,
+    required this.isComplete,
     required this.deleteLikeBook,
     required this.addLikeBook,
     required this.getBookById,
@@ -13,9 +16,40 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final String bookId;
   final bool isBookMarked;
+  final bool isReading;
+  final bool isComplete;
   final Function deleteLikeBook;
   final Function addLikeBook;
   final Function getBookById;
+
+  @override
+  State<DetailAppBar> createState() => _DetailAppBarState();
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size(
+        double.maxFinite,
+        50,
+      );
+}
+
+class _DetailAppBarState extends State<DetailAppBar> {
+  bool isStatusBook() {
+    if (widget.isReading || widget.isComplete) {
+      return true;
+    }
+    return false;
+  }
+
+  int getCurrentStatus() {
+    if (widget.isReading) {
+      return 0;
+    }
+    if (widget.isComplete) {
+      return 1;
+    }
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +66,43 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: Colors.transparent,
       actions: <Widget>[
-        TextButton(
+        IconButton(
           onPressed: () {
-            if (isBookMarked) {
+            showModalBottomSheet<void>(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(12.0))),
+                builder: (BuildContext context) {
+                  return BottomSheetModal(
+                    isState: isStatusBook(),
+                    currentState: getCurrentStatus(),
+                    bookId: widget.bookId,
+                  );
+                });
+          },
+          constraints: const BoxConstraints(),
+          padding: EdgeInsets.zero,
+          icon: isStatusBook() ? Icon(Icons.update) : Icon(Icons.add),
+          color: brandColor300,
+        ),
+        IconButton(
+          onPressed: () {
+            if (widget.isBookMarked) {
               // 북마크 취소
-              deleteLikeBook(bookId).then((value) => getBookById(bookId));
+              widget
+                  .deleteLikeBook(widget.bookId)
+                  .then((value) => widget.getBookById(widget.bookId));
             } else {
-              addLikeBook(bookId).then((value) => getBookById(bookId));
+              widget
+                  .addLikeBook(widget.bookId)
+                  .then((value) => widget.getBookById(widget.bookId));
             }
           },
-          child: isBookMarked
-              ? const Icon(
-                  Icons.bookmark_added_sharp,
-                  color: brandColor300,
-                )
-              : const Icon(
-                  Icons.bookmark_add_outlined,
-                  color: brandColor300,
-                ),
+          icon: widget.isBookMarked
+              ? const Icon(Icons.bookmark_added_sharp)
+              : const Icon(Icons.bookmark_add_outlined),
+          color: brandColor300,
         ),
       ],
       iconTheme: const IconThemeData(
@@ -57,11 +110,4 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size(
-        double.maxFinite,
-        50,
-      );
 }

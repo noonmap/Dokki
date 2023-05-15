@@ -2,16 +2,23 @@ import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/custom_app_bar.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
+import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TimerPage extends StatefulWidget {
   final int bookStatusId;
   final String bookTitle;
+  final String bookCoverPath;
+  final String bookCoverBackImagePath;
+  final String bookCoverSideImagePath;
   const TimerPage({
     Key? key,
     required this.bookTitle,
     required this.bookStatusId,
+    required this.bookCoverPath,
+    required this.bookCoverBackImagePath,
+    required this.bookCoverSideImagePath,
   }) : super(key: key);
 
   @override
@@ -27,7 +34,7 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   Widget build(BuildContext context) {
-    Color c = Color(0XFFE57373);
+    final clientWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
@@ -62,8 +69,7 @@ class _TimerPageState extends State<TimerPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-              // color: Color(0XFF006266),
-              color: c,
+              color: grayColor600,
             ),
             child: CustomPaint(
               painter: BackgroundPainter(),
@@ -73,7 +79,7 @@ class _TimerPageState extends State<TimerPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height - 80,
             decoration: BoxDecoration(
-                color: c,
+                color: grayColor600,
                 borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(20.0),
                     topLeft: Radius.circular(20.0))),
@@ -81,23 +87,45 @@ class _TimerPageState extends State<TimerPage> {
               final time = provider.currentTime;
               final isPlaying = provider.timerPlaying;
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 50),
+                  BookItem(
+                    width: clientWidth / 2.3,
+                    height: clientWidth / 1.8,
+                    depth: 60,
+                    imagePath: widget.bookCoverPath,
+                    sideImagePath: widget.bookCoverSideImagePath,
+                    backImagePath: widget.bookCoverBackImagePath,
+                    isDetail: false,
+                    bookStatusId: widget.bookStatusId,
+                  ),
+                  const SizedBox(height: 50),
                   Text(
                     Utils.secondTimeToFormatString(time),
                     style: const TextStyle(
-                      fontSize: 50,
+                      color: brandColor100,
+                      fontSize: 44,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      isPlaying
-                          ? provider.pause(widget.bookStatusId)
-                          : provider.start(widget.bookStatusId);
-                    },
-                    icon: isPlaying
-                        ? const Icon(Icons.stop_circle, size: 56)
-                        : const Icon(Icons.play_circle, size: 56),
+                  Expanded(
+                    child: IconButton(
+                      onPressed: () {
+                        isPlaying
+                            ? provider.pause(widget.bookStatusId)
+                            : provider.start(widget.bookStatusId);
+                      },
+                      icon: isPlaying
+                          ? const Icon(
+                              Icons.stop_circle,
+                            )
+                          : const Icon(
+                              Icons.play_circle,
+                            ),
+                      iconSize: 90,
+                      color: brandColor100,
+                    ),
                   ),
                 ],
               );

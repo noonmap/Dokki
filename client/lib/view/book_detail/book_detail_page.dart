@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/providers/book_provider.dart';
@@ -12,7 +10,10 @@ import 'package:provider/provider.dart';
 
 class BookDetailPage extends StatefulWidget {
   final String bookId;
-  const BookDetailPage({super.key, required this.bookId});
+  const BookDetailPage({
+    super.key,
+    required this.bookId,
+  });
 
   @override
   State<BookDetailPage> createState() => _BookDetailPageState();
@@ -72,21 +73,20 @@ class _BookDetailPageState extends State<BookDetailPage>
           Scaffold(
               backgroundColor: brandColor200,
               appBar: DetailAppBar(
-                  bookId: widget.bookId,
-                  isBookMarked: bp.book!.isBookMarked,
-                  addLikeBook: bp.addLikeBook,
-                  deleteLikeBook: bp.deleteLikeBook,
-                  getBookById: bp.getBookById),
+                bookId: widget.bookId,
+                isBookMarked: bp.book!.isBookMarked,
+                isComplete: bp.book!.isComplete,
+                isReading: bp.book!.isReading,
+                addLikeBook: bp.addLikeBook,
+                deleteLikeBook: bp.deleteLikeBook,
+                getBookById: bp.getBookById,
+              ),
               body: Stack(
                 children: [
-                  SizedBox(
-                    width: clientWidth,
-                    height: clientHeight / 4,
-                  ),
                   Container(
                     width: clientWidth,
-                    height: MediaQuery.of(context).size.height - 220,
-                    margin: const EdgeInsets.only(top: 180),
+                    height: clientHeight * 0.75,
+                    margin: EdgeInsets.only(top: clientHeight * 0.25),
                     decoration: const BoxDecoration(
                       color: brandColor000,
                       borderRadius: BorderRadius.only(
@@ -95,7 +95,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 75, 10, 10),
+                      padding: const EdgeInsets.fromLTRB(16, 60, 16, 10),
                       child: SingleChildScrollView(
                         child: IntrinsicHeight(
                           child: Column(
@@ -104,11 +104,18 @@ class _BookDetailPageState extends State<BookDetailPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
+                                    child: BookStatusBadge(
+                                        isReading: bp.book!.isReading,
+                                        isComplete: bp.book!.isComplete),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Center(
                                     child: Text(
                                       bp.book!.bookTitle,
                                       overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: const TextStyle(
+                                        color: grayColor600,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -123,8 +130,9 @@ class _BookDetailPageState extends State<BookDetailPage>
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: const TextStyle(
+                                        color: grayColor400,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),
@@ -150,29 +158,32 @@ class _BookDetailPageState extends State<BookDetailPage>
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 10),
                               Container(
                                 child: TabBar(
                                   indicatorColor: brandColor300,
-                                  indicatorWeight: 3,
+                                  indicatorWeight: 2.5,
                                   labelColor: brandColor300,
                                   unselectedLabelColor: brandColor200,
                                   controller: tabController,
                                   labelStyle: const TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                   unselectedLabelStyle: const TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                   ),
                                   tabs: const [
                                     Tab(
                                       text: "책 정보",
-                                      icon: Icon(Icons.menu_book_outlined),
+                                      icon: Icon(Icons.menu_book_outlined,
+                                          size: 20),
                                     ),
                                     Tab(
                                       text: "리뷰",
-                                      icon: Icon(Icons.comment_outlined),
+                                      icon: Icon(Icons.comment_outlined,
+                                          size: 20),
                                     ),
                                   ],
                                 ),
@@ -193,6 +204,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         const Text(
                                           "책 소개",
                                           style: TextStyle(
+                                            color: grayColor600,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -207,6 +219,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                           softWrap: false,
                                           style: const TextStyle(
                                             letterSpacing: 0.5,
+                                            color: grayColor500,
                                           ),
                                         ),
                                         const SizedBox(
@@ -215,6 +228,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         const Text(
                                           "작가",
                                           style: TextStyle(
+                                            color: grayColor600,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -228,6 +242,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                           overflow: TextOverflow.ellipsis,
                                           softWrap: false,
                                           style: const TextStyle(
+                                            color: grayColor500,
                                             letterSpacing: 0.5,
                                           ),
                                         ),
@@ -237,6 +252,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         const Text(
                                           "출판사",
                                           style: TextStyle(
+                                            color: grayColor600,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             letterSpacing: 0.5,
@@ -248,6 +264,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         Text(
                                           bp.book!.bookPublisher,
                                           style: const TextStyle(
+                                            color: grayColor500,
                                             letterSpacing: 0.5,
                                           ),
                                         ),
@@ -257,6 +274,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         const Text(
                                           "페이지",
                                           style: TextStyle(
+                                            color: grayColor600,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -264,9 +282,10 @@ class _BookDetailPageState extends State<BookDetailPage>
                                         const SizedBox(
                                           height: 7,
                                         ),
-                                        Text(
-                                          bp.book!.bookTotalPage.toString(),
-                                        )
+                                        Text(bp.book!.bookTotalPage.toString(),
+                                            style: TextStyle(
+                                              color: grayColor500,
+                                            ))
                                       ],
                                     ),
                                     ListView.builder(
@@ -304,13 +323,14 @@ class _BookDetailPageState extends State<BookDetailPage>
                     ),
                   ),
                   SizedBox(
-                    height: 250,
+                    height: clientHeight * 0.34,
                     child: BookItem(
                       imagePath: bp.book!.bookCoverPath,
                       backImagePath: bp.book!.bookCoverBackImagePath,
                       sideImagePath: bp.book!.bookCoverSideImagePath,
                       width: clientWidth / 2.5,
                       height: clientWidth / 2,
+                      isDetail: true,
                       depth: (bp.book!.bookTotalPage / 5.5 > 100
                               ? 100
                               : bp.book!.bookTotalPage / 5.5)
@@ -327,45 +347,63 @@ class _BookDetailPageState extends State<BookDetailPage>
 }
 
 class BookStatusBadge extends StatelessWidget {
-  final int statusIndex;
+  final bool isReading;
+  final bool isComplete;
 
-  const BookStatusBadge({super.key, required this.statusIndex});
+  const BookStatusBadge(
+      {super.key, required this.isReading, required this.isComplete});
+
+  String getText() {
+    if (isReading) {
+      return "읽는 중인 책";
+    }
+    if (isComplete) {
+      return "완독서";
+    }
+    return "";
+  }
+
+  IconData getIcon() {
+    if (isReading) {
+      return Icons.menu_book_sharp;
+    }
+    if (isComplete) {
+      return Ionicons.golf_sharp;
+    }
+    return Icons.abc;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      decoration: BoxDecoration(
-          color: brandColor300, borderRadius: BorderRadius.circular(24.0)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Icon(
-            statusIndex == 0
-                ? Icons.bookmark_added_sharp
-                : statusIndex == 1
-                    ? Ionicons.bookmark_sharp
-                    : Ionicons.golf_sharp,
-            color: grayColor000,
-            size: 16.0,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            statusIndex == 0
-                ? "찜한 책"
-                : statusIndex == 1
-                    ? "읽는 중인 책"
-                    : "완독서",
-            style: const TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w600,
-              color: grayColor000,
+    return isReading || isComplete
+        ? Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            decoration: BoxDecoration(
+                color: brandColor300,
+                borderRadius: BorderRadius.circular(24.0)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(
+                  getIcon(),
+                  color: grayColor000,
+                  size: 14.0,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  getText(),
+                  style: const TextStyle(
+                    fontSize: 11.0,
+                    fontWeight: FontWeight.w600,
+                    color: grayColor000,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          )
+        : const SizedBox();
   }
 }
 
