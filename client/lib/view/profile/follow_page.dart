@@ -2,6 +2,7 @@ import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/user_provider.dart';
 import 'package:dokki/utils/utils.dart';
+import 'package:dokki/view/profile/widget/follow_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -112,6 +113,46 @@ class _FollowPageState extends State<FollowPage> {
               ],
             ),
             const SizedBox(height: 40),
+            if (up.followList.isEmpty)
+              const Center(
+                child: Paragraph(
+                  text: '유저가 없습니다.',
+                  color: grayColor300,
+                ),
+              )
+            else
+              Expanded(
+                child: NotificationListener(
+                  onNotification: (ScrollNotification notification) {
+                    scrollNotification(notification, up);
+                    return false;
+                  },
+                  child: ListView.separated(
+                      itemBuilder: (context, idx) {
+                        return FollowListItem(user: up.followList[idx]);
+                      },
+                      separatorBuilder: (context, idx) {
+                        return Column(
+                          children: [
+                            const SizedBox(height: 12),
+                            Container(
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: grayColor100,
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                        );
+                      },
+                      itemCount: up.followList.length),
+                ),
+              )
           ],
         ),
       ),
