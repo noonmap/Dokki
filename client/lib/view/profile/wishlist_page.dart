@@ -104,16 +104,9 @@ class _WishlistPageState extends State<WishlistPage> {
                         size: 18,
                         weightType: WeightType.medium,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 32,
                         height: 32,
-                        child: up.wishlistBooks.isNotEmpty
-                            ? const Icon(
-                                Icons.menu,
-                                size: 32,
-                                color: brandColor300,
-                              )
-                            : null,
                       ),
                     ],
                   ),
@@ -130,31 +123,46 @@ class _WishlistPageState extends State<WishlistPage> {
                         // 찜한 책이 있을 때
                         : NotificationListener(
                             child: ListView.separated(
-                                itemBuilder: (context, index) {
-                                  return BookListItem(
-                                    loginUserId: widget.loginUserId,
-                                    bookId: up.wishlistBooks[index].bookId,
-                                    bookTitle:
-                                        up.wishlistBooks[index].bookTitle,
-                                    bookCoverPath:
-                                        up.wishlistBooks[index].bookCoverPath,
-                                    bookAuthor:
-                                        up.wishlistBooks[index].bookAuthor,
-                                    bookPublisher:
-                                        up.wishlistBooks[index].bookPublisher,
-                                    bookPublishYear:
-                                        up.wishlistBooks[index].bookPublishYear,
-                                    imageHeight: 100.0,
-                                    imageWidth: 80.0,
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                    height: 10,
-                                  );
-                                },
-                                itemCount: up.wishlistBooks.length),
+                              itemBuilder: (context, index) {
+                                return BookListItem(
+                                  loginUserId: widget.loginUserId,
+                                  bookId: up.wishlistBooks[index].bookId,
+                                  bookTitle: up.wishlistBooks[index].bookTitle,
+                                  bookCoverPath:
+                                      up.wishlistBooks[index].bookCoverPath,
+                                  bookAuthor:
+                                      up.wishlistBooks[index].bookAuthor,
+                                  bookPublisher:
+                                      up.wishlistBooks[index].bookPublisher,
+                                  bookPublishYear:
+                                      up.wishlistBooks[index].bookPublishYear,
+                                  imageHeight: 100.0,
+                                  imageWidth: 80.0,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return Column(
+                                  children: [
+                                    const SizedBox(height: 16),
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: grayColor100,
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
+                                );
+                              },
+                              itemCount: up.wishlistBooks.length,
+                            ),
+                    
                           ),
                   )
                 ],

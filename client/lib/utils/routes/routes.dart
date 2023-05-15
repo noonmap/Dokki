@@ -73,13 +73,15 @@ class Routes {
       case RoutesName.library:
         var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                LibraryPage(userId: args['userId']),
+            builder: (BuildContext context) => LibraryPage(
+                  userId: args['userId'],
+                  nickname: args['nickname'],
+                ),
             settings: settings);
 
       case RoutesName.dokkiGrass:
         return MaterialPageRoute(
-          builder: (BuildContext context) => DokkiGrassPage(),
+          builder: (BuildContext context) => const DokkiGrassPage(),
         );
 
       case RoutesName.profile:

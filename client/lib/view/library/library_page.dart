@@ -10,10 +10,12 @@ import 'package:provider/provider.dart';
 
 class LibraryPage extends StatefulWidget {
   final String userId;
+  final String nickname;
 
   const LibraryPage({
     Key? key,
     required this.userId,
+    required this.nickname,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,6 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-  String username = '';
   String myId = '';
   bool isMine = false;
 
@@ -71,12 +72,10 @@ class _LibraryPageState extends State<LibraryPage> {
 
   void getUserInfoFromStorage() async {
     const storage = FlutterSecureStorage();
-    String? tmpName = await storage.read(key: "username");
     String? tmpId = await storage.read(key: 'userId');
 
-    if (tmpName != null && tmpId != null) {
+    if (tmpId != null) {
       setState(() {
-        username = tmpName;
         myId = tmpId;
         isMine = widget.userId == myId;
       });
@@ -105,17 +104,13 @@ class _LibraryPageState extends State<LibraryPage> {
                 children: [
                   // 상단 메뉴바
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        width: 32,
-                        height: 32,
-                      ),
                       Row(
                         children: [
                           Paragraph(
-                            text: username,
+                            text: widget.nickname,
                             size: 18,
                             weightType: WeightType.semiBold,
                           ),
@@ -126,41 +121,38 @@ class _LibraryPageState extends State<LibraryPage> {
                           ),
                         ],
                       ),
-                      if (isMine)
-                        const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Icon(
-                            Icons.menu,
-                            size: 32,
-                            color: brandColor300,
-                          ),
-                        ),
                     ],
                   ),
                   const SizedBox(height: 40),
                   Expanded(
-                    child: NotificationListener(
-                      onNotification: (ScrollNotification notification) {
-                        scrollNotification(notification, lp);
-                        return false;
-                      },
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 40,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: 0.65,
-                        ),
-                        itemBuilder: (context, idx) {
-                          return LibraryBookItem(
-                              bookData: lp.libraryBooks[idx],
-                              loginUserId: widget.userId);
-                        },
-                        itemCount: lp.libraryBooks.length,
-                      ),
-                    ),
+                    child: lp.libraryBooks.isEmpty
+                        ? const Center(
+                            child: Paragraph(
+                              text: '서재에 책이 없습니다.',
+                              color: grayColor300,
+                            ),
+                          )
+                        : NotificationListener(
+                            onNotification: (ScrollNotification notification) {
+                              scrollNotification(notification, lp);
+                              return false;
+                            },
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 40,
+                                crossAxisSpacing: 20,
+                                childAspectRatio: 0.65,
+                              ),
+                              itemBuilder: (context, idx) {
+                                return LibraryBookItem(
+                                    bookData: lp.libraryBooks[idx],
+                                    loginUserId: widget.userId);
+                              },
+                              itemCount: lp.libraryBooks.length,
+                            ),
+                          ),
                   ),
                 ],
               ),

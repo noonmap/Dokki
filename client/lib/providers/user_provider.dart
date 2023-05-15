@@ -120,6 +120,8 @@ class UserProvider extends ChangeNotifier {
           await _userRepository.getWishlistData(page: page);
       wishlistBooks.addAll(wishlistData['wishlistBooks']);
       wishlistPageData = wishlistData['pageData'];
+    } on DioError catch (e) {
+      print(e.response);
     } finally {
       wishlistLoading = false;
       notifyListeners();
@@ -128,12 +130,27 @@ class UserProvider extends ChangeNotifier {
 
   // POST, DELETE : 팔로우, 언팔로우
   Future<void> followById({required userId, required category}) async {
+    int followerCount = userBio!.followerCount;
+
     try {
       if (category == 'follow') {
-        _userRepository.followById(userId: userId);
+        await _userRepository.followById(userId: userId);
+        followerCount += 1;
       } else {
-        _userRepository.unfollowById(userId: userId);
+        await _userRepository.unfollowById(userId: userId);
+        followerCount -= 1;
       }
+
+      UserBioModel newUserBio = UserBioModel(
+          userId: userBio!.userId,
+          nickname: userBio!.nickname,
+          profileImagePath: userBio!.profileImagePath,
+          isFollowed: !userBio!.isFollowed,
+          followingCount: userBio!.followingCount,
+          followerCount: followerCount);
+      userBio = newUserBio;
+
+      notifyListeners();
     } on DioError catch (e) {
       print(e.response);
     }
