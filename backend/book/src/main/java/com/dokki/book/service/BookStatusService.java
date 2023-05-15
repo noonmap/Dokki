@@ -13,6 +13,7 @@ import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.book.util.ServiceUtil;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -243,16 +243,12 @@ public class BookStatusService {
 		// 읽고있는, 다읽은 책 여부 가져오기
 		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 		if (bookStatusEntity != null) {
-			// TODO : 타이머 정보조회 API 호출 (시작일 , 종료일 포함)
-			//			timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
+			TimerResponseDto timerResponseDto = timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
 			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
 			isComplete = !isReading;
 			completeDate = StartEndDateResponseDto.builder()
-				.build();
-		} else {
-			completeDate = StartEndDateResponseDto.builder()
-				.startTime(LocalDate.MIN)
-				.endTime(LocalDate.MIN)
+				.startTime(timerResponseDto.getStartTime())
+				.endTime(timerResponseDto.getEndTime())
 				.build();
 		}
 

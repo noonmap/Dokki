@@ -88,7 +88,7 @@ public class BookDetailResponseDto {
 		this.isBookMarked = userData.isBookMarked();
 		this.isReading = userData.isReading();
 		this.isComplete = userData.isComplete();
-		this.completeDate = userData.getStartEndDate() != null ? userData.getStartEndDate() : new StartEndDateResponseDto();
+		this.completeDate = userData.getStartEndDate();
 	}
 
 }
