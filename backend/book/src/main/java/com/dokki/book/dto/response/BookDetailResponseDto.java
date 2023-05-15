@@ -45,6 +45,8 @@ public class BookDetailResponseDto {
 	@JsonProperty("isComplete")
 	private Boolean isComplete;
 
+	private StartEndDateResponseDto completeDate;
+
 
 	public static BookDetailResponseDto fromEntity(BookEntity item) {
 		String year = Integer.toString(item.getPublishDate().getYear());    // date to year (string)
@@ -86,6 +88,7 @@ public class BookDetailResponseDto {
 		this.isBookMarked = userData.isBookMarked();
 		this.isReading = userData.isReading();
 		this.isComplete = userData.isComplete();
+		this.completeDate = userData.getStartEndDate();
 	}
 
 }

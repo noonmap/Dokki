@@ -5,6 +5,7 @@ import com.dokki.book.client.TimerClient;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.dto.request.BookCompleteRequestDto;
+import com.dokki.book.dto.response.StartEndDateResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatisticsRepository;
@@ -12,6 +13,7 @@ import com.dokki.book.repository.BookStatusRepository;
 import com.dokki.book.util.ServiceUtil;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -236,19 +238,25 @@ public class BookStatusService {
 
 		boolean isReading = false;
 		boolean isComplete = false;
+		StartEndDateResponseDto completeDate = null;
 
 		// 읽고있는, 다읽은 책 여부 가져오기
-
 		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 		if (bookStatusEntity != null) {
+			TimerResponseDto timerResponseDto = timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
 			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
 			isComplete = !isReading;
+			completeDate = StartEndDateResponseDto.builder()
+				.startTime(timerResponseDto.getStartTime())
+				.endTime(timerResponseDto.getEndTime())
+				.build();
 		}
 
 		return UserBookInfoDto.builder()
 			.isReading(isReading)
 			.isComplete(isComplete)
 			.isBookMarked(isBookMarked)
+			.startEndDate(completeDate)
 			.build();
 	}
 

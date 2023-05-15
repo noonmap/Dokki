@@ -2,6 +2,7 @@ package com.dokki.book.client;
 
 
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,12 @@ public interface TimerClient {
 	 */
 	@GetMapping("/timers/history/{userId}")
 	List<Map<String, String>> getMonthlyReadTimeHistory(@PathVariable(value = "userId") Long userId, @RequestParam("year") Integer year, @RequestParam("month") Integer month);
+
+	/**
+	 * 타이머 정보 조회
+	 */
+	@GetMapping("/timers/{bookStatusId}")
+	TimerResponseDto getTimerByBookStatusId(@PathVariable(value = "bookStatusId") Long bookStatusId);
 
 	/**
 	 * 타이머 정보를 삭제합니다.
