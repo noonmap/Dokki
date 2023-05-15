@@ -1,5 +1,6 @@
 package com.dokki.timer.redis;
 
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class RedisConfig {
 	@Value("${spring.redis.password}")
 	private String redisPwd;
 
+
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -31,6 +33,7 @@ public class RedisConfig {
 		return lettuceConnectionFactory;
 	}
 
+
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -38,8 +41,9 @@ public class RedisConfig {
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 
 		//객체를 json 형태로 깨지지 않고 받기 위한 직렬화 작업
-		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(TimerRedis.class));
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(RunTimerRedisDto.class));
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		return redisTemplate;
 	}
+
 }
