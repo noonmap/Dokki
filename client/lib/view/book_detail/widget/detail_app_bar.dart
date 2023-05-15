@@ -66,26 +66,28 @@ class _DetailAppBarState extends State<DetailAppBar> {
       ),
       backgroundColor: Colors.transparent,
       actions: <Widget>[
-        IconButton(
-          onPressed: () {
-            showModalBottomSheet<void>(
-                context: context,
-                shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(12.0))),
-                builder: (BuildContext context) {
-                  return BottomSheetModal(
-                    isState: isStatusBook(),
-                    currentState: getCurrentStatus(),
-                    bookId: widget.bookId,
-                  );
-                });
-          },
-          constraints: const BoxConstraints(),
-          padding: EdgeInsets.zero,
-          icon: isStatusBook() ? Icon(Icons.update) : Icon(Icons.add),
-          color: brandColor300,
-        ),
+        !isStatusBook()
+            ? IconButton(
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(12.0))),
+                      builder: (BuildContext context) {
+                        return BottomSheetModal(
+                          isState: isStatusBook(),
+                          currentState: getCurrentStatus(),
+                          bookId: widget.bookId,
+                        );
+                      });
+                },
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.add),
+                color: brandColor300,
+              )
+            : SizedBox(),
         IconButton(
           onPressed: () {
             if (widget.isBookMarked) {
