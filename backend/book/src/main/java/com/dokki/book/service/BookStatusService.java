@@ -5,6 +5,7 @@ import com.dokki.book.client.TimerClient;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.dto.UserBookInfoDto;
 import com.dokki.book.dto.request.BookCompleteRequestDto;
+import com.dokki.book.dto.response.StartEndDateResponseDto;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookStatusEntity;
 import com.dokki.book.repository.BookStatisticsRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -236,19 +238,29 @@ public class BookStatusService {
 
 		boolean isReading = false;
 		boolean isComplete = false;
+		StartEndDateResponseDto completeDate = null;
 
 		// 읽고있는, 다읽은 책 여부 가져오기
-
 		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
 		if (bookStatusEntity != null) {
+			// TODO : 타이머 정보조회 API 호출 (시작일 , 종료일 포함)
+			//			timerClient.getTimerByBookStatusId(bookStatusEntity.getId());
 			isReading = bookStatusEntity.getStatus().equals(STATUS_IN_PROGRESS);
 			isComplete = !isReading;
+			completeDate = StartEndDateResponseDto.builder()
+				.build();
+		} else {
+			completeDate = StartEndDateResponseDto.builder()
+				.startTime(LocalDate.MIN)
+				.endTime(LocalDate.MIN)
+				.build();
 		}
 
 		return UserBookInfoDto.builder()
 			.isReading(isReading)
 			.isComplete(isComplete)
 			.isBookMarked(isBookMarked)
+			.startEndDate(completeDate)
 			.build();
 	}
 
