@@ -27,7 +27,8 @@ class ProfileMenu extends StatelessWidget {
                   icon: Ionicons.heart_outline,
                   label: '찜한 책',
                   onTap: () {
-                    Navigator.pushNamed(context, RoutesName.wishlist);
+                    Navigator.pushNamed(context, RoutesName.wishlist,
+                        arguments: {"loginUserId": userId});
                   },
                 )
               : ProfileMenuItem(

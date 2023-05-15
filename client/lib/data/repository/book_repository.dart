@@ -1,3 +1,4 @@
+import "package:dio/dio.dart";
 import "package:dokki/common/constant/common.dart";
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import "package:dokki/data/model/book/book_model.dart";
@@ -142,9 +143,11 @@ class BookRepository {
   }
 
   // POST : 읽는 중인 책 추가
-  Future<void> addReadingBookData(Map<String, dynamic> data) async {
+  Future<Response<dynamic>> addReadingBookData(
+      Map<String, dynamic> data) async {
     try {
-      dynamic response = await _apiService.post("/books/status", data);
+      Response<dynamic> response =
+          await _apiService.post("/books/status", data);
       return response;
     } catch (e) {
       rethrow;
@@ -152,9 +155,10 @@ class BookRepository {
   }
 
   // POST : /books/status/direct-complete -> 완독서에 바로 책 추가
-  Future<void> addDirectCompleteBookData(Map<String, dynamic> data) async {
+  Future<Response<dynamic>> addDirectCompleteBookData(
+      Map<String, dynamic> data) async {
     try {
-      dynamic response =
+      Response<dynamic> response =
           await _apiService.post("/books/status/direct-complete", data);
       return response;
     } catch (e) {
@@ -163,7 +167,7 @@ class BookRepository {
   }
 
   // PUT : /books/status/{bookStatusId}/complete -> 진행중에서 완독서로 상태 변경
-  Future<void> updateCompleteBookData(String bookStatusId) async {
+  Future<void> updateCompleteBookData(int bookStatusId) async {
     try {
       dynamic response =
           await _apiService.put("/books/status/$bookStatusId/complete", {});
@@ -174,7 +178,7 @@ class BookRepository {
   }
 
   // DELETE : /books/status/{bookStatusId} -> 도서 상태 삭제
-  Future<void> deleteBookStatusData(String bookStatusId) async {
+  Future<void> deleteBookStatusData(int bookStatusId) async {
     try {
       dynamic response =
           await _apiService.delete("/books/status/$bookStatusId");

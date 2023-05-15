@@ -19,8 +19,8 @@ class _MainPageState extends State<MainPage> {
   late String userId;
 
   List pages = [
-    const HomePage(),
-    const SearchBookPage(),
+    const HomePage(userId: ''),
+    const SearchBookPage(userId: ''),
     const LibraryPage(userId: ''),
     const DokkiGrassPage(),
     const ProfilePage(userId: ''),
@@ -38,6 +38,8 @@ class _MainPageState extends State<MainPage> {
     if (tmp != null) {
       setState(() {
         userId = tmp;
+        pages[0] = HomePage(userId: userId);
+        pages[1] = SearchBookPage(userId: userId);
         pages[2] = LibraryPage(userId: userId);
         pages[4] = ProfilePage(userId: userId);
       });
