@@ -257,8 +257,7 @@ public class BookStatusService {
 					log.error(e.getMessage());
 					isComplete = false;
 
-					log.info("잘못된 bookStatusEntity 삭제 - id: {} bookId: {} userId: {}", bookStatusEntity.getId(), bookStatusEntity.getBookId(), userId);
-					bookStatusRepository.delete(bookStatusEntity);
+					log.info("잘못된 bookStatusEntity - id: {} bookId: {} userId: {}", bookStatusEntity.getId(), bookStatusEntity.getBookId(), userId);
 				}
 			}
 		}
