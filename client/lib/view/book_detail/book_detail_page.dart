@@ -1,6 +1,7 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/date_provider.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:dokki/view/book_detail/widget/detail_app_bar.dart';
 import 'package:dokki/view/book_detail/widget/review_item.dart';
@@ -10,9 +11,12 @@ import 'package:provider/provider.dart';
 
 class BookDetailPage extends StatefulWidget {
   final String bookId;
+  final String loginUserId;
+
   const BookDetailPage({
     super.key,
     required this.bookId,
+    required this.loginUserId,
   });
 
   @override
@@ -289,6 +293,10 @@ class _BookDetailPageState extends State<BookDetailPage>
                                       ],
                                     ),
                                     ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       itemCount: bp.book!.review.length,
                                       itemBuilder: (context, index) {
                                         return Container(
@@ -300,6 +308,11 @@ class _BookDetailPageState extends State<BookDetailPage>
                                                       width: 1,
                                                       color: grayColor100))),
                                           child: ReviewItem(
+                                              loginUserId: widget.loginUserId,
+                                              commentId: bp.book!.review[index]
+                                                  .commentId,
+                                              userId:
+                                                  bp.book!.review[index].userId,
                                               profileImagePath: bp
                                                   .book!
                                                   .review[index]

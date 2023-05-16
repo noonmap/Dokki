@@ -147,7 +147,8 @@ class _LibraryPageState extends State<LibraryPage> {
                               ),
                               itemBuilder: (context, idx) {
                                 return LibraryBookItem(
-                                    bookData: lp.libraryBooks[idx]);
+                                    bookData: lp.libraryBooks[idx],
+                                    loginUserId: widget.userId);
                               },
                               itemCount: lp.libraryBooks.length,
                             ),

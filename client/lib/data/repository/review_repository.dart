@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/data/model/review/review_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
@@ -36,9 +37,10 @@ class ReviewRepository {
   }
 
   // POST : 도서 리뷰 추가
-  Future<void> addComment(String bookId, Map<String, dynamic> data) async {
+  Future<Response<dynamic>> addComment(
+      String bookId, Map<String, dynamic> data) async {
     try {
-      dynamic response =
+      Response<dynamic> response =
           await _apiService.post("/reviews/comment/$bookId", data);
       return response;
     } catch (e) {
@@ -47,10 +49,10 @@ class ReviewRepository {
   }
 
   // PUT : 도서 리뷰 수정
-  Future<void> updateComment(
+  Future<Response<dynamic>> updateComment(
       String commentId, Map<String, dynamic> data) async {
     try {
-      dynamic response =
+      Response<dynamic> response =
           await _apiService.put("/reviews/comment/$commentId", data);
       return response;
     } catch (e) {
@@ -59,9 +61,9 @@ class ReviewRepository {
   }
 
   // DELETE : 도서 리뷰 삭제
-  Future<void> deleteComment(String commentId) async {
+  Future<Response<dynamic>> deleteComment(int commentId) async {
     try {
-      dynamic response =
+      Response<dynamic> response =
           await _apiService.delete("/reviews/comment/$commentId");
       return response;
     } catch (e) {

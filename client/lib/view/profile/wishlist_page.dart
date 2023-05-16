@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WishlistPage extends StatefulWidget {
+  final String loginUserId;
   const WishlistPage({
     super.key,
+    required this.loginUserId,
   });
 
   @override
@@ -123,6 +125,7 @@ class _WishlistPageState extends State<WishlistPage> {
                             child: ListView.separated(
                               itemBuilder: (context, index) {
                                 return BookListItem(
+                                  loginUserId: widget.loginUserId,
                                   bookId: up.wishlistBooks[index].bookId,
                                   bookTitle: up.wishlistBooks[index].bookTitle,
                                   bookCoverPath:
@@ -159,6 +162,7 @@ class _WishlistPageState extends State<WishlistPage> {
                               },
                               itemCount: up.wishlistBooks.length,
                             ),
+                    
                           ),
                   )
                 ],

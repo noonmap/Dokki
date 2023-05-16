@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReadingBookItem extends StatelessWidget {
+  final String bookId;
   final int bookStatusId;
   final String bookTitle;
   final int accumReadTime;
@@ -23,6 +24,7 @@ class ReadingBookItem extends StatelessWidget {
     required this.bookCoverPath,
     required this.bookCoverBackImagePath,
     required this.bookCoverSideImagePath,
+    required this.bookId,
   }) : super(key: key);
 
   factory ReadingBookItem.fromModel({required BookTimerModel model}) {
@@ -33,6 +35,7 @@ class ReadingBookItem extends StatelessWidget {
       bookCoverPath: model.bookCoverPath,
       bookCoverBackImagePath: model.bookCoverBackImagePath,
       bookCoverSideImagePath: model.bookCoverSideImagePath,
+      bookId: model.bookId,
     );
   }
 
@@ -41,8 +44,10 @@ class ReadingBookItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.timer, arguments: {
+          "bookId": bookId,
           "bookStatusId": bookStatusId,
           "bookTitle": bookTitle,
+          "accumReadTime": accumReadTime,
           "bookCoverPath": bookCoverPath,
           "bookCoverBackImagePath": bookCoverBackImagePath,
           "bookCoverSideImagePath": bookCoverSideImagePath,
