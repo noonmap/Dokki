@@ -70,7 +70,7 @@ public class SecurityConfig {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
-				//.antMatchers("/**").permitAll()
+				.antMatchers("/**").permitAll()
 				.antMatchers("/users/login/**").permitAll()
 				//.antMatchers("/users/reissue").permitAll()
 				.antMatchers("/users/refresh/**").permitAll()
