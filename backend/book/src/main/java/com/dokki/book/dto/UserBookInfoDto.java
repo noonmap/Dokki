@@ -19,5 +19,6 @@ public class UserBookInfoDto {
 	private boolean isReading;
 	private boolean isComplete;
 	private StartEndDateResponseDto startEndDate;
+	private int accumTime;
 
 }

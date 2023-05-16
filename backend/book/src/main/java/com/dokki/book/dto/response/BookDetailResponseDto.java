@@ -46,6 +46,7 @@ public class BookDetailResponseDto {
 	private Boolean isComplete;
 
 	private StartEndDateResponseDto completeDate;
+	private Integer accumTime;
 
 
 	public static BookDetailResponseDto fromEntity(BookEntity item) {
@@ -89,6 +90,7 @@ public class BookDetailResponseDto {
 		this.isReading = userData.isReading();
 		this.isComplete = userData.isComplete();
 		this.completeDate = userData.getStartEndDate();
+		this.accumTime = userData.getAccumTime();
 	}
 
 }
