@@ -1,6 +1,7 @@
 package com.dokki.book.client;
 
 
+import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -47,10 +48,16 @@ public interface TimerClient {
 	 * 도서 상태 변경할 때 이용합니다.
 	 *
 	 * @param bookStatusId
-	 * @param done
 	 * @return
 	 */
 	@PutMapping("/timers/{bookStatusId}/complete")
-	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId, @RequestParam("done") Boolean done);
+	Boolean modifyEndTime(@PathVariable(value = "bookStatusId") Long bookStatusId);
+
+	/**
+	 * 책 바로 완독으로 추가에서 사용
+	 * bookId, bookStatusId, 시작날짜와 종료날짜를 받아서 저장
+	 */
+	@PutMapping("/timers/direct-complete")
+	Boolean directComplete(@RequestBody BookCompleteDirectRequestDto request);
 
 }

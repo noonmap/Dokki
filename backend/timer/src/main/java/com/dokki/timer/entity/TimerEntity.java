@@ -45,4 +45,14 @@ public class TimerEntity {
 		this.endTime = endTime;
 	}
 
+
+	public void setStartTime(LocalDate startTime) {
+		this.startTime = startTime;
+	}
+
+
+	public void setEndTime(LocalDate endTime) {
+		this.endTime = endTime;
+	}
+
 }

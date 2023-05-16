@@ -4,7 +4,7 @@ package com.dokki.book.service;
 import com.dokki.book.config.exception.CustomException;
 import com.dokki.book.entity.BookEntity;
 import com.dokki.book.entity.BookMarkEntity;
-import com.dokki.book.repository.BookRepository;
+import com.dokki.book.repository.BookStatisticsRepository;
 import com.dokki.book.repository.BookmarkRepository;
 import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class BookmarkService {
 
 	private final BookService bookService;
-
-	private final BookRepository bookRepository;
 	private final BookmarkRepository bookmarkRepository;
+	private final BookStatisticsRepository bookStatisticsRepository;
 
 
 	/**
@@ -48,12 +47,12 @@ public class BookmarkService {
 		BookEntity bookEntity = bookService.getBookReferenceIfExist(bookId);
 
 		// check bookmark already exist
-		boolean isBookmarkExist = bookmarkRepository.existsByUserIdAndBookId(userId, bookEntity);
-		if (isBookmarkExist) {
+		if (isBookmarkedByUserIdAndBookEntity(userId, bookEntity)) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 
 		bookmarkRepository.save(new BookMarkEntity(null, userId, bookEntity));
+		bookStatisticsRepository.updateBookMarkedUser(bookId);
 	}
 
 
@@ -64,7 +63,18 @@ public class BookmarkService {
 	 */
 	@Transactional
 	public void deleteBookmark(Long userId, String bookId) {
-		bookmarkRepository.deleteByUserIdAndBookId(userId, bookService.getBookReferenceIfExist(bookId));
+		int affectedRows = bookmarkRepository.deleteByUserIdAndBookId(userId, bookService.getBookReferenceIfExist(bookId));
+		if (affectedRows != 0) {
+			bookStatisticsRepository.updateBookMarkedUser(bookId);
+		}
+	}
+
+
+	/**
+	 * 유저 아이디와 책 엔티티로 북마크 여부 확인
+	 */
+	protected Boolean isBookmarkedByUserIdAndBookEntity(Long userId, BookEntity bookEntity) {
+		return bookmarkRepository.existsByUserIdAndBookId(userId, bookEntity);
 	}
 
 }
