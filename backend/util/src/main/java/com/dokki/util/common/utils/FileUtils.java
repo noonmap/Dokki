@@ -35,8 +35,13 @@ public class FileUtils {
 		if (filePath.startsWith("http")) {
 			return filePath;
 		}
-		if (filePath.startsWith("/resources")) { // resources 없애줌
-			filePath = filePath.substring("/resources".length());
+		//		if (filePath.startsWith("/resources")) { // resources 없애줌
+		//			filePath = filePath.substring("/resources".length());
+		//		}
+		// uploadPath 부분 없애고 상대 경로 남김
+		String uploadPath = System.getProperty("${UPLOAD_PATH}");
+		if (filePath.startsWith(uploadPath)) {
+			filePath = filePath.substring(uploadPath.length());
 		}
 		if (filePath.startsWith("/")) {
 			return hostUri + filePath;
