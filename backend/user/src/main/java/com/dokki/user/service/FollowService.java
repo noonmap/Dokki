@@ -7,6 +7,7 @@ import com.dokki.user.entity.UserEntity;
 import com.dokki.user.repository.FollowRepository;
 import com.dokki.user.repository.UserRepository;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.FileUtils;
 import com.dokki.util.user.dto.response.UserSimpleInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class FollowService {
 		Slice<UserSimpleInfoDto> followingSimpleInfo = followingUserList.map(f -> UserSimpleInfoDto.builder()
 			.userId(f.getId())
 			.nickname(f.getNickname())
-			.profileImagePath(f.getProfileImagePath())
+			.profileImagePath(FileUtils.getAbsoluteFilePath(f.getProfileImagePath()))
 			.build());
 		return followingSimpleInfo;
 	}
@@ -60,7 +61,7 @@ public class FollowService {
 		Slice<UserSimpleInfoDto> followerSimpleInfo = followerUserList.map(f -> UserSimpleInfoDto.builder()
 			.userId(f.getId())
 			.nickname(f.getNickname())
-			.profileImagePath(f.getProfileImagePath())
+			.profileImagePath(FileUtils.getAbsoluteFilePath(f.getProfileImagePath()))
 			.build());
 		return followerSimpleInfo;
 	}
