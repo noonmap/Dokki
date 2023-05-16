@@ -19,10 +19,12 @@ class _MainPageState extends State<MainPage> {
   late String userId, nickname;
 
   List pages = [
-
     const HomePage(userId: ''),
     const SearchBookPage(userId: ''),
-    const LibraryPage(userId: ''),
+    const LibraryPage(
+      userId: '',
+      nickname: '',
+    ),
     const DokkiGrassPage(),
     const ProfilePage(userId: ''),
   ];
