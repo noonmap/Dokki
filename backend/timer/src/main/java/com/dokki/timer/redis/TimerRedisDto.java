@@ -18,15 +18,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@RedisHash(value = "timer", timeToLive = 24 * 60 * 60)
+@RedisHash(value = "timer", timeToLive = 2 * 24 * 60 * 60)  // 2 days
 public class TimerRedisDto {
 
 	@Id
+	private String id;
+
 	private Long bookStatusId;
 
 	private Long userId;
 
-	private Long id;
+	private Long timerId;
 
 	// 기존 누적시간
 	private int accumTimeBefore;

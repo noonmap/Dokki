@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-
 public class RunTimerRedisService {
 
 	private final RunTimerRedisRepository runTimerRedisRepository;
