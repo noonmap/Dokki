@@ -19,7 +19,7 @@ import java.util.TimeZone;
 @EnableDiscoveryClient
 @EnableJpaAuditing // created, updated 관련
 @Slf4j
-@ComponentScan(basePackages = { "com.dokki.util" }) // FileUtils 빈 의존성
+@ComponentScan(basePackages = { "com.dokki.review", "com.dokki.util" }) // FileUtils 빈 의존성
 public class ReviewApplication {
 
 	public static void main(String[] args) {
