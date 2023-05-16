@@ -240,6 +240,7 @@ public class BookStatusService {
 		boolean isReading = false;
 		boolean isComplete = false;
 		StartEndDateResponseDto completeDate = null;
+		int accumTime = 0;
 
 		// 읽고있는, 다읽은 책 여부 가져오기
 		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
@@ -253,11 +254,11 @@ public class BookStatusService {
 						.startTime(timerResponseDto.getStartTime())
 						.endTime(timerResponseDto.getEndTime())
 						.build();
+					accumTime = timerResponseDto.getAccumTime();
 				} catch (FeignException e) {    // 완독 결과 조회 불가할 경우
 					log.error(e.getMessage());
-					isComplete = false;
-
 					log.info("잘못된 bookStatusEntity - id: {} bookId: {} userId: {}", bookStatusEntity.getId(), bookStatusEntity.getBookId(), userId);
+					isComplete = false;
 				}
 			}
 		}
@@ -267,6 +268,7 @@ public class BookStatusService {
 			.isComplete(isComplete)
 			.isBookMarked(isBookMarked)
 			.startEndDate(completeDate)
+			.accumTime(accumTime)
 			.build();
 	}
 
