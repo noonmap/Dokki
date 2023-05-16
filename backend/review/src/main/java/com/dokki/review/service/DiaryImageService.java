@@ -9,6 +9,7 @@ import com.dokki.review.redis.DiaryImageRedis;
 import com.dokki.review.redis.DiaryImageRedisService;
 import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.common.utils.FileUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class DiaryImageService {
 	private final String IMAGE_GENERATION_URL = "https://api.openai.com/v1/images/generations";
 	private final RestTemplate restTemplate;
 	private final DiaryImageRedisService diaryImageRedisService;
+	private final FileUtils fileUtils;
 	private final Integer AI_IMAGE_COUNT_MAX = Integer.valueOf(DefaultEnum.AI_IMAGE_COUNT_MAX.getValue());
 	@Value("${OPENAI_API_TOKEN}")
 	private String OPENAI_API_TOKEN;
@@ -61,7 +63,7 @@ public class DiaryImageService {
 	 *
 	 * @return 생성한 이미지 경로 반환
 	 */
-	public List<String> createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
+	public String createAIImage(Long userId, AIImageRequestDto aiImageRequestDto) {
 		if (isEnableCreateImage(userId) == false) throw new CustomException(ErrorCode.AI_IMAGE_COUNT_LIMIT_REACHED);
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -92,7 +94,11 @@ public class DiaryImageService {
 		}
 
 		increaseImageCreationRequestCount(userId); // 생성한 카운트 증가
-		return dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
+		List<String> imageUrlList = dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
+
+		// 생성한 이미지를 저장
+		String savedImagePath = fileUtils.saveFile(DefaultEnum.REVIEW_DIARY_DIR_PATH.getValue(), imageUrlList.get(0));
+		return savedImagePath;
 		/**
 		 * ChatGPT Response Format
 		 * {
