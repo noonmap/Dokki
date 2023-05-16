@@ -2,15 +2,15 @@ import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:flutter/material.dart';
 
-class FollowButton extends StatelessWidget {
-  FollowButton({
+class PinkButton extends StatelessWidget {
+  const PinkButton({
     super.key,
-    required this.isFollowed,
-    required this.onTap,
+    this.onTap,
+    required this.text,
   });
 
-  final bool isFollowed;
-  void Function()? onTap;
+  final void Function()? onTap;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class FollowButton extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(12))),
         child: Center(
           child: Paragraph(
-            text: isFollowed ? '팔로잉' : '팔로우',
+            text: text,
             color: brandColor300,
             size: 16,
             weightType: WeightType.medium,

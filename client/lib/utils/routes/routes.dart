@@ -10,6 +10,7 @@ import 'package:dokki/view/library/library_page.dart';
 import 'package:dokki/view/login/login_page.dart';
 import 'package:dokki/view/main/main_page.dart';
 import 'package:dokki/view/profile/follow_page.dart';
+import 'package:dokki/view/profile/profile_edit_page.dart';
 import 'package:dokki/view/profile/profile_page.dart';
 import 'package:dokki/view/profile/wishlist_page.dart';
 import 'package:dokki/view/splash/splash_page.dart';
@@ -90,6 +91,10 @@ class Routes {
             builder: (BuildContext context) =>
                 ProfilePage(userId: args['userId']),
             settings: settings);
+
+      case RoutesName.profileEdit:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const ProfileEditPage());
 
       case RoutesName.follow:
         var args = settings.arguments as Map<String, dynamic>;
