@@ -51,4 +51,13 @@ public class SessionUtils {
 		return getRequest().getHeader("USER_PROFILE_IMAGE_PATH");
 	}
 
+
+	static public String getRefreshToken() {
+		if (getRequest().getHeader("Refresh") == null) {
+			log.warn("RequestHeader \"{}\" is null", "Refresh");
+			return "";
+		}
+		return getRequest().getHeader("Refresh");
+	}
+
 }
