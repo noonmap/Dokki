@@ -3,8 +3,7 @@ import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/data/model/book/book_detail_model.dart';
 import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/repository/book_repository.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class BookProvider extends ChangeNotifier {
   final BookRepository _bookRepository = BookRepository();
@@ -98,28 +97,33 @@ class BookProvider extends ChangeNotifier {
   }
 
   // 읽는 중인 책 추가
-  Future<void> addReadingBook(Map<String, dynamic> data) async {
+  Future<Response<dynamic>> addReadingBook(Map<String, dynamic> data) async {
     isPostLoading = true;
     try {
-      await _bookRepository.addReadingBookData(data);
+      Response<dynamic> response =
+          await _bookRepository.addReadingBookData(data);
       success = "읽는 중인 책(타이머)에 추가 되었습니다.";
+      return response;
     } on DioError catch (e) {
       error = "읽는 중인 책(타이머) 추가에 실패했습니다.";
       rethrow;
-    }finally{
+    } finally {
       isPostLoading = false;
       notifyListeners();
     }
   }
 
   // 완독서 다이렉트 추가
-  Future<void> addDirectCompleteBook(Map<String, dynamic> data) async {
+  Future<Response<dynamic>> addDirectCompleteBook(
+      Map<String, dynamic> data) async {
     isPostLoading = true;
     try {
-      await _bookRepository.addDirectCompleteBookData(data);
+      Response<dynamic> response =
+          await _bookRepository.addDirectCompleteBookData(data);
       success = "완독서에 추가 되었습니다.";
+      return response;
     } on DioError catch (e) {
-      error = "완독서 추가에 실패 했습니다.";
+      error = e.response?.data["message"];
       rethrow;
     } finally {
       isPostLoading = false;
@@ -128,7 +132,7 @@ class BookProvider extends ChangeNotifier {
   }
 
   // 진행중에서 완독서로 상태 변경
-  Future<void> updateCompleteBook(String bookStatusId) async {
+  Future<void> updateCompleteBook(int bookStatusId) async {
     isPostLoading = true;
     try {
       await _bookRepository.updateCompleteBookData(bookStatusId);
@@ -143,15 +147,15 @@ class BookProvider extends ChangeNotifier {
   }
 
   // 도서 상태 삭제
-  Future<void> deleteBookStatus(String bookStatusId) async{
+  Future<void> deleteBookStatus(int bookStatusId) async {
     isPostLoading = true;
-    try{
+    try {
       await _bookRepository.deleteBookStatusData(bookStatusId);
       success = "도서 상태가 삭제 되었습니다.";
-    }on DioError catch(e){
+    } on DioError catch (e) {
       error = "도서 상태 삭제에 실패 했습니다.";
       rethrow;
-    }finally{
+    } finally {
       isPostLoading = false;
       notifyListeners();
     }

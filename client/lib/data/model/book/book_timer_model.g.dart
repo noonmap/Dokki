@@ -8,6 +8,7 @@ part of 'book_timer_model.dart';
 
 BookTimerModel _$BookTimerModelFromJson(Map<String, dynamic> json) =>
     BookTimerModel(
+      bookId: json['bookId'] as String,
       bookStatusId: json['bookStatusId'] as int,
       bookTitle: json['bookTitle'] as String,
       accumReadTime: json['accumReadTime'] as int,
@@ -18,6 +19,7 @@ BookTimerModel _$BookTimerModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$BookTimerModelToJson(BookTimerModel instance) =>
     <String, dynamic>{
+      'bookId': instance.bookId,
       'bookStatusId': instance.bookStatusId,
       'bookTitle': instance.bookTitle,
       'accumReadTime': instance.accumReadTime,
