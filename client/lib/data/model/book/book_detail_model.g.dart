@@ -28,6 +28,7 @@ BookDetailModel _$BookDetailModelFromJson(Map<String, dynamic> json) =>
       isBookMarked: json['isBookMarked'] as bool,
       isReading: json['isReading'] as bool,
       isComplete: json['isComplete'] as bool,
+      accumTime: json['accumTime'] as int,
     );
 
 Map<String, dynamic> _$BookDetailModelToJson(BookDetailModel instance) =>
@@ -50,4 +51,5 @@ Map<String, dynamic> _$BookDetailModelToJson(BookDetailModel instance) =>
       'isBookMarked': instance.isBookMarked,
       'isReading': instance.isReading,
       'isComplete': instance.isComplete,
+      'accumTime': instance.accumTime,
     };

@@ -24,6 +24,7 @@ class BookDetailModel {
     required this.isBookMarked,
     required this.isReading,
     required this.isComplete,
+    required this.accumTime,
   });
   final String bookId;
   final String bookTitle;
@@ -43,6 +44,7 @@ class BookDetailModel {
   final bool isBookMarked;
   final bool isReading;
   final bool isComplete;
+  final int accumTime;
 
   factory BookDetailModel.fromJson(Map<String, dynamic> json) =>
       _$BookDetailModelFromJson(json);

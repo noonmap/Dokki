@@ -1,8 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/common/widget/alert_dialog.dart';
+import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/providers/review_provider.dart';
+import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/timer/widget/dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReviewItem extends StatelessWidget {
   const ReviewItem(
@@ -13,9 +18,11 @@ class ReviewItem extends StatelessWidget {
       required this.nickname,
       required this.content,
       required this.score,
-      required this.loginUserId})
+      required this.loginUserId,
+      required this.bookId})
       : super(key: key);
 
+  final String bookId;
   final String loginUserId;
   final int commentId;
   final int userId;
@@ -94,8 +101,28 @@ class ReviewItem extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return CustomAlertDialog(
+                                          onPressedFunction: () async {
+                                            try {
+                                              await context
+                                                  .read<ReviewProvider>()
+                                                  .deleteComment(commentId);
+                                              await context
+                                                  .read<BookProvider>()
+                                                  .getBookById(bookId);
+                                              Navigator.pop(context);
+                                              Utils.flushBarSuccessMessage(
+                                                  context
+                                                      .read<ReviewProvider>()
+                                                      .success,
+                                                  context);
+                                            } on DioError catch (e) {
+                                              Utils.flushBarErrorMessage(
+                                                  "에러", context);
+                                            }
+                                          },
                                           question: "삭제하시겠습니까?",
-                                          commentId: commentId);
+                                          commentId: commentId,
+                                          bookId: bookId);
                                     });
                               },
                               icon: Icon(Icons.delete),
