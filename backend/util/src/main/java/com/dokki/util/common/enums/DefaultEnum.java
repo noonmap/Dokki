@@ -15,7 +15,6 @@ public enum DefaultEnum {
 	BOOK_BOOK_STATUS_ID("-1"),
 	BOOK_BOOK_TITLE(""),
 	REVIEW_DIARY_IMAGE_PATH("/images/default.png"),
-	REVIEW_DIARY_DIR_PATH("/images"),
 	AI_IMAGE_COUNT_MAX("5");
 
 	private String value;

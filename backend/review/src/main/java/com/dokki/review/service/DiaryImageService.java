@@ -97,7 +97,7 @@ public class DiaryImageService {
 		List<String> imageUrlList = dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
 
 		// 생성한 이미지를 저장
-		String savedImagePath = fileUtils.saveFile(DefaultEnum.REVIEW_DIARY_DIR_PATH.getValue(), imageUrlList.get(0));
+		String savedImagePath = fileUtils.saveFile(imageUrlList.get(0));
 		return savedImagePath;
 		/**
 		 * ChatGPT Response Format
