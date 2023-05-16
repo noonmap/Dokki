@@ -1,5 +1,6 @@
 server:
-  port: 0 #random port
+  #  port: 0 #random port
+  port: 1000 #random port
 
 spring:
   application:
@@ -97,5 +98,6 @@ springfox:
 # file path
 app:
   fileupload:
-    uploadPath: static
-    uploadDir: upload
+    uploadPath: ${UPLOAD_PATH}
+    uploadDir: ${UPLOAD_DIR}
+file.upload.uri: https://dokki.kr

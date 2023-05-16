@@ -148,7 +148,7 @@ public class LoginService {
 			return null;
 		}
 		Authentication authentication = tokenProvider.getAuthentication(tokenProvider.resolveToken(refreshToken));
-		redisService.delValues(refreshToken);
+		redisService.delValues(tokenProvider.resolveToken(refreshToken));
 
 		String accessToken = tokenProvider.createAccessToken(authentication);
 		String newRefreshToken = tokenProvider.createRefreshToken(authentication);
