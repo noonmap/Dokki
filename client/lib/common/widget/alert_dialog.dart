@@ -1,15 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/review_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CustomAlertDialog extends StatefulWidget {
   final int commentId;
   final String question;
+  final String bookId;
+  final Function onPressedFunction;
   const CustomAlertDialog(
-      {Key? key, required this.question, required this.commentId})
+      {Key? key,
+      required this.question,
+      required this.commentId,
+      required this.bookId,
+      required this.onPressedFunction})
       : super(key: key);
 
   @override
@@ -52,17 +58,8 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      await context
-                          .read<ReviewProvider>()
-                          .deleteComment(widget.commentId);
-                      Navigator.pop(context);
-                      Utils.flushBarSuccessMessage(
-                          context.read<ReviewProvider>().success, context);
-                    } on DioError catch (e) {
-                      Utils.flushBarErrorMessage("에러", context);
-                    }
+                  onPressed: () {
+                    widget.onPressedFunction();
                   },
                   child: Text("확인"),
                   style: ButtonStyle(

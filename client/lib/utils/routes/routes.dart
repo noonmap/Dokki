@@ -13,6 +13,7 @@ import 'package:dokki/view/profile/follow_page.dart';
 import 'package:dokki/view/profile/profile_edit_page.dart';
 import 'package:dokki/view/profile/profile_page.dart';
 import 'package:dokki/view/profile/wishlist_page.dart';
+import 'package:dokki/view/review/create_review_page.dart';
 import 'package:dokki/view/splash/splash_page.dart';
 import 'package:dokki/view/timer/timer_page.dart';
 import 'package:flutter/material.dart';
@@ -126,10 +127,27 @@ class Routes {
       case RoutesName.diaryCreate:
         var args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                DiaryCreatePage(bookId: args['bookId']),
+            builder: (BuildContext context) => DiaryCreatePage(
+                  bookId: args['bookId'],
+                  bookTitle: args['bookTitle'],
+                  bookAuthor: args['bookAuthor'],
+                  bookCoverPath: args['bookCoverPath'],
+                  bookPublisher: args['bookPublisher'],
+                  bookPublishYear: args['bookPublishYear'],
+                ),
             settings: settings);
-
+      case RoutesName.reviewCreate:
+        var args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (BuildContext context) => CreateReviewPage(
+                  bookId: args['bookId'],
+                  bookTitle: args['bookTitle'],
+                  bookAuthor: args['bookAuthor'],
+                  bookCoverPath: args['bookCoverPath'],
+                  bookPublisher: args['bookPublisher'],
+                  bookPublishYear: args['bookPublishYear'],
+                ),
+            settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) {

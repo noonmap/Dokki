@@ -1,8 +1,8 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/providers/book_provider.dart';
-import 'package:dokki/providers/date_provider.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
+import 'package:dokki/view/book_detail/widget/complete_book_dialog.dart';
 import 'package:dokki/view/book_detail/widget/detail_app_bar.dart';
 import 'package:dokki/view/book_detail/widget/review_item.dart';
 import 'package:flutter/material.dart';
@@ -108,9 +108,32 @@ class _BookDetailPageState extends State<BookDetailPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
-                                    child: BookStatusBadge(
-                                        isReading: bp.book!.isReading,
-                                        isComplete: bp.book!.isComplete),
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (bp.book!.isComplete) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return CompleteBookDialog(
+                                                  accumTime: bp.book!.accumTime,
+                                                  bookId: widget.bookId,
+                                                  bookTitle: bp.book!.bookTitle,
+                                                  bookAuthor:
+                                                      bp.book!.bookAuthor,
+                                                  bookCoverPath:
+                                                      bp.book!.bookCoverPath,
+                                                  bookPublisher:
+                                                      bp.book!.bookPublisher,
+                                                  bookPublishYear:
+                                                      bp.book!.bookPublishYear,
+                                                );
+                                              });
+                                        }
+                                      },
+                                      child: BookStatusBadge(
+                                          isReading: bp.book!.isReading,
+                                          isComplete: bp.book!.isComplete),
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   Center(
@@ -295,8 +318,6 @@ class _BookDetailPageState extends State<BookDetailPage>
                                     ListView.builder(
                                       shrinkWrap: true,
                                       primary: false,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
                                       itemCount: bp.book!.review.length,
                                       itemBuilder: (context, index) {
                                         return Container(
@@ -308,6 +329,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                                       width: 1,
                                                       color: grayColor100))),
                                           child: ReviewItem(
+                                              bookId: widget.bookId,
                                               loginUserId: widget.loginUserId,
                                               commentId: bp.book!.review[index]
                                                   .commentId,
