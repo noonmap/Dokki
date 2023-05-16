@@ -3,7 +3,6 @@ package com.dokki.user.service;
 
 import com.dokki.user.config.exception.CustomException;
 import com.dokki.user.dto.ProfileDto;
-import com.dokki.user.dto.UserDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.entity.UserEntity;
@@ -142,7 +141,6 @@ public class UserService {
 			Optional<UserEntity> user = userRepository.findById(id);
 			user.get().setProfileImagePath(uploadFolder + "/" + savingFileName);
 			userRepository.save(user.get());
-
 			return ProfileDto.toDto(user.get());
 		} catch (RuntimeException | IOException e) {
 			e.printStackTrace();
@@ -168,7 +166,6 @@ public class UserService {
 				);
 				userSimpleInfoDtoList.add(userSimpleInfoDto.get());
 			}
-
 			return userSimpleInfoDtoList;
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -225,5 +222,4 @@ public class UserService {
 			.followingCount(followingCount)
 			.build();
 	}
-
 }
