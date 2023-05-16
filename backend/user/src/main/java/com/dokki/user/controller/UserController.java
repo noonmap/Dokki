@@ -2,6 +2,7 @@ package com.dokki.user.controller;
 
 
 import com.dokki.user.config.exception.LogoutException;
+import com.dokki.user.dto.ProfileDto;
 import com.dokki.user.dto.ResponseMessage;
 import com.dokki.user.dto.TokenDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
@@ -157,8 +158,8 @@ public class UserController {
 	@PostMapping("/profile/image")
 	@ApiOperation(value = "유저 프로필 사진 수정", notes = "유저 프로필 사진 수정")
 	public ResponseEntity<?> modifyImage(@RequestPart MultipartFile uploadFile) {
-		String response = userService.modifyImage(uploadFile);
-		return ResponseEntity.ok(response);
+		ProfileDto profileDto = userService.modifyImage(uploadFile);
+		return ResponseEntity.ok(profileDto);
 	}
 
 

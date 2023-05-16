@@ -2,6 +2,8 @@ package com.dokki.user.service;
 
 
 import com.dokki.user.config.exception.CustomException;
+import com.dokki.user.dto.ProfileDto;
+import com.dokki.user.dto.UserDto;
 import com.dokki.user.dto.request.ProfileRequestDto;
 import com.dokki.user.dto.response.ProfileResponseDto;
 import com.dokki.user.entity.UserEntity;
@@ -118,7 +120,7 @@ public class UserService {
 	 * 유저 이미지 파일 수정
 	 */
 	@Transactional
-	public String modifyImage(MultipartFile uploadFile) {
+	public ProfileDto modifyImage(MultipartFile uploadFile) {
 		try {
 			String pathName = uploadPath + File.separator + uploadFolder + File.separator;
 			File uploadDir = new File(pathName);
@@ -140,7 +142,8 @@ public class UserService {
 			Optional<UserEntity> user = userRepository.findById(id);
 			user.get().setProfileImagePath(uploadFolder + "/" + savingFileName);
 			userRepository.save(user.get());
-			return "SUCCESS";
+
+			return ProfileDto.toDto(user.get());
 		} catch (RuntimeException | IOException e) {
 			e.printStackTrace();
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
