@@ -64,7 +64,7 @@ public class DiaryService {
 			throw e;
 		}
 		// 해당 책에 대해 이미 일기를 작성했다면 예외
-		if (diaryRepository.existsByBookId(bookId)) {
+		if (diaryRepository.existsByUserIdAndBookId(userId, bookId)) {
 			throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
 		}
 		// 생성

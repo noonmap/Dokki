@@ -11,10 +11,11 @@ public enum DefaultEnum {
 	    - value : default value (String으로 저장, 가져다 쓸 때 필요한 타입으로 변환해서 사용. ex: Integer.parseInt(value))
 	 */
 	USER_NICKNAME(""),
-	USER_PROFILE_IMAGE_PATH("/default/profile_image.png"),
+	USER_PROFILE_IMAGE_PATH("/images/default.png"),
 	BOOK_BOOK_STATUS_ID("-1"),
 	BOOK_BOOK_TITLE(""),
-	REVIEW_DIARY_IMAGE_PATH("/default/diary_image.png");
+	REVIEW_DIARY_IMAGE_PATH("/images/default.png"),
+	AI_IMAGE_COUNT_MAX("5");
 
 	private String value;
 

@@ -15,6 +15,6 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
 
 	Slice<DiaryEntity> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
-	boolean existsByBookId(String bookId);
+	boolean existsByUserIdAndBookId(Long userId, String bookId);
 
 }

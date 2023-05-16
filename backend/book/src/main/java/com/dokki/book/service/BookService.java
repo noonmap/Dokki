@@ -36,6 +36,25 @@ public class BookService {
 
 
 	/**
+	 * 추천 도서 리스트
+	 */
+	public Slice<AladinItemResponseDto> recommendBookList(Pageable pageable) {
+		AladinSearchResponseDto result;
+		try {
+			result = AladinCaller.bestSeller(pageable);
+		} catch (RuntimeException e) {
+			log.error("BookService - 알라딘 api 에러 {}", e.getMessage());
+			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+		} catch (IOException e) {
+			log.error("BookService - {}", e.getMessage());
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+		boolean hasNext = pageable.getPageSize() * pageable.getPageNumber() < result.getTotalResults(); // 다음 slice 있는지 확인 계산
+		return new SliceImpl<>(result.getItem(), pageable, hasNext);
+	}
+
+
+	/**
 	 * 책 검색
 	 *
 	 * @param search    검색어
@@ -43,7 +62,7 @@ public class BookService {
 	 * @param pageable  페이징
 	 */
 	public Slice<AladinItemResponseDto> searchBookList(String search, SearchType queryType, Pageable pageable) {
-		AladinSearchResponseDto result = null;
+		AladinSearchResponseDto result;
 		try {
 			search = search.replaceAll(" ", "%20"); // url상에 공백 -> URL escape code로 대체
 			result = AladinCaller.searchBook(search, queryType, pageable);
@@ -69,13 +88,7 @@ public class BookService {
 		BookEntity result;
 		Optional<BookEntity> bookEntity = bookRepository.findById(bookId);
 
-		if (bookEntity.isEmpty()) {
-			result = saveBookUseAladin(bookId);
-			// 책 통계 정보 init, 저장
-			bookStatisticsRepository.save(new BookStatisticsEntity(result));
-		} else {
-			result = bookEntity.get();
-		}
+		result = bookEntity.orElseGet(() -> saveBookUseAladin(bookId));
 		return result;
 	}
 
@@ -133,8 +146,12 @@ public class BookService {
 		if (!isValidCoverBackImagePath) otherPath[0] = null;
 		if (!isValidCoverSideImagePath) otherPath[1] = null;
 
-		// 책 정보 저장 후 리턴
-		return bookRepository.save(AladinItemResponseDto.toEntity(detailResponse, otherPath));
+		// 책 정보 저장
+		BookEntity bookEntity = bookRepository.save(AladinItemResponseDto.toEntity(detailResponse, otherPath));
+
+		// 책 통계 정보 init, 저장
+		bookStatisticsRepository.save(new BookStatisticsEntity(bookEntity));
+		return bookEntity;
 	}
 
 

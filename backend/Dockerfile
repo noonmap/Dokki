@@ -24,6 +24,6 @@ FROM adoptopenjdk/openjdk11
 # 외부에서 할당한 SERVICE_NAME 값은 위 FROM과 아래 FROM 모두 적용된다.
 ARG SERVICE_NAME=book
 COPY --from=builder ${SERVICE_NAME}/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar", "--server.port=8080"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=Asia/Seoul", "/app.jar", "--server.port=8080"]
 
 # 외부에서 변수 값 할당 예시: docker build --build-arg SERVICE_NAME=user .

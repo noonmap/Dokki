@@ -27,6 +27,7 @@ public class AladinCaller {
 	private static final String ALADIN_API_KEY = "ttbtjrghks961722001";
 	private static final String ALADIN_SEARCH_API_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?SearchTarget=Book&output=JS&Version=20131101&";
 	private static final String ALADIN_DETAIL_API_URL = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?output=JS&Version=20131101&";
+	private static final String ALADIN_ITEM_LIST_API_URL = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?output=JS&Version=20131101&";
 
 
 	public static boolean isValidUrl(String imgPath) {
@@ -41,6 +42,51 @@ public class AladinCaller {
 			throw new RuntimeException(e);
 		}
 		return true;
+	}
+
+
+	public static AladinSearchResponseDto bestSeller(Pageable pageable) throws IOException, RuntimeException {
+		// set parameter
+		Map<String, String> params = new HashMap<>();
+		params.put("ttbkey", ALADIN_API_KEY);
+		params.put("QueryType", "Bestseller");
+		params.put("SearchTarget", "Book");
+		params.put("MaxResults", Integer.toString(pageable.getPageSize()));
+		params.put("start", Integer.toString(pageable.getPageNumber()));
+
+		URL url = new URL(ALADIN_ITEM_LIST_API_URL + getParamsString(params));
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+
+		if (conn.getResponseCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+		}
+
+		// api 응답 읽기
+		BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+		String output;
+		StringBuilder sb = new StringBuilder();
+		while ((output = br.readLine()) != null) {
+			sb.append(output);
+		}
+		conn.disconnect();
+
+		// string -> json
+		String jsonString = sb.toString();
+		GsonBuilder gsonBuilder = new GsonBuilder()
+			.registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+			.registerTypeAdapter(LocalDate.class, new LocalDateDeserializer());
+		Gson gson = gsonBuilder.setPrettyPrinting().create();
+
+		AladinSearchResponseDto result = gson.fromJson(jsonString, AladinSearchResponseDto.class);
+
+		// aladin api error handle
+		if (result.getErrorCode() != null) {
+			throw new RuntimeException(result.getErrorMessage());
+		}
+
+		return result;
 	}
 
 
