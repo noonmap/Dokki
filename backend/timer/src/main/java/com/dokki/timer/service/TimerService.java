@@ -126,21 +126,6 @@ public class TimerService {
 		timerRedisDto.updateTimerStop(Math.toIntExact(currTime), startTime.toLocalDate());  // toIntExact -> ArithmeticException (if the argument overflows an int)
 		timerRedisService.createOrModifyTimerRedis(timerRedisDto);
 
-		// 일일통계 계산 (오늘 통계 가져오기)
-		DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
-		if (dailyStatisticsEntity == null) {
-			dailyStatisticsEntity = DailyStatisticsEntity.builder()
-				.userId(userId)
-				.bookId(timerEntity.getBookId())
-				.accumTime(Math.toIntExact(currTime))
-				.recordDate(LocalDate.now())
-				.build();
-		} else {
-			dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
-		}
-
-		dailyStatisticsRepository.save(dailyStatisticsEntity);
-
 	}
 
 
