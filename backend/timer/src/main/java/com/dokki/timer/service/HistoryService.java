@@ -5,6 +5,9 @@ import com.dokki.timer.client.BookClient;
 import com.dokki.timer.dto.response.DailyStatisticsResponseDto;
 import com.dokki.timer.dto.response.MonthlyStatisticsResponseDto;
 import com.dokki.timer.entity.DailyStatisticsEntity;
+import com.dokki.timer.redis.TimerRedisDto;
+import com.dokki.timer.redis.TimerRedisService;
+import com.dokki.timer.redis.TimerRedisTempleteService;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
 public class HistoryService {
 
 	private final DailyStatisticsRepository dailyStatisticsRepository;
+	private final TimerRedisService timerRedisService;
+	private final TimerRedisTempleteService timerRedisTempleteService;
 
 	private final BookClient bookClient;
 
@@ -79,9 +84,19 @@ public class HistoryService {
 	 * @return DailyStatisticsResponse
 	 */
 	public List<DailyStatisticsResponseDto> getDailyStatisticsList(Long userId, int year, int month) {
+
 		LocalDate startDate = LocalDate.of(year, month, 1);
 		LocalDate endDate = LocalDate.of(year, month + 1, 1);
 		List<DailyStatisticsEntity> dailyStatisticsEntityList = dailyStatisticsRepository.getDailyStatisticsList(userId, startDate, endDate);
+
+		if (LocalDate.now().getMonth().getValue() == month) {
+			List<String> idList = timerRedisTempleteService.getIdListByUserId(userId);
+			List<TimerRedisDto> timerRedisDtoList = timerRedisService.getListByIdIn(idList);
+			if (timerRedisDtoList != null && !timerRedisDtoList.isEmpty()) {
+				TimerRedisDto todayTimer = timerRedisDtoList.stream().max((Comparator.comparingInt(TimerRedisDto::getAccumTimeToday))).get();
+				timerRedisDtoList.add(todayTimer);
+			}
+		}
 
 		List<DailyStatisticsEntity> removeDuplicateList = dailyStatisticsEntityList.stream().filter(distinctByKeys(DailyStatisticsEntity::getRecordDate, DailyStatisticsEntity::getAccumTime))
 			.collect(Collectors.toList());
@@ -96,8 +111,10 @@ public class HistoryService {
 	}
 
 
-	public Long getTodayReadTime(Long userId) {
-		return dailyStatisticsRepository.getTodayReadTime(userId);
+	public int getTodayReadTime(Long userId) {
+		List<String> idList = timerRedisTempleteService.getIdListByUserId(userId);
+		List<TimerRedisDto> timerRedisDtoList = timerRedisService.getListByIdIn(idList);
+		return timerRedisDtoList.stream().mapToInt(TimerRedisDto::getAccumTimeToday).sum();
 	}
 
 }
