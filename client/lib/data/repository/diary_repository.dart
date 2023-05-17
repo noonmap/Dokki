@@ -120,6 +120,24 @@ class DiaryRepository {
     }
   }
 
+  // PUT : 감정 일기 수정
+  Future<void> putDiaryData({
+    required int diaryId,
+    required String content,
+    required String imagePath,
+  }) async {
+    Map<String, String> data = {
+      'content': content,
+      'diaryImagePath': imagePath,
+    };
+
+    try {
+      await _apiService.put('/$commonPath/$diaryId', data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // DELETE : 감정 일기 삭제
   Future<void> deleteDiary({required diaryId}) async {
     try {
