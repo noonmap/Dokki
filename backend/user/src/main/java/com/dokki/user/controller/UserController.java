@@ -147,7 +147,7 @@ public class UserController {
 	@PutMapping("/profile/nickname")
 	@ApiOperation(value = "유저 닉네임 수정", notes = "유저 닉네임 수정")
 	public ResponseEntity<?> modifyNickname(@RequestBody Map<String,String> nickname) {
-		String response = userService.modifyNickname(nickname.get(nickname));
+		String response = userService.modifyNickname(nickname.get("nickname"));
 		return ResponseEntity.ok(response);
 	}
 
