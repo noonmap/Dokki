@@ -86,65 +86,58 @@ class _UserMonthCalendarState extends State<UserMonthCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) {
-            double containerWidth = constraints.maxWidth / 7;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                for (var i = 0; i < 7; i++)
-                  Container(
-                    decoration: const BoxDecoration(
-                        border:
-                            Border(bottom: BorderSide(color: grayColor200))),
-                    width: containerWidth,
-                    child: Center(
-                      child: Paragraph(
-                        text: week[i],
-                        size: 12,
-                        color: grayColor300,
-                      ),
+    return LayoutBuilder(builder: (context, constraints) {
+      double containerWidth = constraints.maxWidth / 7;
+      double containerHeight = containerWidth * 10 / 7;
+      return Column(
+        children: [
+          // 요일
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var i = 0; i < 7; i++)
+                Container(
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: grayColor200))),
+                  width: containerWidth,
+                  child: Center(
+                    child: Paragraph(
+                      text: week[i],
+                      size: 12,
+                      color: grayColor300,
                     ),
-                  )
-              ],
-            );
-          },
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            double containerWidth = constraints.maxWidth / 7;
-            double containerHeight = containerWidth * 10 / 7;
-            return Wrap(
-              children: [
-                for (var i = 0; i < days.length; i++)
-                  Container(
-                    width: containerWidth,
-                    height: containerHeight,
-                    alignment: Alignment.topCenter,
-                    decoration: const BoxDecoration(
-                        border:
-                            Border(bottom: BorderSide(color: grayColor200))),
-                    child: days[i]['read']
-                        ? Image.network(
-                            days[i]['bookCoverPath'],
-                            width: 42,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          )
-                        : days[i]['inMonth']
-                            ? Paragraph(
-                                text: days[i]['day'].toString(),
-                                size: 12,
-                                color: grayColor300)
-                            : null,
-                  )
-              ],
-            );
-          },
-        ),
-      ],
-    );
+                  ),
+                )
+            ],
+          ),
+          // 날짜
+          Wrap(
+            children: [
+              for (var i = 0; i < days.length; i++)
+                Container(
+                  width: containerWidth,
+                  height: containerHeight,
+                  alignment: Alignment.topCenter,
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: grayColor200))),
+                  child: days[i]['read']
+                      ? Image.network(
+                          days[i]['bookCoverPath'],
+                          width: 42,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        )
+                      : days[i]['inMonth']
+                          ? Paragraph(
+                              text: days[i]['day'].toString(),
+                              size: 12,
+                              color: grayColor300)
+                          : null,
+                )
+            ],
+          ),
+        ],
+      );
+    });
   }
 }
