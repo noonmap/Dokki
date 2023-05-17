@@ -14,6 +14,10 @@ public enum DefaultEnum {
 	USER_PROFILE_IMAGE_PATH("/images/default.png"),
 	BOOK_BOOK_STATUS_ID("-1"),
 	BOOK_BOOK_TITLE(""),
+	BOOK_BOOK_AUTHOR(""),
+	BOOK_BOOK_PUBLISH_YEAR(""),
+	BOOK_BOOK_PUBLISHER(""),
+	BOOK_BOOK_COVER_IMAGE_PATH("/images/default.png"),
 	REVIEW_DIARY_IMAGE_PATH("/images/default.png"),
 	AI_IMAGE_COUNT_MAX("5");
 

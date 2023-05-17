@@ -15,7 +15,15 @@ public class BookSimpleResponseDto {
 
 	private String bookId;
 	private String bookTitle;
+	private String bookAuthor;
+	private String bookPublishYear;
+	private String bookPublisher;
 	private String bookCoverPath;
+	/**
+	 *  bookAuthor: String
+	 *   bookPublishYear: String
+	 *   bookPublisher: String
+	 */
 
 	//	public static BookSimpleResponseDto fromEntity(BookEntity bookEntity) {
 	//		// TODO : 채우기

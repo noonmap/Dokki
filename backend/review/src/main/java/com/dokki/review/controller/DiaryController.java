@@ -63,7 +63,7 @@ public class DiaryController {
 
 
 	@GetMapping("/{bookId}")
-	@ApiOperation(value = "관련 책에 대해 작성한 감정 일기 조회")
+	@ApiOperation(value = "관련 책에 대해 작성한 감정 일기 조회 (단일 조회)")
 	public ResponseEntity<DiaryResponseDto> getDiaryByBook(@PathVariable String bookId) {
 		Long userId = SessionUtils.getUserId();
 		DiaryResponseDto diaryEntityPage = diaryService.getDiaryByBook(userId, bookId);
