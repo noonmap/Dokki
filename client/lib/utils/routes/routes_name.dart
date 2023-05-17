@@ -17,4 +17,5 @@ class RoutesName {
   static const String reviewList = 'review_list_page';
   static const String wishlist = 'wishlist_page';
   static const String follow = 'follow_page';
+  static const String animateBook = "anmiate_book_page";
 }
