@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -84,10 +83,10 @@ public class DiaryController {
 	@ApiOperation(value = "감정 일기 내용을 바탕으로 한 AI 이미지 생성", notes = "")
 	public ResponseEntity<DiaryImageResponseDto> createAIImage(@RequestBody AIImageRequestDto aiImageRequestDto) {
 		Long userId = SessionUtils.getUserId();
-		List<String> imagePath = diaryImageService.createAIImage(userId, aiImageRequestDto);
+		String imagePath = diaryImageService.createAIImage(userId, aiImageRequestDto);
 		Integer count = diaryImageService.getImageCreationRemainCount(userId);
 		DiaryImageResponseDto diaryImageResponseDto = DiaryImageResponseDto.builder()
-			.diaryImagePath(FileUtils.getAbsoluteFilePath(imagePath.get(0)))
+			.diaryImagePath(FileUtils.getAbsoluteFilePath(imagePath))
 			.count(count)
 			.build();
 		return ResponseEntity.ok(diaryImageResponseDto);
