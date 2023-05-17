@@ -1,9 +1,11 @@
 package com.dokki.timer.dto.response;
 
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.Column;
 import java.util.Objects;
 
 
@@ -12,9 +14,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 public class MonthlyStatisticsResponseDto {
-//	@Column(name = "type_name")
+
 	private Integer month;
-//	@Column(name = "type_name")
 	private Long count;
 
 
