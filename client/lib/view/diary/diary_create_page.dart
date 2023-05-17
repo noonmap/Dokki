@@ -98,6 +98,11 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
 
       await dp.postDiaryImage(content: _textEditingController.text);
 
+      if (dp.isImageError) {
+        Utils.flushBarErrorMessage('요청이 너무 많습니다. 다시 시도해주세요.', context);
+        return;
+      }
+
       setState(() {
         isImageLoading = false;
         selectClicked = false;
@@ -125,7 +130,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
             imagePath: dp.diaryImage!);
       }
 
-      Navigator.pushNamed(
+      Navigator.popAndPushNamed(
         context,
         RoutesName.diaryDetail,
         arguments: {"bookId": isEdit ? dp.diary!.bookId : widget.bookId},
