@@ -149,13 +149,16 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
         setState(() {
           pickedImg = File(pickedFile.path);
         });
-        dp.postDiaryUserImage(img: pickedImg!);
+
+        Utils.scrollToBottom(_scrollController);
+        await dp.postDiaryUserImage(img: pickedImg!);
 
         setState(() {
           selectClicked = true;
           createClicked = false;
           isImageLoading = false;
         });
+        Utils.scrollToBottom(_scrollController);
       }
     }
 
