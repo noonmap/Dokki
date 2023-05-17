@@ -1,0 +1,61 @@
+server:
+  port: 0 #random port
+spring:
+  application:
+    name: review-service
+
+  # mysql
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWD}
+
+  #JPA
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  
+  # Swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # hibernate logging
+  logging:
+    level:
+      org.hibernate: info #${log.hibernate.level}
+
+  # SERVER AUTO RELOAD
+  devtools:
+    livereload.enabled: true
+  freemarker:
+    cache: false
+  #Redis
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# Swagger path
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: /reviews
+    swagger:
+      v2:
+        path: /reviews
