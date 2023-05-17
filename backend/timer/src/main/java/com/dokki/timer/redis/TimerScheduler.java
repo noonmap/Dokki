@@ -2,6 +2,7 @@ package com.dokki.timer.redis;
 
 
 import com.dokki.timer.entity.DailyStatisticsEntity;
+import com.dokki.timer.redis.dto.TimerRedisDto;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;

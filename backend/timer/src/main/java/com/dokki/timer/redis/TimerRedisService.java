@@ -3,6 +3,8 @@ package com.dokki.timer.redis;
 
 import com.dokki.timer.config.exception.CustomException;
 import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.dto.TimerRedisDto;
+import com.dokki.timer.redis.dto.TodayAccessRedisDto;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.common.error.ErrorCode;
 import com.google.common.collect.Lists;
@@ -92,7 +94,7 @@ public class TimerRedisService {
 	public TimerRedisDto getTimerRedisByTodayAndBookStatusId(Long userId, Long bookStatusId) {
 		return timerRedisRepository.findById(TimerRedisDto.toIdToday(userId, bookStatusId)).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
 	}
-	
+
 
 	public void deleteTimerRedis(String id) {
 		timerRedisRepository.deleteById(id);
