@@ -1,0 +1,13 @@
+**/node_modules
+**/.next
+
+
+**/.DS_Store
+**/env.properties
+**/.env
+**/Key.json
+BE/chicochico/static/
+**/.gradle/*
+**/build/*
+*.iml
+**/.idea/
