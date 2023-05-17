@@ -20,8 +20,11 @@ class DiaryProvider extends ChangeNotifier {
   int? diaryImageCount;
   String? diaryImage;
 
-  void initProvider() {
+  void diarysInitProvider() {
     diaries = [];
+  }
+
+  void initProvider() {
     pageData = {};
     isLoading = false;
     isDetailLoading = false;

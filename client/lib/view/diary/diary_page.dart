@@ -67,6 +67,7 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   void initState() {
     final dp = Provider.of<DiaryProvider>(context, listen: false);
+    dp.diarysInitProvider();
     dp.initProvider();
     dp.getDiaries(page: page);
     super.initState();
@@ -102,7 +103,7 @@ class _DiaryPageState extends State<DiaryPage> {
         ],
       ),
       body: dp.isLoading
-          ? const OpacityLoading()
+          ? null
           : Padding(
               padding: isGrid
                   ? const EdgeInsets.fromLTRB(28, 20, 28, 20)
@@ -135,12 +136,15 @@ class _DiaryPageState extends State<DiaryPage> {
                                     childAspectRatio: 0.65,
                                   ),
                                   itemBuilder: (context, idx) {
-                                    return DiaryItem(
-                                        diaryData: dp.diaries[idx]);
-                                  },
-                                  itemCount: dp.diaries.length,
-                                ),
-                              )
+                                print('-----------------');
+                                print(dp.diaries[idx].bookId);
+                                print(dp.diaries[idx].bookTitle);
+                                print('-----------------');
+                                return DiaryItem(diaryData: dp.diaries[idx]);
+                              },
+                              itemCount: dp.diaries.length,
+                            ),
+                          ),
                             : AnimateBookPage(
                                 libraryBooks: const [],
                                 diarys: dp.diaries,
