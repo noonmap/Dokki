@@ -192,10 +192,6 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                   "저장",
                   style: TextStyle(color: brandColor100, fontSize: 14),
                 ),
-                child: Text(
-                  "저장",
-                  style: const TextStyle(color: brandColor300, fontSize: 14),
-                ),
               ),
             ),
           ],
@@ -232,14 +228,10 @@ class _OpenDateButtonState extends State<OpenDateButton> {
         );
 
         if (widget.isStart) {
-          if (selectedDate == null) {
-            selectedDate = context.read<DateProvider>().start;
-          }
+          selectedDate ??= context.read<DateProvider>().start;
           context.read<DateProvider>().changeStartDate(selectedDate);
         } else {
-          if (selectedDate == null) {
-            selectedDate = context.read<DateProvider>().end;
-          }
+          selectedDate ??= context.read<DateProvider>().end;
           context.read<DateProvider>().changeEndDate(selectedDate);
         }
       },
@@ -258,14 +250,14 @@ class _OpenDateButtonState extends State<OpenDateButton> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.calendar_month,
                 color: grayColor600,
               ),
               const SizedBox(width: 6),
               Text(
                 widget.isStart ? "시작일" : "종료일",
-                style: TextStyle(
+                style: const TextStyle(
                   color: grayColor600,
                 ),
               ),
@@ -275,7 +267,7 @@ class _OpenDateButtonState extends State<OpenDateButton> {
             widget.isStart
                 ? "${start.year} - ${start.month} - ${start.day}"
                 : "${end.year} - ${end.month} - ${end.day}",
-            style: TextStyle(
+            style: const TextStyle(
               color: grayColor600,
             ),
           ),

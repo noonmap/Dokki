@@ -105,6 +105,7 @@ class DiaryProvider extends ChangeNotifier {
   Future<void> postDiaryUserImage({required File img}) async {
     isImageLoading = true;
     isImageLoaded = false;
+    notifyListeners();
 
     try {
       String res = await _diaryRepository.postDiaryUserImage(img: img);
@@ -112,6 +113,7 @@ class DiaryProvider extends ChangeNotifier {
     } on DioError catch (e) {
       print(e.response);
     } finally {
+      // print(diaryImage);
       isImageLoading = false;
       isImageLoaded = true;
       notifyListeners();
@@ -127,6 +129,15 @@ class DiaryProvider extends ChangeNotifier {
     try {
       await _diaryRepository.postDiaryData(
           bookId: bookId, content: content, imagePath: imagePath);
+    } on DioError catch (e) {
+      print(e.response);
+    }
+  }
+
+  // DELETE : 감정 일기 삭제
+  Future<void> deleteDiary({required diaryId}) async {
+    try {
+      await _diaryRepository.deleteDiary(diaryId: diaryId);
     } on DioError catch (e) {
       print(e.response);
     }
