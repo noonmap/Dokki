@@ -136,15 +136,12 @@ class _DiaryPageState extends State<DiaryPage> {
                                     childAspectRatio: 0.65,
                                   ),
                                   itemBuilder: (context, idx) {
-                                print('-----------------');
-                                print(dp.diaries[idx].bookId);
-                                print(dp.diaries[idx].bookTitle);
-                                print('-----------------');
-                                return DiaryItem(diaryData: dp.diaries[idx]);
-                              },
-                              itemCount: dp.diaries.length,
-                            ),
-                          ),
+                                    return DiaryItem(
+                                        diaryData: dp.diaries[idx]);
+                                  },
+                                  itemCount: dp.diaries.length,
+                                ),
+                              )
                             : AnimateBookPage(
                                 libraryBooks: const [],
                                 diarys: dp.diaries,
