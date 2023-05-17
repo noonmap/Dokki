@@ -103,6 +103,7 @@ public class UserService {
 			if (user.isPresent()) {
 				user.get().setNickname(nickname);
 				userRepository.save(user.get());
+				log.info(nickname);
 				return nickname;
 			} else {
 				throw new CustomException(ErrorCode.UNKNOWN_ERROR);
