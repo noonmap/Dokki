@@ -29,4 +29,9 @@ class DiaryModel {
         bookPublishYear = json['bookPublishYear'],
         bookPublisher = json['bookPublisher'],
         bookCoverPath = json['bookCoverPath'];
+
+  @override
+  String toString() {
+    return 'DiaryModel{bookId: $bookId, bookTitle: $bookTitle, diaryId: $diaryId, diaryImagePath: $diaryImagePath, diaryContent: $diaryContent, created: $created, bookAuthor: $bookAuthor, bookPublishYear: $bookPublishYear, bookPublisher: $bookPublisher, bookCoverPath: $bookCoverPath}';
+  }
 }
