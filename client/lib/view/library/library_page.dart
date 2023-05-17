@@ -135,8 +135,8 @@ class _LibraryPageState extends State<LibraryPage> {
               });
             },
             icon: !isGrid
-                ? Icon(Ionicons.grid)
-                : Icon(Ionicons.color_wand_outline),
+                ? const Icon(Ionicons.grid)
+                : const Icon(Ionicons.color_wand_outline),
           ),
         ],
       ),
@@ -181,7 +181,7 @@ class _LibraryPageState extends State<LibraryPage> {
                               )
                             : AnimateBookPage(
                                 libraryBooks: lp.libraryBooks,
-                                diarys: [],
+                                diarys: const [],
                                 isDiary: false,
                               ),
                   ),

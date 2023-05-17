@@ -1,4 +1,5 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/page/animate_book_page.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/diary_provider.dart';
@@ -7,8 +8,6 @@ import 'package:dokki/view/diary/widget/diary_item.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
-
-import '../../common/page/animate_book_page.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({
@@ -84,7 +83,7 @@ class _DiaryPageState extends State<DiaryPage> {
         backgroundColor: brandColor100,
         foregroundColor: grayColor600,
         centerTitle: true,
-        title: Paragraph(
+        title: const Paragraph(
           text: '감정 일기 스크랩 북',
           size: 18,
           weightType: WeightType.medium,
@@ -97,8 +96,8 @@ class _DiaryPageState extends State<DiaryPage> {
               });
             },
             icon: !isGrid
-                ? Icon(Ionicons.grid)
-                : Icon(Ionicons.color_wand_outline),
+                ? const Icon(Ionicons.grid)
+                : const Icon(Ionicons.color_wand_outline),
           ),
         ],
       ),
@@ -143,7 +142,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                 ),
                               )
                             : AnimateBookPage(
-                                libraryBooks: [],
+                                libraryBooks: const [],
                                 diarys: dp.diaries,
                                 isDiary: true,
                               ),
