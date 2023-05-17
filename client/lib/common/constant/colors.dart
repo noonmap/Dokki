@@ -3,9 +3,9 @@ import 'dart:ui';
 // Brand
 const brandColor000 = Color(0xFFFEF9F9);
 const brandColor100 = Color(0xFFFDF0F0);
-const brandColor200 = Color(0xFFFAC0C0);
+const brandColor200 = Color(0xFFFFD4D7);
 const brandColor300 = Color(0xFFF16969);
-const brandColor400 = Color(0xFFEA1313);
+const brandColor400 = Color(0xFFEA3548);
 const brandColor500 = Color(0xFFC80707);
 
 // Gray
