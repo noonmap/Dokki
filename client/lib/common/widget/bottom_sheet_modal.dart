@@ -133,15 +133,19 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
             ),
             SizedBox(height: _selectedIndex == 0 ? 6 : 12),
             _selectedIndex == 1
-                ? Text("독서 기간",
+                ? const Text("독서 기간",
                     style: TextStyle(
                       fontSize: 13,
                       color: grayColor600,
                       fontWeight: FontWeight.w600,
                     ))
-                : SizedBox(),
-            _selectedIndex == 1 ? OpenDateButton(isStart: true) : SizedBox(),
-            _selectedIndex == 1 ? OpenDateButton(isStart: false) : SizedBox(),
+                : const SizedBox(),
+            _selectedIndex == 1
+                ? const OpenDateButton(isStart: true)
+                : const SizedBox(),
+            _selectedIndex == 1
+                ? const OpenDateButton(isStart: false)
+                : const SizedBox(),
             const SizedBox(
               height: 6,
             ),
@@ -170,20 +174,20 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                       Navigator.pop(context);
                       await bp.getBookById(widget.bookId);
                       Utils.flushBarSuccessMessage(bp.success, context);
-                    } on DioError catch (error) {
+                    } on DioError {
                       Navigator.pop(context);
                       Utils.flushBarErrorMessage(bp.error, context);
                     }
                   }
                 },
-                child: Text(
-                  "저장",
-                  style: const TextStyle(color: brandColor300, fontSize: 14),
-                ),
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   padding: EdgeInsets.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  "저장",
+                  style: const TextStyle(color: brandColor300, fontSize: 14),
                 ),
               ),
             ),
@@ -225,6 +229,14 @@ class _OpenDateButtonState extends State<OpenDateButton> {
           context.read<DateProvider>().changeEndDate(selectedDate!);
         }
       },
+      style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.pressed)) {
+          return brandColor000;
+        } else {
+          return brandColor000;
+        }
+      })),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -255,14 +267,6 @@ class _OpenDateButtonState extends State<OpenDateButton> {
           ),
         ],
       ),
-      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.pressed)) {
-          return brandColor000;
-        } else {
-          return brandColor000;
-        }
-      })),
     );
   }
 }
