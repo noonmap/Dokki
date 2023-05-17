@@ -1,6 +1,5 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/page/animate_book_page.dart';
-import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/utils/utils.dart';
@@ -76,7 +75,6 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   Widget build(BuildContext context) {
     final dp = Provider.of<DiaryProvider>(context);
-
     return Scaffold(
       backgroundColor: brandColor100,
       appBar: AppBar(

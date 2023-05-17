@@ -15,6 +15,7 @@ class DiaryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(diaryData);
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.diaryDetail,

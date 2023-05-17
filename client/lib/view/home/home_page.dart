@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    fetchData("0");
+    fetchData(widget.userId);
   }
 
   void fetchData(String userId) async {
