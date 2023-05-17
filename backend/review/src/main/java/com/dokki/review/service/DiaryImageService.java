@@ -80,7 +80,9 @@ public class DiaryImageService {
 		try {
 			chatGPTResponseDto = objectMapper.readValue(chatGPTResponse, ChatGPTResponseDto.class);
 		} catch (JsonProcessingException e) {
-			log.error("json mapping 중 에러가 발생하였습니다.", e.getMessage());
+			for (StackTraceElement stackTrace : e.getStackTrace())
+				log.error(stackTrace.toString());
+			log.error("ChatGPT의 결과를 json mapping 하는 중 에러가 발생하였습니다.", e.getMessage());
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
 		}
 
@@ -92,7 +94,9 @@ public class DiaryImageService {
 		try {
 			dallE2ResponseDto = objectMapper.readValue(imageGenResponse, DallE2ResponseDto.class);
 		} catch (JsonProcessingException e) {
-			log.error("json mapping 중 에러가 발생하였습니다.", e.getMessage());
+			for (StackTraceElement stackTrace : e.getStackTrace())
+				log.error(stackTrace.toString());
+			log.error("DALLE-2의 결과를 json mapping 중 에러가 발생하였습니다.", e.getMessage());
 			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
 		}
 
