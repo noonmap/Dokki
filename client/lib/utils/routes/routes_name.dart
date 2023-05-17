@@ -14,6 +14,7 @@ class RoutesName {
   static const String diaryDetail = 'diary_detail_page';
   static const String diaryCreate = 'diary_create_page';
   static const String reviewCreate = 'create_review_page';
+  static const String reviewList = 'review_list_page';
   static const String wishlist = 'wishlist_page';
   static const String follow = 'follow_page';
 }

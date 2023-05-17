@@ -29,6 +29,7 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
   @override
   void initState() {
     super.initState();
+    context.read<DateProvider>().initDateProvider();
     _selectedIndex = widget.currentState;
   }
 
@@ -38,7 +39,7 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
     final bp = Provider.of<BookProvider>(context);
     return Container(
       width: clientWidth,
-      height: _selectedIndex == 0 ? 112 : 233,
+      height: _selectedIndex == 0 ? 132 : 253,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Container(
         child: Column(
@@ -150,7 +151,7 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
               height: 6,
             ),
             Center(
-              child: TextButton(
+              child: ElevatedButton(
                 onPressed: () async {
                   if (_selectedIndex == 0) {
                     final response =
@@ -164,7 +165,7 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                     }
                   } else {
                     try {
-                      final response = await bp.addDirectCompleteBook({
+                      await bp.addDirectCompleteBook({
                         "bookId": widget.bookId,
                         "startTime": DateFormat('yyyy-MM-dd')
                             .format(context.read<DateProvider>().start),
@@ -180,10 +181,16 @@ class _BottomSheetModalState extends State<BottomSheetModal> {
                     }
                   }
                 },
-                style: TextButton.styleFrom(
-                  minimumSize: Size.zero,
-                  padding: EdgeInsets.zero,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor: brandColor300,
+                ),
+                child: const Text(
+                  "저장",
+                  style: TextStyle(color: brandColor100, fontSize: 14),
                 ),
                 child: Text(
                   "저장",
@@ -217,16 +224,23 @@ class _OpenDateButtonState extends State<OpenDateButton> {
     dynamic end = context.watch<DateProvider>().end;
     return ElevatedButton(
       onPressed: () async {
-        final selectedDate = await showDatePicker(
+        var selectedDate = await showDatePicker(
           context: context,
           initialDate: widget.isStart ? start : end,
           firstDate: DateTime(2000),
           lastDate: DateTime.now(),
         );
+
         if (widget.isStart) {
-          context.read<DateProvider>().changeStartDate(selectedDate!);
+          if (selectedDate == null) {
+            selectedDate = context.read<DateProvider>().start;
+          }
+          context.read<DateProvider>().changeStartDate(selectedDate);
         } else {
-          context.read<DateProvider>().changeEndDate(selectedDate!);
+          if (selectedDate == null) {
+            selectedDate = context.read<DateProvider>().end;
+          }
+          context.read<DateProvider>().changeEndDate(selectedDate);
         }
       },
       style: ButtonStyle(

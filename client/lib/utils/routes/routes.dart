@@ -14,6 +14,7 @@ import 'package:dokki/view/profile/profile_edit_page.dart';
 import 'package:dokki/view/profile/profile_page.dart';
 import 'package:dokki/view/profile/wishlist_page.dart';
 import 'package:dokki/view/review/create_review_page.dart';
+import 'package:dokki/view/review/review_list_page.dart';
 import 'package:dokki/view/splash/splash_page.dart';
 import 'package:dokki/view/timer/timer_page.dart';
 import 'package:flutter/material.dart';
@@ -146,6 +147,14 @@ class Routes {
                   bookCoverPath: args['bookCoverPath'],
                   bookPublisher: args['bookPublisher'],
                   bookPublishYear: args['bookPublishYear'],
+                ),
+            settings: settings);
+      case RoutesName.reviewList:
+        var args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (BuildContext context) => ReviewListPage(
+                  bookId: args['bookId'],
+                  loginUserId: args["loginUserId"],
                 ),
             settings: settings);
       default:

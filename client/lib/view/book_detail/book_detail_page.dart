@@ -1,6 +1,7 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:dokki/view/book_detail/widget/complete_book_dialog.dart';
 import 'package:dokki/view/book_detail/widget/detail_app_bar.dart';
@@ -29,6 +30,7 @@ class _BookDetailPageState extends State<BookDetailPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BookProvider>().book = null;
       context.read<BookProvider>().getBookById(widget.bookId);
     });
   }
@@ -50,6 +52,7 @@ class _BookDetailPageState extends State<BookDetailPage>
     final clientWidth = MediaQuery.of(context).size.width;
     final clientHeight = MediaQuery.of(context).size.height;
     final bp = Provider.of<BookProvider>(context, listen: true);
+    print(bp.book);
     if (bp.book == null) {
       return Scaffold(
         backgroundColor: brandColor100,
@@ -64,10 +67,11 @@ class _BookDetailPageState extends State<BookDetailPage>
               fontWeight: FontWeight.w600,
             ),
           ),
-          backgroundColor: grayColor100,
+          backgroundColor: brandColor200,
+          foregroundColor: grayColor600,
         ),
         body: Container(
-          decoration: const BoxDecoration(color: brandColor100),
+          decoration: const BoxDecoration(color: brandColor200),
           child: const OpacityLoading(),
         ),
       );
@@ -99,7 +103,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 60, 16, 10),
+                      padding: const EdgeInsets.fromLTRB(16, 70, 16, 0),
                       child: SingleChildScrollView(
                         child: IntrinsicHeight(
                           child: Column(
@@ -135,7 +139,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                           isComplete: bp.book!.isComplete),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 16),
                                   Center(
                                     child: Text(
                                       bp.book!.bookTitle,
@@ -219,7 +223,7 @@ class _BookDetailPageState extends State<BookDetailPage>
                                 width: double.maxFinite,
                                 height: 370,
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 0),
+                                    vertical: 5, horizontal: 0),
                                 child: TabBarView(
                                   controller: tabController,
                                   children: [
@@ -315,39 +319,95 @@ class _BookDetailPageState extends State<BookDetailPage>
                                             ))
                                       ],
                                     ),
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      itemCount: bp.book!.review.length,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 16, top: 16),
-                                          decoration: const BoxDecoration(
-                                              border: Border(
-                                                  bottom: BorderSide(
-                                                      width: 1,
-                                                      color: grayColor100))),
-                                          child: ReviewItem(
-                                              bookId: widget.bookId,
-                                              loginUserId: widget.loginUserId,
-                                              commentId: bp.book!.review[index]
-                                                  .commentId,
-                                              userId:
-                                                  bp.book!.review[index].userId,
-                                              profileImagePath: bp
-                                                  .book!
-                                                  .review[index]
-                                                  .profileImagePath,
-                                              nickname: bp
-                                                  .book!.review[index].nickname,
-                                              content: bp
-                                                  .book!.review[index].content,
-                                              score:
-                                                  bp.book!.review[index].score),
-                                        );
-                                      },
-                                    )
+                                    bp.book!.review.length > 0
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  primary: false,
+                                                  itemCount:
+                                                      bp.book!.review.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 16,
+                                                              top: 16),
+                                                      child: ReviewItem(
+                                                          bookId: widget.bookId,
+                                                          loginUserId: widget
+                                                              .loginUserId,
+                                                          commentId: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .commentId,
+                                                          userId: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .userId,
+                                                          profileImagePath: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .profileImagePath,
+                                                          nickname: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .nickname,
+                                                          content: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .content,
+                                                          score: bp
+                                                              .book!
+                                                              .review[index]
+                                                              .score),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(context,
+                                                      RoutesName.reviewList,
+                                                      arguments: {
+                                                        "bookId": widget.bookId,
+                                                        "loginUserId":
+                                                            widget.loginUserId,
+                                                      });
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize:
+                                                      Size.zero, // Set this
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 6,
+                                                  ),
+                                                  backgroundColor:
+                                                      brandColor300, // and this
+                                                ),
+                                                child: Text(
+                                                  "더 보기",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              "리뷰가 없습니다.",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: grayColor600,
+                                              ),
+                                            ),
+                                          )
                                   ],
                                 ),
                               ),
@@ -413,13 +473,13 @@ class BookStatusBadge extends StatelessWidget {
     return isReading || isComplete
         ? Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
             decoration: BoxDecoration(
                 color: brandColor300,
                 borderRadius: BorderRadius.circular(24.0)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   getIcon(),

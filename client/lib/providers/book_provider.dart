@@ -43,7 +43,12 @@ class BookProvider extends ChangeNotifier {
 
       List<Book> pageBookList = returnData["bookList"];
       pageData = returnData["pageData"];
-      for (int i = 0; (i < int.parse(PAGE_LIMIT)); i++) {
+      for (int i = 0;
+          (i <
+              (pageBookList.length < 10
+                  ? pageBookList.length
+                  : int.parse(PAGE_LIMIT)));
+          i++) {
         _bookList.add(pageBookList[i]);
       }
     } catch (e) {
@@ -166,6 +171,7 @@ class BookProvider extends ChangeNotifier {
     error == "";
     _bookList = [];
     pageData = {};
+    book = null;
     isListLoading = false;
     isPostLoading = false;
     isDetailLoading = false;
