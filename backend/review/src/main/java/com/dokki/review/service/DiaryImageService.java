@@ -52,6 +52,8 @@ public class DiaryImageService {
 		try {
 			response = restTemplate.postForObject(requestURL, httpEntity, String.class);
 		} catch (HttpClientErrorException e) {
+			for (StackTraceElement stackTrace : e.getStackTrace())
+				log.error(stackTrace.toString());
 			log.error("restTemplate API 호출 과정에서 에러가 발생하였습니다.", e.getMessage());
 			throw new CustomException(e.getStatusCode().value(), e.getMessage());
 		}
