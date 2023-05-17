@@ -1,9 +1,9 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/review_provider.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +42,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   contentBox(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-      height: 400,
+      height: 200,
       decoration: BoxDecoration(
         color: brandColor000,
         borderRadius: BorderRadius.circular(24.0),
@@ -50,21 +50,33 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 10),
+          Text(
+            "책을 다 읽으셨다면 완독 버튼을 눌러주세요.",
+            style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.w600,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "책을 읽은 총 시간은 다음과 같습니다.",
+            style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 20),
           Container(
-            color: Color(0XFF2C3A47),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4.0),
+              color: brandColor300,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -77,7 +89,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      "읽은 시간",
+                      "총 읽은 시간",
                       style: TextStyle(
                         color: brandColor100,
                         fontSize: 16,
@@ -97,65 +109,6 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          const Text(
-            "리뷰 작성",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 10),
-          RatingBar(
-            minRating: 1,
-            maxRating: 5,
-            initialRating: selectedScore,
-            onRatingUpdate: (value) {
-              setState(() {
-                selectedScore = value;
-              });
-            },
-            ratingWidget: RatingWidget(
-              full: const Icon(
-                Icons.star,
-                color: yellowColor400,
-              ),
-              empty: const Icon(Icons.star, color: grayColor200),
-              half: const Icon(Icons.star_half, color: yellowColor400),
-            ),
-            itemCount: 5,
-            itemSize: 30,
-            itemPadding: const EdgeInsets.only(right: 4.0),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: TextField(
-              minLines: null,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: '리뷰를 작성해주세요!',
-                hintStyle: const TextStyle(
-                  color: grayColor300,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: const BorderSide(color: grayColor300, width: 1),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: grayColor300, width: 1),
-                ),
-              ),
-              expands: true,
-              onChanged: (value) {
-                setState(
-                  () {
-                    textFieldValue = value;
-                  },
-                );
-              },
-            ),
-          ),
           const SizedBox(height: 4),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: double.infinity),
@@ -165,8 +118,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 await context
                     .read<BookProvider>()
                     .updateCompleteBook(widget.bookStatusId);
-                await context.read<ReviewProvider>().addComment(widget.bookId,
-                    {"content": textFieldValue, "score": selectedScore});
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Utils.flushBarSuccessMessage("해당 책이 서재로 이동되었습니다.", context);
               },
@@ -174,9 +126,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 backgroundColor: MaterialStateProperty.resolveWith(
                   (states) {
                     if (states.contains(MaterialState.pressed)) {
-                      return Color(0XFF2C3A47);
+                      return brandColor300;
                     }
-                    return Color(0XFF2C3A47);
+                    return brandColor300;
                   },
                 ),
               ),
@@ -185,7 +137,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: brandColor100,
-                  fontSize: 15,
+                  fontSize: 16,
                 ),
               ),
             ),

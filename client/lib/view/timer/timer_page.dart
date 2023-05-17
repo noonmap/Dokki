@@ -1,10 +1,14 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/widget/alert_dialog.dart';
 import 'package:dokki/common/widget/custom_app_bar.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
+import 'package:dokki/view/book_detail/book_detail_page.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
+import 'package:dokki/view/timer/widget/alert_dialog.dart';
 import 'package:dokki/view/timer/widget/dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class TimerPage extends StatefulWidget {
@@ -40,116 +44,191 @@ class _TimerPageState extends State<TimerPage> {
   @override
   Widget build(BuildContext context) {
     final clientWidth = MediaQuery.of(context).size.width;
+    final clientHeight = MediaQuery.of(context).size.height;
+    final tp = Provider.of<TimerProvider>(context);
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(
-        title: widget.bookTitle.length > 14
-            ? '${widget.bookTitle.substring(0, 14)}...'
-            : widget.bookTitle,
-        titleWidget: const Icon(
-          Icons.watch_later,
-          color: grayColor000,
-          size: 24,
-        ),
-        leading: IconButton(
-          onPressed: () {
-            context.read<TimerProvider>().exit();
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.home,
-            color: grayColor000,
-            size: 28,
+      backgroundColor: brandColor200,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Book Timer",
+          style: TextStyle(
+            color: grayColor600,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        showActionIcon: true,
-        onMenuActionTap: () {
-          // 모달 띄우기
-          // 책을 다읽으셨습니까 ? 서재에 등록하시겠습니까 ?
-          // title : bookTitle
-          // 총 읽은 시간 : accumReadTime
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CustomDialogBox(
-                bookId: widget.bookId,
-                title: widget.bookTitle,
-                accumReadTime: widget.accumReadTime,
-                bookStatusId: widget.bookStatusId,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (tp.currentTime == 0) {
+                Navigator.pop(context);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return TimerPageAlertDialog(
+                      question: "타이머 종료",
+                      onPressedOKFunction: () {
+                        tp.exit();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      accumReadTime: tp.currentTime,
+                    );
+                  },
+                );
+              }
+            }),
+        backgroundColor: brandColor200,
+        foregroundColor: grayColor600,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    bookId: widget.bookId,
+                    title: widget.bookTitle,
+                    accumReadTime: widget.accumReadTime,
+                    bookStatusId: widget.bookStatusId,
+                  );
+                },
               );
             },
-          );
-        },
+            icon: Icon(Ionicons.book_outline),
+            iconSize: 24,
+          ),
+        ],
       ),
       body: Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: clientWidth,
+            height: clientHeight * 0.75,
+            margin: EdgeInsets.only(top: clientHeight * 0.25),
             decoration: const BoxDecoration(
-              color: Color(0XFF2C3A47),
+              color: brandColor100,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(36.0),
+                topLeft: Radius.circular(36.0),
+              ),
             ),
-            child: CustomPaint(
-              painter: BackgroundPainter(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 50, 16, 10),
+              child: Column(
+                children: [
+                  Consumer<TimerProvider>(
+                    builder: (context, provider, child) {
+                      final time = provider.currentTime;
+                      return Text(
+                        Utils.secondTimeToFormatString(time),
+                        style: const TextStyle(
+                          fontSize: 55,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    },
+                  ),
+                  Expanded(child: Container()),
+                  Container(
+                    height: 70,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          child: Container(
+                            width: clientWidth / 2 - 24,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: brandColor200,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            alignment: Alignment.center,
+                            child: tp.timerPlaying
+                                ? const Text(
+                                    "PAUSE",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: brandColor400,
+                                    ),
+                                  )
+                                : const Text(
+                                    "START",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: brandColor400,
+                                    ),
+                                  ),
+                          ),
+                          onTap: () {
+                            if (tp.timerPlaying) {
+                              // 종료
+                              tp.pause(widget.bookStatusId);
+                            } else {
+                              tp.start(widget.bookStatusId);
+                            }
+                          },
+                        ),
+                        InkWell(
+                          child: Container(
+                            width: clientWidth / 2 - 24,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: brandColor400,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Text(
+                              "EXIT",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: brandColor200,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                          ),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return TimerPageAlertDialog(
+                                  question: "타이머 종료",
+                                  onPressedOKFunction: () {
+                                    tp.exit();
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                  accumReadTime: tp.currentTime,
+                                );
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 80,
-            decoration: const BoxDecoration(
-                color: Color(0XFF2C3A47),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.0),
-                    topLeft: Radius.circular(20.0))),
-            child: Consumer<TimerProvider>(builder: (context, provider, child) {
-              final time = provider.currentTime;
-              final isPlaying = provider.timerPlaying;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 50),
-                  BookItem(
-                    width: clientWidth / 2.3,
-                    height: clientWidth / 1.8,
-                    depth: 60,
-                    imagePath: widget.bookCoverPath,
-                    sideImagePath: widget.bookCoverSideImagePath,
-                    backImagePath: widget.bookCoverBackImagePath,
-                    isDetail: false,
-                    bookStatusId: widget.bookStatusId,
-                  ),
-                  const SizedBox(height: 50),
-                  Text(
-                    Utils.secondTimeToFormatString(time),
-                    style: const TextStyle(
-                      color: brandColor100,
-                      fontSize: 44,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Expanded(
-                    child: IconButton(
-                      onPressed: () {
-                        isPlaying
-                            ? provider.pause(widget.bookStatusId)
-                            : provider.start(widget.bookStatusId);
-                      },
-                      icon: isPlaying
-                          ? const Icon(
-                              Icons.stop_circle,
-                            )
-                          : const Icon(
-                              Icons.play_circle,
-                            ),
-                      iconSize: 90,
-                      color: brandColor100,
-                    ),
-                  ),
-                ],
-              );
-            }),
-          )
+            height: clientHeight * 0.34,
+            child: BookItem(
+              imagePath: widget.bookCoverPath,
+              backImagePath: widget.bookCoverBackImagePath,
+              sideImagePath: widget.bookCoverSideImagePath,
+              width: clientWidth / 2.5,
+              height: clientWidth / 2,
+              isDetail: true,
+              depth: 50,
+            ),
+          ),
         ],
       ),
     );
