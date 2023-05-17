@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +101,16 @@ public class DiaryController {
 		Integer count = diaryImageService.getImageCreationRemainCount(userId);
 		Map<String, Integer> result = new HashMap<>();
 		result.put("count", count);
+		return ResponseEntity.ok(result);
+	}
+
+
+	@PostMapping("/image")
+	@ApiOperation(value = "사용자 지정 감정일기 이미지 추가")
+	public ResponseEntity<Map<String, String>> uploadUserSelectedImage(@RequestPart MultipartFile image) {
+		String diaryImagePath = diaryImageService.uploadUserSelectedImage(image);
+		Map<String, String> result = new HashMap<>();
+		result.put("diaryImagePath", FileUtils.getAbsoluteFilePath(diaryImagePath));
 		return ResponseEntity.ok(result);
 	}
 

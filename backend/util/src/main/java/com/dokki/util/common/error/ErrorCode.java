@@ -25,7 +25,10 @@ public enum ErrorCode {
 	UNABLE_SEARCH(500, "B001", "검색 API를 사용할 수 없습니다."),
 
 	// Review
-	AI_IMAGE_COUNT_LIMIT_REACHED(400, "R001", "이미지 생성 횟수 제한에 도달하였습니다.");
+	AI_IMAGE_COUNT_LIMIT_REACHED(400, "R001", "이미지 생성 횟수 제한에 도달하였습니다."),
+	// File
+	FILE_IS_NOT_IMAGE(400, "F001", "업로드 파일의 형식이 이미지 파일 확장자가 아닙니다."),
+	FILE_UPLOAD_FAIL(500, "F002", "파일 업로드를 실패하였습니다."), FILE_IS_EMPTY(400, "F003", "파일 내용이 비어있습니다.");
 
 	private final int status;
 	private final String code;
