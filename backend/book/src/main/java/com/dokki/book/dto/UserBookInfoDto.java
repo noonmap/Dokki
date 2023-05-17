@@ -1,6 +1,7 @@
 package com.dokki.book.dto;
 
 
+import com.dokki.book.dto.response.StartEndDateResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,7 @@ public class UserBookInfoDto {
 	private boolean isBookMarked;
 	private boolean isReading;
 	private boolean isComplete;
+	private StartEndDateResponseDto startEndDate;
+	private int accumTime;
 
 }

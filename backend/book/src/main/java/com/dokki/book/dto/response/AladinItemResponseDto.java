@@ -3,10 +3,7 @@ package com.dokki.book.dto.response;
 
 import com.dokki.book.entity.BookEntity;
 import com.dokki.util.common.utils.FileUtils;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -14,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class AladinItemResponseDto {
 

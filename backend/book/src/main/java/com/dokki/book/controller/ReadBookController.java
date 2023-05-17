@@ -46,7 +46,7 @@ public class ReadBookController {
 	@ApiOperation(value = "[타이머 뷰] 읽고 있는 도서 삭제", notes = "")
 	public ResponseEntity<HttpStatus> deleteBookTimer(@PathVariable Long bookStatusId) {
 		Long userId = SessionUtils.getUserId();
-		bookTimerService.deleteBookTimer(bookStatusId, userId);
+		bookStatusService.deleteStatus(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
