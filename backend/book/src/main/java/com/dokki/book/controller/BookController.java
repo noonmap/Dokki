@@ -165,6 +165,9 @@ public class BookController {
 			.bookId(bookId)
 			.bookTitle(book.getTitle())
 			.bookCoverPath(book.getCoverFrontImagePath())
+			.bookAuthor(book.getAuthor())
+			.bookPublishYear(Integer.toString(book.getPublishDate().getYear()))
+			.bookPublisher(book.getPublisher())
 			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
 	}
@@ -179,6 +182,9 @@ public class BookController {
 				.bookId(o.getId())
 				.bookTitle(o.getTitle())
 				.bookCoverPath(o.getCoverFrontImagePath())
+				.bookAuthor(o.getAuthor())
+				.bookPublishYear(Integer.toString(o.getPublishDate().getYear()))
+				.bookPublisher(o.getPublisher())
 				.build()
 		).collect(Collectors.toList());
 		return ResponseEntity.ok(result);
