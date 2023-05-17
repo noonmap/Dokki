@@ -32,6 +32,47 @@ public class DiaryService {
 	private final BookClient bookClient;
 
 
+	/**
+	 * DiaryResponseDto를 생성
+	 *
+	 * @param diary
+	 * @return
+	 */
+	private static DiaryResponseDto getDiaryResponseDto(DiaryEntity diary, BookSimpleResponseDto bookSimpleInfo) {
+		return DiaryResponseDto.builder()
+			.bookId(diary.getBookId())
+			.bookTitle(bookSimpleInfo.getBookTitle())
+			.bookAuthor(bookSimpleInfo.getBookAuthor())
+			.bookPublishYear(bookSimpleInfo.getBookPublishYear())
+			.bookPublisher(bookSimpleInfo.getBookPublisher())
+			.bookCoverPath(bookSimpleInfo.getBookCoverPath())
+			.diaryId(diary.getId())
+			.diaryImagePath(FileUtils.getAbsoluteFilePath(diary.getDiaryImagePath()))
+			.diaryContent(diary.getContent())
+			.created(diary.getCreatedAt())
+			.build();
+	}
+
+
+	/**
+	 * bookSimpleInfo 를 받아오지 못한 경우, default 값으로 DiaryResponseDto 생성
+	 *
+	 * @param diary
+	 * @return
+	 */
+	private static DiaryResponseDto getDiaryResponseDto(DiaryEntity diary) {
+		BookSimpleResponseDto bookSimpleResponseDto = BookSimpleResponseDto.builder()
+			.bookId(diary.getBookId())
+			.bookAuthor(DefaultEnum.BOOK_BOOK_AUTHOR.getValue())
+			.bookTitle(DefaultEnum.BOOK_BOOK_TITLE.getValue())
+			.bookPublisher(DefaultEnum.BOOK_BOOK_PUBLISH_YEAR.getValue())
+			.bookPublishYear(DefaultEnum.BOOK_BOOK_PUBLISH_YEAR.getValue())
+			.bookCoverPath(DefaultEnum.BOOK_BOOK_COVER_IMAGE_PATH.getValue())
+			.build();
+		return getDiaryResponseDto(diary, bookSimpleResponseDto);
+	}
+
+
 	private boolean isSameUser(Long userId, Long commentId) {
 		if (userId != commentId) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
@@ -124,22 +165,15 @@ public class DiaryService {
 	 */
 	public DiaryResponseDto getDiaryByBook(Long userId, String bookId) {
 		DiaryEntity diary = diaryRepository.findByUserIdAndBookId(userId, bookId).orElseThrow(() -> new CustomException(ErrorCode.NOTFOUND_RESOURCE));
-		String bookTitle = DefaultEnum.BOOK_BOOK_TITLE.getValue();
+		BookSimpleResponseDto bookSimpleResponseDto = null;
 		try {
-			BookSimpleResponseDto bookSimpleResponseDto = bookClient.getBookSimple(bookId);
-			bookTitle = bookSimpleResponseDto.getBookTitle();
+			bookSimpleResponseDto = bookClient.getBookSimple(bookId);
 		} catch (FeignException e) {
 			log.error(e.getMessage());
 		}
-		DiaryResponseDto diaryResponseDto = DiaryResponseDto.builder()
-			.bookId(diary.getBookId())
-			.bookTitle(bookTitle)
-			.diaryId(diary.getId())
-			.diaryImagePath(FileUtils.getAbsoluteFilePath(diary.getDiaryImagePath()))
-			.diaryContent(diary.getContent())
-			.created(diary.getCreatedAt())
-			.build();
-		return diaryResponseDto;
+		if (bookSimpleResponseDto == null)
+			return getDiaryResponseDto(diary);
+		else return getDiaryResponseDto(diary, bookSimpleResponseDto);
 	}
 
 
@@ -163,27 +197,13 @@ public class DiaryService {
 			diaryResponseDtoSlice = diaryEntitySlice.map(
 				d -> {
 					int idx = counter.getAndIncrement();
-					return DiaryResponseDto.builder()
-						.bookId(d.getBookId())
-						.bookTitle(bookSimpleInfoList.get(idx).getBookTitle())
-						.diaryId(d.getId())
-						.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
-						.diaryContent(d.getContent())
-						.created(d.getCreatedAt())
-						.build();
+					return getDiaryResponseDto(d, bookSimpleInfoList.get(idx));
 				}
 			);
 		} catch (FeignException e) {
 			log.error(e.getMessage());
 			diaryResponseDtoSlice = diaryEntitySlice.map(
-				d -> DiaryResponseDto.builder()
-					.bookId(d.getBookId())
-					.bookTitle(DefaultEnum.BOOK_BOOK_TITLE.getValue())
-					.diaryId(d.getId())
-					.diaryImagePath(FileUtils.getAbsoluteFilePath(d.getDiaryImagePath()))
-					.diaryContent(d.getContent())
-					.created(d.getCreatedAt())
-					.build()
+				d -> getDiaryResponseDto(d)
 			);
 		}
 		return diaryResponseDtoSlice;

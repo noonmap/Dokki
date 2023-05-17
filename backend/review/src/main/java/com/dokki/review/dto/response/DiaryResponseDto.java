@@ -18,6 +18,10 @@ public class DiaryResponseDto {
 
 	private String bookId;
 	private String bookTitle;
+	private String bookAuthor;
+	private String bookPublishYear;
+	private String bookPublisher;
+	private String bookCoverPath;
 	private Long diaryId;
 	private String diaryImagePath;
 	private String diaryContent;
