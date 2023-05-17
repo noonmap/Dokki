@@ -202,4 +202,9 @@ public class TimerService {
 
 	}
 
+
+	public void resetAccumTime(Long userId, Long bookStatusId) {
+		timerRepository.resetAccumTimeByUserIdAndBookStatusId(userId, bookStatusId);
+	}
+
 }

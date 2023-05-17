@@ -24,6 +24,11 @@ public interface TimerRepository extends JpaRepository<TimerEntity, Long> {
 	@Transactional
 	@Modifying
 	@Query(value = "update dokki.timer set accum_time = accum_time + :accumTime, end_time = :endTime where id = :id", nativeQuery = true)
-	int updateAccumTime(@Param("accumTime") int accumTime, @Param("endTime") LocalDate endTime, @Param("id") Long id);
+	int updateAccumTimeAndEndTime(@Param("accumTime") int accumTime, @Param("endTime") LocalDate endTime, @Param("id") Long id);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update dokki.timer set accum_time = 0 where user_id = :userId and book_status_id = :bookStatusId", nativeQuery = true)
+	int resetAccumTimeByUserIdAndBookStatusId(@Param("userId") Long userId, @Param("bookStatusId") Long bookStatusId);
 
 }
