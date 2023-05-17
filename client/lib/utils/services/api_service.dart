@@ -21,7 +21,7 @@ class APIService {
     }
   }
 
-  Future<Response<dynamic>> post(String url, Map<String, dynamic> data) async {
+  Future<Response<dynamic>> post(String url, dynamic data) async {
     try {
       Response<dynamic> response = await _dio.post(url, data: data);
       return response;
