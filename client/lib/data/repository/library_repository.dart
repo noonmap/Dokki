@@ -17,7 +17,6 @@ class LibraryRepository {
     };
 
     dynamic response = await _apiService.get('/books/collections', params);
-
     final libraryBooksData = response['content'] as List;
     List<LibraryBookModel> libraryBooks = libraryBooksData
         .map((book) => LibraryBookModel.fromJson(book))

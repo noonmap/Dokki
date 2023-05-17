@@ -76,41 +76,28 @@ class _WishlistPageState extends State<WishlistPage> {
     final up = Provider.of<UserProvider>(context);
 
     return Scaffold(
+      backgroundColor: brandColor100,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: brandColor100,
+        foregroundColor: grayColor600,
+        centerTitle: true,
+        title: Column(
+          children: [
+            const Paragraph(
+              text: '찜한 책',
+              size: 18,
+              weightType: WeightType.medium,
+            ),
+          ],
+        ),
+      ),
       body: up.wishlistLoading
           ? const OpacityLoading()
           : Padding(
-              padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
+              padding: const EdgeInsets.fromLTRB(28, 20, 28, 20),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 22,
-                            color: brandColor300,
-                          ),
-                        ),
-                      ),
-                      const Paragraph(
-                        text: '찜한 책',
-                        size: 18,
-                        weightType: WeightType.medium,
-                      ),
-                      const SizedBox(
-                        width: 32,
-                        height: 32,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
                   Expanded(
                     // 찜한 책이 없을 때
                     child: up.wishlistBooks.isEmpty
@@ -145,24 +132,11 @@ class _WishlistPageState extends State<WishlistPage> {
                                 return Column(
                                   children: [
                                     const SizedBox(height: 16),
-                                    Container(
-                                      width: double.infinity,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: grayColor100,
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
                                   ],
                                 );
                               },
                               itemCount: up.wishlistBooks.length,
                             ),
-                    
                           ),
                   )
                 ],

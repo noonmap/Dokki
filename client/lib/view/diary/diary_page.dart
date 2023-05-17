@@ -1,10 +1,12 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/page/animate_book_page.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/diary/widget/diary_item.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class DiaryPage extends StatefulWidget {
@@ -19,6 +21,7 @@ class DiaryPage extends StatefulWidget {
 class _DiaryPageState extends State<DiaryPage> {
   int page = 0;
   double _dragDistance = 0;
+  bool isGrid = true;
 
   scrollNotification(notification, DiaryProvider dp) {
     // 스크롤 최대 범위
@@ -74,42 +77,38 @@ class _DiaryPageState extends State<DiaryPage> {
     final dp = Provider.of<DiaryProvider>(context);
 
     return Scaffold(
+      backgroundColor: brandColor100,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: brandColor100,
+        foregroundColor: grayColor600,
+        centerTitle: true,
+        title: const Paragraph(
+          text: '감정 일기 스크랩 북',
+          size: 18,
+          weightType: WeightType.medium,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isGrid = !isGrid;
+              });
+            },
+            icon: !isGrid
+                ? const Icon(Ionicons.grid)
+                : const Icon(Ionicons.color_wand_outline),
+          ),
+        ],
+      ),
       body: dp.isLoading
           ? const OpacityLoading()
           : Padding(
-              padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
+              padding: isGrid
+                  ? const EdgeInsets.fromLTRB(28, 20, 28, 20)
+                  : const EdgeInsets.all(0),
               child: Column(
                 children: [
-                  // 상단 메뉴바
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 22,
-                            color: brandColor300,
-                          ),
-                        ),
-                      ),
-                      const Paragraph(
-                        text: '감정 일기 스크랩 북',
-                        size: 18,
-                        weightType: WeightType.medium,
-                      ),
-                      const SizedBox(
-                        width: 32,
-                        height: 32,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
                   Expanded(
                     // 작성된 감정 일기가 없을 때
                     child: dp.diaries.isEmpty
@@ -120,25 +119,33 @@ class _DiaryPageState extends State<DiaryPage> {
                             ),
                           )
                         // 작성된 감정 일기가 있을 때
-                        : NotificationListener(
-                            onNotification: (ScrollNotification notification) {
-                              scrollNotification(notification, dp);
-                              return false;
-                            },
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 40,
-                                crossAxisSpacing: 20,
-                                childAspectRatio: 0.65,
+                        : isGrid
+                            ? NotificationListener(
+                                onNotification:
+                                    (ScrollNotification notification) {
+                                  scrollNotification(notification, dp);
+                                  return false;
+                                },
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 40,
+                                    crossAxisSpacing: 20,
+                                    childAspectRatio: 0.65,
+                                  ),
+                                  itemBuilder: (context, idx) {
+                                    return DiaryItem(
+                                        diaryData: dp.diaries[idx]);
+                                  },
+                                  itemCount: dp.diaries.length,
+                                ),
+                              )
+                            : AnimateBookPage(
+                                libraryBooks: const [],
+                                diarys: dp.diaries,
+                                isDiary: true,
                               ),
-                              itemBuilder: (context, idx) {
-                                return DiaryItem(diaryData: dp.diaries[idx]);
-                              },
-                              itemCount: dp.diaries.length,
-                            ),
-                          ),
                   )
                 ],
               ),
