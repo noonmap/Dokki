@@ -100,7 +100,8 @@ public class TimerService {
 				.build());
 
 			// 추가된 타이머 레디스에 저장
-			timerRedisService.createOrModifyTimerRedis(timerEntity);
+			TimerRedisDto timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerEntity);
+			log.info("timer service - create {}", timerRedisDto);
 		}
 	}
 
@@ -124,23 +125,7 @@ public class TimerService {
 		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
 
 		timerRedisDto.updateTimerStop(Math.toIntExact(currTime), startTime.toLocalDate());  // toIntExact -> ArithmeticException (if the argument overflows an int)
-		timerRedisService.createOrModifyTimerRedis(timerRedisDto);
-
-		// 일일통계 계산 (오늘 통계 가져오기)
-		DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
-		if (dailyStatisticsEntity == null) {
-			dailyStatisticsEntity = DailyStatisticsEntity.builder()
-				.userId(userId)
-				.bookId(timerEntity.getBookId())
-				.accumTime(Math.toIntExact(currTime))
-				.recordDate(LocalDate.now())
-				.build();
-		} else {
-			dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
-		}
-
-		dailyStatisticsRepository.save(dailyStatisticsEntity);
-
+		timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerRedisDto);
 	}
 
 
@@ -152,6 +137,7 @@ public class TimerService {
 	public void deleteTimer(Long userId, Long bookStatusId) {
 		timerRepository.deleteByBookStatusId(bookStatusId);
 		timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
+		log.info("timer service - delete timer (bookStatusId - {})", bookStatusId);
 	}
 
 
@@ -175,7 +161,7 @@ public class TimerService {
 
 
 	/**
-	 * 독서 완독 시간 정보를 추가 또는 삭제(null)합니다.
+	 * 독서 완독 시간 정보를 수정합니다.
 	 *
 	 * @param bookStatusId
 	 */
@@ -186,6 +172,7 @@ public class TimerService {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 		timerEntity.updateBookComplete(LocalDate.now());
+		timerRedisService.createOrModifyTimerRedis(timerEntity);
 	}
 
 
@@ -213,6 +200,11 @@ public class TimerService {
 				.build());
 		}
 
+	}
+
+
+	public void resetAccumTime(Long userId, Long bookStatusId) {
+		timerRepository.resetAccumTimeByUserIdAndBookStatusId(userId, bookStatusId);
 	}
 
 }

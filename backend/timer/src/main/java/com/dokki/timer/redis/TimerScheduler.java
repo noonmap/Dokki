@@ -35,7 +35,7 @@ public class TimerScheduler {
 		List<TimerRedisDto> timerRedisDtoList = timerRedisService.getListByIdIn(idListYesterday);
 
 		// 타이머 update
-		timerRedisDtoList.forEach(o -> timerRepository.updateAccumTime(o.getAccumTimeToday(), o.getEndTime(), o.getTimerId()));
+		timerRedisDtoList.forEach(o -> timerRepository.updateAccumTimeAndEndTime(o.getAccumTimeToday(), o.getEndTime(), o.getTimerId()));
 
 		// 통계 save
 		dailyStatisticsRepository.saveAllAndFlush(timerRedisDtoList.stream().filter(o -> o.getAccumTimeToday() != 0).map(o -> DailyStatisticsEntity.builder()
@@ -45,6 +45,7 @@ public class TimerScheduler {
 			.recordDate(o.getDateFromId())
 			.build()).collect(Collectors.toList()));
 
+		log.debug("timer redis updated id - {}", idListYesterday);
 		log.info("[timer scheduler] done");
 	}
 
