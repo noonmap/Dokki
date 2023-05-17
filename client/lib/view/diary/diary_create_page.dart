@@ -1,12 +1,14 @@
+import 'dart:io';
+
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/brand300_button.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
-import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class DiaryCreatePage extends StatefulWidget {
@@ -55,7 +57,8 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
   @override
   Widget build(BuildContext context) {
     final dp = Provider.of<DiaryProvider>(context);
-
+    final ImagePicker imagePicker = ImagePicker();
+    File? pickedImg;
     double maxWidth = MediaQuery.of(context).size.width;
 
     Future<void> onCreateButtonPressed() async {
@@ -94,6 +97,18 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
         RoutesName.diaryDetail,
         arguments: {"bookId": widget.bookId},
       );
+    }
+
+    Future<void> getImageFromGallery() async {
+      final pickedFile =
+          await imagePicker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        setState(() {
+          pickedImg = File(pickedFile.path);
+          dp.postDiaryUserImage(img: pickedImg!);
+        });
+      }
     }
 
     return Scaffold(
@@ -226,7 +241,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                       children: [
                         Brand300Button(
                           text: '이미지 삽입',
-                          onPressed: () {},
+                          onPressed: getImageFromGallery,
                         ),
                         const SizedBox(width: 24),
                         Column(
