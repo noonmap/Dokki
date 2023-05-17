@@ -73,10 +73,10 @@ class DiaryRepository {
     Map<String, String> data = {'content': content};
 
     try {
-      dynamic response =
+      Response<dynamic> response =
           await _apiService.post('/$commonPath/image/creation', data);
-      String diaryImageData = response['diaryImagePath'];
-      int diaryImageCountData = response['count'];
+      String diaryImageData = response.data['diaryImagePath'];
+      int diaryImageCountData = response.data['count'];
 
       Map<String, dynamic> rst = {
         'diaryImagePath': diaryImageData,
@@ -115,6 +115,15 @@ class DiaryRepository {
           await _apiService.post('/reviews/diary/image', formData);
 
       return res.data["diaryImagePath"];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // DELETE : 감정 일기 삭제
+  Future<void> deleteDiary({required diaryId}) async {
+    try {
+      await _apiService.delete('/reviews/diary/$diaryId');
     } catch (e) {
       rethrow;
     }
