@@ -14,20 +14,22 @@ import 'package:provider/provider.dart';
 class DiaryCreatePage extends StatefulWidget {
   const DiaryCreatePage({
     super.key,
-    required this.bookId,
-    required this.bookTitle,
-    required this.bookAuthor,
-    required this.bookPublishYear,
-    required this.bookPublisher,
-    required this.bookCoverPath,
+    this.bookId,
+    this.bookTitle,
+    this.bookAuthor,
+    this.bookPublishYear,
+    this.bookPublisher,
+    this.bookCoverPath,
+    this.existingBookId,
   });
 
-  final String bookId;
-  final String bookTitle;
-  final String bookAuthor;
-  final String bookCoverPath;
-  final String bookPublishYear;
-  final String bookPublisher;
+  final String? bookId;
+  final String? bookTitle;
+  final String? bookAuthor;
+  final String? bookCoverPath;
+  final String? bookPublishYear;
+  final String? bookPublisher;
+  final String? existingBookId;
 
   @override
   State<DiaryCreatePage> createState() => _DiaryCreatePageState();
@@ -35,20 +37,40 @@ class DiaryCreatePage extends StatefulWidget {
 
 class _DiaryCreatePageState extends State<DiaryCreatePage> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _textEditingController = TextEditingController();
   bool isImageLoading = false;
   int? diaryImageCount = 5;
-  String? diaryImagePath = '';
+  bool isEdit = false;
+  bool notClicked = true;
+  bool selectClicked = false;
+  bool createClicked = false;
 
   @override
   void initState() {
     final dp = Provider.of<DiaryProvider>(context, listen: false);
+
     dp.initProvider();
     dp.getDiaryImageCount();
+
     if (dp.diaryImageCount != null) {
       setState(() {
         diaryImageCount = dp.diaryImageCount;
       });
+    }
+
+    if (widget.existingBookId != null) {
+      setState(() {
+        isEdit = true;
+      });
+
+      () async {
+        await dp.getDiaryByBookId(bookId: widget.existingBookId!);
+
+        setState(() {
+          _textEditingController =
+              TextEditingController(text: dp.diary?.diaryContent);
+        });
+      }();
     }
 
     super.initState();
@@ -69,14 +91,17 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
 
       setState(() {
         isImageLoading = true;
+        notClicked = false;
       });
 
       Utils.scrollToBottom(_scrollController);
 
       await dp.postDiaryImage(content: _textEditingController.text);
+
       setState(() {
         isImageLoading = false;
-        diaryImagePath = dp.diaryImage;
+        selectClicked = false;
+        createClicked = true;
       });
 
       Utils.scrollToBottom(_scrollController);
@@ -87,26 +112,45 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
     }
 
     Future<void> onSaveButtonPressed() async {
-      await dp.postDiary(
-          bookId: widget.bookId,
+      if (isEdit) {
+        await dp.putDiary(
+          diaryId: dp.diary!.diaryId,
           content: _textEditingController.text,
-          imagePath: dp.diaryImage!);
+          imagePath: dp.diaryImage!,
+        );
+      } else {
+        await dp.postDiary(
+            bookId: widget.bookId!,
+            content: _textEditingController.text,
+            imagePath: dp.diaryImage!);
+      }
 
       Navigator.pushNamed(
         context,
         RoutesName.diaryDetail,
-        arguments: {"bookId": widget.bookId},
+        arguments: {"bookId": isEdit ? dp.diary!.bookId : widget.bookId},
       );
     }
 
     Future<void> getImageFromGallery() async {
+      setState(() {
+        isImageLoading = true;
+        notClicked = false;
+      });
+
       final pickedFile =
           await imagePicker.pickImage(source: ImageSource.gallery);
 
       if (pickedFile != null) {
         setState(() {
           pickedImg = File(pickedFile.path);
-          dp.postDiaryUserImage(img: pickedImg!);
+        });
+        dp.postDiaryUserImage(img: pickedImg!);
+
+        setState(() {
+          selectClicked = true;
+          createClicked = false;
+          isImageLoading = false;
         });
       }
     }
@@ -134,8 +178,8 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                     ),
                   ),
                 ),
-                const Paragraph(
-                  text: '감정 일기 생성',
+                Paragraph(
+                  text: isEdit ? '감정 일기 수정' : '감정 일기 생성',
                   size: 18,
                   weightType: WeightType.medium,
                 ),
@@ -156,7 +200,9 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.network(
-                          widget.bookCoverPath,
+                          isEdit
+                              ? dp.diary!.bookCoverPath
+                              : widget.bookCoverPath!,
                           height: 180,
                           fit: BoxFit.cover,
                         ),
@@ -166,7 +212,9 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Paragraph(
-                                text: widget.bookTitle,
+                                text: isEdit
+                                    ? dp.diary!.bookTitle
+                                    : widget.bookTitle!,
                                 size: 24,
                                 weightType: WeightType.semiBold,
                                 maxLines: 2,
@@ -174,19 +222,25 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                               ),
                               const SizedBox(height: 12),
                               Paragraph(
-                                text: widget.bookAuthor,
+                                text: isEdit
+                                    ? dp.diary!.bookAuthor
+                                    : widget.bookAuthor!,
                                 color: grayColor300,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
                               Paragraph(
-                                text: widget.bookPublishYear,
+                                text: isEdit
+                                    ? dp.diary!.bookPublishYear
+                                    : widget.bookPublishYear!,
                                 color: grayColor300,
                               ),
                               const SizedBox(height: 4),
                               Paragraph(
-                                text: widget.bookPublisher,
+                                text: isEdit
+                                    ? dp.diary!.bookPublisher
+                                    : widget.bookPublisher!,
                                 color: grayColor300,
                               )
                             ],
@@ -263,13 +317,32 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (isImageLoading)
+                        // 이미지 버튼 클릭하지 않았고, 등록 페이지면
+                        if (notClicked && !isEdit)
+                          SizedBox(
+                            width: maxWidth - 60,
+                            height: maxWidth - 60,
+                            child: const Center(
+                              child: Paragraph(text: '이미지를 등록해주세요.'),
+                            ),
+                          ),
+                        // 이미지 버튼 클릭하지 않았고, 수정 페이지면
+                        if (notClicked && isEdit)
+                          Image.network(
+                            dp.diary!.diaryImagePath,
+                            width: maxWidth - 60,
+                            height: maxWidth - 60,
+                            fit: BoxFit.cover,
+                          ),
+                        // 로딩중이면
+                        if (!notClicked && isImageLoading)
                           SizedBox(
                             width: maxWidth - 60,
                             height: maxWidth - 60,
                             child: const OpacityLoading(),
                           ),
-                        if (!isImageLoading && dp.isImageLoaded)
+                        // 로딩이 됐으면
+                        if (!notClicked && !isImageLoading && dp.isImageLoaded)
                           Image.network(
                             dp.diaryImage!,
                             width: maxWidth - 60,
@@ -278,7 +351,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                           ),
                       ],
                     ),
-                    if (isImageLoading || (!isImageLoading && dp.isImageLoaded))
+                    if (!notClicked || isEdit)
                       Column(
                         children: [
                           const SizedBox(height: 32),

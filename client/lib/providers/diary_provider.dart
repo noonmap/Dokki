@@ -134,6 +134,20 @@ class DiaryProvider extends ChangeNotifier {
     }
   }
 
+  // PUT : 감정 일기 수정
+  Future<void> putDiary({
+    required int diaryId,
+    required String content,
+    required String imagePath,
+  }) async {
+    try {
+      await _diaryRepository.putDiaryData(
+          diaryId: diaryId, content: content, imagePath: imagePath);
+    } on DioError catch (e) {
+      print(e.response);
+    }
+  }
+
   // DELETE : 감정 일기 삭제
   Future<void> deleteDiary({required diaryId}) async {
     try {
