@@ -1,3 +1,4 @@
+import 'package:dokki/common/page/animate_book_page.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/view/book_detail/book_detail_page.dart';
 import 'package:dokki/view/book_search/search_book_page.dart';
@@ -157,6 +158,15 @@ class Routes {
                   bookId: args['bookId'],
                   loginUserId: args["loginUserId"],
                 ),
+            settings: settings);
+      case RoutesName.animateBook:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+            builder: (BuildContext context) => AnimateBookPage(
+                libraryBooks: args["libraryBooks"],
+                diarys: args["diarys"],
+                isDiary: args["isDiary"]),
             settings: settings);
       default:
         return MaterialPageRoute(

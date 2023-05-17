@@ -65,14 +65,14 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
+                const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
                       Ionicons.restaurant,
                       color: brandColor100,
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6),
                     Text(
                       "휴식 횟수",
                       style: TextStyle(

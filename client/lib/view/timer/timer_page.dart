@@ -104,7 +104,7 @@ class _TimerPageState extends State<TimerPage> {
                   return CustomDialogBox(
                     bookId: widget.bookId,
                     title: widget.bookTitle,
-                    accumReadTime: widget.accumReadTime,
+                    accumReadTime: widget.accumReadTime + tp.currentTime,
                     bookStatusId: widget.bookStatusId,
                   );
                 },

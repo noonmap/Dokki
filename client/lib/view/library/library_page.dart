@@ -1,4 +1,5 @@
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/page/animate_book_page.dart';
 import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/library_provider.dart';
@@ -6,6 +7,7 @@ import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/library/widget/library_book_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -25,6 +27,7 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   String myId = '';
   bool isMine = false;
+  bool isGrid = true;
 
   int page = 0;
   double _dragDistance = 0;
@@ -96,34 +99,55 @@ class _LibraryPageState extends State<LibraryPage> {
     final lp = Provider.of<LibraryProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        foregroundColor: grayColor600,
+        title: Column(
+          children: [
+            const SizedBox(height: 15),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 20,
+                ),
+                Paragraph(
+                  text: widget.nickname,
+                  size: 18,
+                  weightType: WeightType.semiBold,
+                ),
+                const Paragraph(
+                  text: '님의 서재',
+                  size: 18,
+                  weightType: WeightType.medium,
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isGrid = !isGrid;
+              });
+            },
+            icon: !isGrid
+                ? const Icon(Ionicons.grid)
+                : const Icon(Ionicons.color_wand_outline),
+          ),
+        ],
+      ),
       body: lp.isLoading
           ? const OpacityLoading()
           : Padding(
-              padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
+              padding: isGrid
+                  ? const EdgeInsets.fromLTRB(28, 20, 28, 20)
+                  : const EdgeInsets.all(0),
               child: Column(
                 children: [
-                  // 상단 메뉴바
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Paragraph(
-                            text: widget.nickname,
-                            size: 18,
-                            weightType: WeightType.semiBold,
-                          ),
-                          const Paragraph(
-                            text: '님의 서재',
-                            size: 18,
-                            weightType: WeightType.medium,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
                   Expanded(
                     child: lp.libraryBooks.isEmpty
                         ? const Center(
@@ -132,27 +156,34 @@ class _LibraryPageState extends State<LibraryPage> {
                               color: grayColor300,
                             ),
                           )
-                        : NotificationListener(
-                            onNotification: (ScrollNotification notification) {
-                              scrollNotification(notification, lp);
-                              return false;
-                            },
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 40,
-                                crossAxisSpacing: 20,
-                                childAspectRatio: 0.65,
+                        : isGrid
+                            ? NotificationListener(
+                                onNotification:
+                                    (ScrollNotification notification) {
+                                  scrollNotification(notification, lp);
+                                  return false;
+                                },
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 40,
+                                    crossAxisSpacing: 20,
+                                    childAspectRatio: 0.65,
+                                  ),
+                                  itemBuilder: (context, idx) {
+                                    return LibraryBookItem(
+                                        bookData: lp.libraryBooks[idx],
+                                        loginUserId: widget.userId);
+                                  },
+                                  itemCount: lp.libraryBooks.length,
+                                ),
+                              )
+                            : AnimateBookPage(
+                                libraryBooks: lp.libraryBooks,
+                                diarys: const [],
+                                isDiary: false,
                               ),
-                              itemBuilder: (context, idx) {
-                                return LibraryBookItem(
-                                    bookData: lp.libraryBooks[idx],
-                                    loginUserId: widget.userId);
-                              },
-                              itemCount: lp.libraryBooks.length,
-                            ),
-                          ),
                   ),
                 ],
               ),
