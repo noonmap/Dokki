@@ -46,30 +46,34 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getUserInfoFromStorage();
-
+  void fetchUserData() {
     final up = Provider.of<UserProvider>(context, listen: false);
     Future.wait([
       up.getUserBioById(widget.userId),
       up.getUserMonthlyCalendar(
           userId: widget.userId, year: calendarYear, month: calendarMonth),
       up.getUserMonthlyCount(userId: widget.userId, year: calendarYear)
-    ]);
-
-    setState(() {
-      keys = {
-        'calendar': calendarKey,
-        'chart': chartKey,
-      };
+    ]).then((_) {
+      setState(() {
+        keys = {
+          'calendar': calendarKey,
+          'chart': chartKey,
+        };
+      });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfoFromStorage();
+    fetchUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     final up = Provider.of<UserProvider>(context);
+
     void onCalendarArrowTap(String direction) {
       setState(() {
         if (direction == 'left') {
