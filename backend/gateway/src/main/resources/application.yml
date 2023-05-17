@@ -1,0 +1,44 @@
+spring.main.web-application-type: reactive
+spring:
+  application:
+    name: gateway-service
+
+  # Routing
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-no-filter
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/auth/**, /users/login/**, /users/logout/**, /users/refresh/**
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+          filters:
+            - name: AuthenticationFilterFactory
+        - id: book-service
+          uri: lb://BOOK-SERVICE
+          predicates:
+            - Path=/books/**
+          filters:
+            - name: AuthenticationFilterFactory
+        - id: review-service
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/reviews/**
+          filters:
+            - name: AuthenticationFilterFactory
+        - id: timer-service
+          uri: lb://TIMER-SERVICE
+          predicates:
+            - Path=/timers/**
+          filters:
+            - name: AuthenticationFilterFactory
+# Eureka
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
