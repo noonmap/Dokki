@@ -61,6 +61,7 @@ public class AuthenticationFilterFactory extends AbstractGatewayFilterFactory<Au
 						.header("USER_NICKNAME", res.getNickname())
 						.header("USER_PROFILE_IMAGE_PATH", res.getProfileImagePath())
 						.header(HttpHeaders.AUTHORIZATION, exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+						.header("Refresh", exchange.getRequest().getHeaders().getFirst("Refresh"))
 						.build();
 					ServerWebExchange exchange1 = exchange.mutate().request(request).build();
 					return chain.filter(exchange1);
