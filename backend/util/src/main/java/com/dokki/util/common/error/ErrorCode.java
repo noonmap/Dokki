@@ -31,7 +31,8 @@ public enum ErrorCode {
 	AI_API_CLIENT_ERROR(500, "R004", "API 호출하는 중 에러가 발생하였습니다. 다시 시도해주세요."),
 	// File
 	FILE_IS_NOT_IMAGE(400, "F001", "업로드 파일의 형식이 이미지 파일 확장자가 아닙니다."),
-	FILE_UPLOAD_FAIL(500, "F002", "파일 업로드를 실패하였습니다."), FILE_IS_EMPTY(400, "F003", "파일 내용이 비어있습니다.");
+	FILE_UPLOAD_FAIL(500, "F002", "파일 업로드를 실패하였습니다."),
+	FILE_IS_EMPTY(400, "F003", "파일 내용이 비어있습니다.");
 
 	private final int status;
 	private final String code;
