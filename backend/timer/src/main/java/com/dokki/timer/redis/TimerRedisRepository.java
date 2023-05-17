@@ -1,7 +1,6 @@
-package com.dokki.timer.repository;
+package com.dokki.timer.redis;
 
 
-import com.dokki.timer.redis.TimerRedisDto;
 import org.springframework.data.repository.CrudRepository;
 
 

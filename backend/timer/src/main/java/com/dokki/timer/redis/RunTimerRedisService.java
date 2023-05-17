@@ -19,9 +19,9 @@ public class RunTimerRedisService {
 	private final RunTimerRedisRepository runTimerRedisRepository;
 
 
-	public void setRunTimerRedis(Long userId, Long bookStatusId) {
+	public RunTimerRedisDto setRunTimerRedis(Long userId, Long bookStatusId) {
 		deleteRunTimerRedis(userId);
-		runTimerRedisRepository.save(RunTimerRedisDto.builder()
+		return runTimerRedisRepository.save(RunTimerRedisDto.builder()
 			.userId(userId)
 			.bookStatusId(bookStatusId)
 			.startAt(LocalDateTime.now())
