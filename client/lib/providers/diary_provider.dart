@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dokki/data/model/diary/diary_model.dart';
 import 'package:dokki/data/repository/diary_repository.dart';
@@ -99,6 +101,24 @@ class DiaryProvider extends ChangeNotifier {
     }
   }
 
+  // POST : 감정 일기 이미지 저장 후 path 반환
+  Future<void> postDiaryUserImage({required File img}) async {
+    isImageLoading = true;
+    isImageLoaded = false;
+
+    try {
+      String res = await _diaryRepository.postDiaryUserImage(img: img);
+      diaryImage = res;
+    } on DioError catch (e) {
+      print(e.response);
+    } finally {
+      isImageLoading = false;
+      isImageLoaded = true;
+      notifyListeners();
+    }
+  }
+
+  // POST : 감정 일기 작성
   Future<void> postDiary({
     required String bookId,
     required String content,

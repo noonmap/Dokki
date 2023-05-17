@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
@@ -6,9 +8,11 @@ import 'package:dokki/data/model/user/user_monthly_count_model.dart';
 import 'package:dokki/data/model/user/user_simple_model.dart';
 import 'package:dokki/data/repository/user_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserProvider extends ChangeNotifier {
   final UserRepository _userRepository = UserRepository();
+  final _storage = const FlutterSecureStorage();
   bool isLoading = false;
   bool isLoading2 = false;
   bool isLoading3 = false;
@@ -153,6 +157,45 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     } on DioError catch (e) {
       print(e.response);
+    }
+  }
+
+  // PUT : 유저 닉네임 변경
+  Future<void> putNickname({required nickname}) async {
+    try {
+      await _userRepository.putNickname(nickname: nickname);
+      _storage.write(key: 'nickname', value: nickname);
+
+      UserBioModel newUserBio = UserBioModel(
+          userId: userBio!.userId,
+          nickname: nickname,
+          profileImagePath: userBio!.profileImagePath,
+          isFollowed: !userBio!.isFollowed,
+          followingCount: userBio!.followingCount,
+          followerCount: userBio!.followerCount);
+      userBio = newUserBio;
+      notifyListeners();
+    } on DioError catch (e) {
+      print(e.response);
+    }
+  }
+
+  // POST : 유저 프로필 사진 변경
+  Future<void> postProfileImage({required File img}) async {
+    try {
+      String res = await _userRepository.postProfileImage(img: img);
+      await _storage.write(key: 'profileImageUrl', value: res);
+      UserBioModel newUserBio = UserBioModel(
+          userId: userBio!.userId,
+          nickname: userBio!.nickname,
+          profileImagePath: res,
+          isFollowed: !userBio!.isFollowed,
+          followingCount: userBio!.followingCount,
+          followerCount: userBio!.followerCount);
+      userBio = newUserBio;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
     }
   }
 }

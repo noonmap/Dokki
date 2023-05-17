@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:dokki/data/model/diary/diary_model.dart';
 import 'package:dokki/utils/services/api_service.dart';
 
@@ -98,6 +101,20 @@ class DiaryRepository {
 
     try {
       await _apiService.post('/$commonPath/$bookId', data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : 감정 일기 이미지 저장 후 path 반환
+  Future<String> postDiaryUserImage({required File img}) async {
+    FormData formData =
+        FormData.fromMap({'image': await MultipartFile.fromFile(img.path)});
+    try {
+      Response<dynamic> res =
+          await _apiService.post('/reviews/diary/image', formData);
+
+      return res.data["diaryImagePath"];
     } catch (e) {
       rethrow;
     }
