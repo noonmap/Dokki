@@ -28,9 +28,9 @@ public class HistoryController {
 
 	@GetMapping("/today/{userId}")
 	@ApiOperation(value = "오늘 독서 시간 조회", notes = "유저의 오늘 총 독서시간을 조회합니다")
-	public ResponseEntity<Map<String, Long>> getTodayReadTime(@PathVariable Long userId) {
-		Long time = historyService.getTodayReadTime(userId);
-		Map<String, Long> result = new HashMap<>();
+	public ResponseEntity<Map<String, Integer>> getTodayReadTime(@PathVariable Long userId) {
+		int time = historyService.getTodayReadTime(userId);
+		Map<String, Integer> result = new HashMap<>();
 		result.put("todayTime", time);
 		return ResponseEntity.ok(result);
 	}
