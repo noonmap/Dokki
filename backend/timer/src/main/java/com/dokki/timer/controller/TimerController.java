@@ -55,7 +55,8 @@ public class TimerController {
 	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "타이머 정보를 삭제합니다.")
 	public ResponseEntity<Boolean> deleteTimer(@PathVariable Long bookStatusId) {
-		timerService.deleteTimer(bookStatusId);
+		Long userId = SessionUtils.getUserId();
+		timerService.deleteTimer(userId, bookStatusId);
 		return ResponseEntity.ok(null);
 	}
 
@@ -72,7 +73,8 @@ public class TimerController {
 	@PostMapping("/accum")
 	@ApiOperation(value = "타이머 정보 중 누적 시간을 조회합니다.", notes = "조회하고 싶은 도서의 book_status_id를 리스트로 Request에 담아 요청합니다. 타이머 뷰에서 이용합니다.")
 	public ResponseEntity<List<TimerSimpleResponseDto>> getAccumTime(@RequestBody List<Long> bookStatusIdList) {
-		List<TimerSimpleResponseDto> result = timerService.getAccumTimeList(bookStatusIdList);
+		Long userId = SessionUtils.getUserId();
+		List<TimerSimpleResponseDto> result = timerService.getAccumTimeList(userId, bookStatusIdList);
 		return ResponseEntity.ok(result);
 	}
 
