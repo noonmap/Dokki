@@ -45,6 +45,7 @@ public class TimerScheduler {
 			.recordDate(o.getDateFromId())
 			.build()).collect(Collectors.toList()));
 
+		log.debug("timer redis updated id - {}", idListYesterday);
 		log.info("[timer scheduler] done");
 	}
 
