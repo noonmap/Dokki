@@ -43,6 +43,14 @@ public class DiaryImageService {
 	private String OPENAI_API_TOKEN;
 
 
+	private static void loggingStackTrace(Exception e) {
+		StringBuilder errMsg = new StringBuilder();
+		for (StackTraceElement stackTrace : e.getStackTrace())
+			errMsg.append(stackTrace.toString()).append('\n');
+		log.error(errMsg.toString());
+	}
+
+
 	private String requestOpenAPI(String requestBody, String requestURL) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("Authorization", "Bearer " + OPENAI_API_TOKEN);
@@ -52,10 +60,14 @@ public class DiaryImageService {
 		try {
 			response = restTemplate.postForObject(requestURL, httpEntity, String.class);
 		} catch (HttpClientErrorException e) {
-			for (StackTraceElement stackTrace : e.getStackTrace())
-				log.error(stackTrace.toString());
+			//			e.printStackTrace();
+			//			loggingStackTrace(e);
 			log.error("restTemplate API 호출 과정에서 에러가 발생하였습니다.", e.getMessage());
-			throw new CustomException(e.getStatusCode().value(), e.getMessage());
+			if (e.getStatusCode().value() == 429) {
+				throw new CustomException(ErrorCode.AI_API_TOO_MANY_REQUESTS);
+			} else {
+				throw new CustomException(ErrorCode.AI_API_CLIENT_ERROR);
+			}
 		}
 		return response;
 	}
@@ -72,6 +84,7 @@ public class DiaryImageService {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		// Chat GPT 요청
+		log.info("Call ChatGPT");
 		String diaryContent = aiImageRequestDto.getContent();
 		String chatGPTPrompt = String.format("내가 작성한 감상평이야. %s. 이 감상평을 그림으로 그릴 수 있게 100글자 이내의 영어 문장으로 설명해줘.", diaryContent);
 		String chatGPTRequestBody = String.format("{\"model\": \"gpt-3.5-turbo\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}] }", chatGPTPrompt);
@@ -80,13 +93,13 @@ public class DiaryImageService {
 		try {
 			chatGPTResponseDto = objectMapper.readValue(chatGPTResponse, ChatGPTResponseDto.class);
 		} catch (JsonProcessingException e) {
-			for (StackTraceElement stackTrace : e.getStackTrace())
-				log.error(stackTrace.toString());
+			//			loggingStackTrace(e);
 			log.error("ChatGPT의 결과를 json mapping 하는 중 에러가 발생하였습니다.", e.getMessage());
-			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+			throw new CustomException(ErrorCode.JSON_MAPPING_ERROR);
 		}
 
 		// DALL-E2 요청
+		log.info("Call DALL-E2");
 		String imageGenPrompt = chatGPTResponseDto.getChoices()[0].getMessage().get("content");
 		String imageGenRequestBody = String.format("{\"prompt\": \"%s\", \"size\": \"256x256\"}", imageGenPrompt);
 		String imageGenResponse = requestOpenAPI(imageGenRequestBody, IMAGE_GENERATION_URL);
@@ -94,10 +107,9 @@ public class DiaryImageService {
 		try {
 			dallE2ResponseDto = objectMapper.readValue(imageGenResponse, DallE2ResponseDto.class);
 		} catch (JsonProcessingException e) {
-			for (StackTraceElement stackTrace : e.getStackTrace())
-				log.error(stackTrace.toString());
+			//			loggingStackTrace(e);
 			log.error("DALLE-2의 결과를 json mapping 중 에러가 발생하였습니다.", e.getMessage());
-			throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+			throw new CustomException(ErrorCode.JSON_MAPPING_ERROR);
 		}
 
 		increaseImageCreationRequestCount(userId); // 생성한 카운트 증가
