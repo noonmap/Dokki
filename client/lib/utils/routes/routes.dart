@@ -135,6 +135,7 @@ class Routes {
                   bookCoverPath: args['bookCoverPath'],
                   bookPublisher: args['bookPublisher'],
                   bookPublishYear: args['bookPublishYear'],
+                  existingBookId: args['existingBookId'],
                 ),
             settings: settings);
       case RoutesName.reviewCreate:

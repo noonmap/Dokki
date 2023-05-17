@@ -6,12 +6,17 @@ class DiaryModel {
     required this.diaryImagePath,
     required this.diaryContent,
     required this.created,
+    required this.bookAuthor,
+    required this.bookPublishYear,
+    required this.bookPublisher,
+    required this.bookCoverPath,
   });
 
   final String bookId, bookTitle;
   final int diaryId;
   final String diaryImagePath, diaryContent;
   final DateTime created;
+  final String bookAuthor, bookPublishYear, bookPublisher, bookCoverPath;
 
   DiaryModel.fromJson(Map<String, dynamic> json)
       : bookId = json['bookId'],
@@ -19,5 +24,9 @@ class DiaryModel {
         diaryId = json['diaryId'],
         diaryImagePath = json['diaryImagePath'],
         diaryContent = json['diaryContent'],
-        created = DateTime.parse(json['created']);
+        created = DateTime.parse(json['created']),
+        bookAuthor = json['bookAuthor'],
+        bookPublishYear = json['bookPublishYear'],
+        bookPublisher = json['bookPublisher'],
+        bookCoverPath = json['bookCoverPath'];
 }

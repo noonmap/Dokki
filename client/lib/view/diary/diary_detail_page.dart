@@ -32,7 +32,8 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
     final dp = Provider.of<DiaryProvider>(context);
 
     Future<void> onEditButtonTap() async {
-      print('edit button tap');
+      Navigator.pushNamed(context, RoutesName.diaryCreate,
+          arguments: {'existingBookId': widget.bookId});
     }
 
     Future<void> onDeleteButtonTap() async {
@@ -71,18 +72,9 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
                           size: 18,
                           weightType: WeightType.medium,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 40,
                           height: 32,
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: onEditButtonTap,
-                              child: const Icon(
-                                Icons.mode_edit_outline_outlined,
-                                color: brandColor300,
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -136,32 +128,20 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
                         Paragraph(
                           text: dp.diary!.diaryContent,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.end,
-                        //   children: [
-                        //     Paragraph(
-                        //       text: DateFormat('yyyy.MM.dd')
-                        //           .format(dp.diary!.created),
-                        //       size: 14,
-                        //       color: grayColor300,
-                        //     ),
-                        //   ],
-                        // ),
                         const SizedBox(height: 40),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            const Paragraph(
-                              text: '수정',
-                              color: grayColor300,
+                            GestureDetector(
+                              onTap: onEditButtonTap,
+                              child: const Paragraph(
+                                text: '수정',
+                                color: grayColor300,
+                              ),
                             ),
                             const SizedBox(width: 8),
-                            // const Paragraph(text: '삭제'),
                             GestureDetector(
                               onTap: onDeleteButtonTap,
-                              // child: const Icon(
-                              //   Icons.delete_outline,
-                              //   color: brandColor300,
                               child: const Paragraph(
                                 text: '삭제',
                                 color: grayColor300,
