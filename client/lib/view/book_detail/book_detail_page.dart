@@ -52,7 +52,6 @@ class _BookDetailPageState extends State<BookDetailPage>
     final clientWidth = MediaQuery.of(context).size.width;
     final clientHeight = MediaQuery.of(context).size.height;
     final bp = Provider.of<BookProvider>(context, listen: true);
-    print(bp.book);
     if (bp.book == null) {
       return Scaffold(
         backgroundColor: brandColor100,
