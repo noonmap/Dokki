@@ -1,5 +1,4 @@
 import 'package:dokki/common/constant/colors.dart';
-import 'package:dokki/common/widget/opacity_loading.dart';
 import 'package:dokki/common/widget/paragraph.dart';
 import 'package:dokki/providers/diary_provider.dart';
 import 'package:dokki/utils/utils.dart';
@@ -64,6 +63,7 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   void initState() {
     final dp = Provider.of<DiaryProvider>(context, listen: false);
+    dp.diarysInitProvider();
     dp.initProvider();
     dp.getDiaries(page: page);
     super.initState();
@@ -75,7 +75,7 @@ class _DiaryPageState extends State<DiaryPage> {
 
     return Scaffold(
       body: dp.isLoading
-          ? const OpacityLoading()
+          ? null
           : Padding(
               padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
               child: Column(
@@ -134,6 +134,10 @@ class _DiaryPageState extends State<DiaryPage> {
                                 childAspectRatio: 0.65,
                               ),
                               itemBuilder: (context, idx) {
+                                print('-----------------');
+                                print(dp.diaries[idx].bookId);
+                                print(dp.diaries[idx].bookTitle);
+                                print('-----------------');
                                 return DiaryItem(diaryData: dp.diaries[idx]);
                               },
                               itemCount: dp.diaries.length,

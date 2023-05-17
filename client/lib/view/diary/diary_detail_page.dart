@@ -32,7 +32,7 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
     final dp = Provider.of<DiaryProvider>(context);
 
     Future<void> onEditButtonTap() async {
-      Navigator.pushNamed(context, RoutesName.diaryCreate,
+      Navigator.popAndPushNamed(context, RoutesName.diaryCreate,
           arguments: {'existingBookId': widget.bookId});
     }
 
