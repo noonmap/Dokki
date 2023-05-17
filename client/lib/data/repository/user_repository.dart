@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:dokki/data/model/book/book_model.dart';
 import 'package:dokki/data/model/user/user_bio_model.dart';
 import 'package:dokki/data/model/user/user_monthly_calendar_model.dart';
@@ -151,6 +154,30 @@ class UserRepository {
   Future<void> unfollowById({required userId}) async {
     try {
       await _apiService.delete('/users/follow/$userId');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // PUT : 유저 닉네임 변경
+  Future<void> putNickname({required nickname}) async {
+    Map<String, String> data = {'nickname': nickname};
+    try {
+      await _apiService.put('/users/profile/nickname', data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // POST : 유저 프로필 사진 변경
+  Future<String> postProfileImage({required File img}) async {
+    FormData formData = FormData.fromMap(
+        {'uploadFile': await MultipartFile.fromFile(img.path)});
+    try {
+      Response<dynamic> res =
+          await _apiService.post('/users/profile/image', formData);
+
+      return res.data["profile_image_url"];
     } catch (e) {
       rethrow;
     }
