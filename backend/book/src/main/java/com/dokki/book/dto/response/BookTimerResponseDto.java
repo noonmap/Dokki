@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Builder
 public class BookTimerResponseDto {
 
+	private String bookId;
 	private Long bookStatusId;
 	private String bookTitle;
 	private Integer accumReadTime;
@@ -38,6 +39,7 @@ public class BookTimerResponseDto {
 	public static BookTimerResponseDto fromEntityandAccumTime(BookStatusEntity bookStatusEntity, int accumTime) {
 		BookEntity book = bookStatusEntity.getBookId();
 		return BookTimerResponseDto.builder()
+			.bookId(book.getId())
 			.bookStatusId(bookStatusEntity.getId())
 			.bookTitle(book.getTitle())
 			.accumReadTime(accumTime)

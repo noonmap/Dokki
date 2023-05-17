@@ -25,8 +25,7 @@ public class CollectionController {
 
 	private final BookStatusService bookStatusService;
 
-
-	// /books/collections?userId=&page=&size=
+	
 	@GetMapping("")
 	@ApiOperation(value = "다 읽은 책 컬렉션 조회", notes = "")
 	public ResponseEntity<Slice<CollectionResponseDto>> getCollectionList(@RequestParam Long userId, Pageable pageable) {
@@ -36,12 +35,11 @@ public class CollectionController {
 	}
 
 
-	//   /books/collections/{bookStatusId}
 	@DeleteMapping("/{bookStatusId}")
 	@ApiOperation(value = "다 읽은 책 컬렉션에서 삭제")
 	public ResponseEntity<HttpStatus> deleteCollection(@PathVariable Long bookStatusId) {
 		Long userId = SessionUtils.getUserId();
-		bookStatusService.deleteCollection(userId, bookStatusId);
+		bookStatusService.deleteStatus(userId, bookStatusId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
