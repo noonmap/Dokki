@@ -11,6 +11,7 @@ import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
+import com.dokki.util.timer.dto.response.TimerResponseDto;
 import com.dokki.util.timer.dto.response.TimerSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,6 +40,37 @@ public class TimerService {
 
 
 	/**
+	 * 타이머 정보 가져오기
+	 *
+	 * @param bookStatusId
+	 */
+	public TimerResponseDto getTimerByBookStatusId(Long userId, Long bookStatusId) {
+		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
+		TimerResponseDto response;
+
+		if (optionalTimerEntity.isEmpty()) {
+			throw new CustomException(ErrorCode.NOTFOUND_RESOURCE);
+		} else {
+			TimerEntity timerEntity = optionalTimerEntity.get();
+			// 로그인한 유저의 타이머가 맞는지 확인
+			if (!userId.equals(timerEntity.getUserId())) {
+				throw new CustomException(ErrorCode.INVALID_REQUEST);
+			}
+			response = TimerResponseDto.builder()
+				.id(timerEntity.getId())
+				.bookStatusId(timerEntity.getBookStatusId())
+				.userId(timerEntity.getUserId())
+				.bookId(timerEntity.getBookId())
+				.accumTime(timerEntity.getAccumTime())
+				.startTime(timerEntity.getStartTime())
+				.endTime(timerEntity.getEndTime())
+				.build();
+		}
+		return response;
+	}
+
+
+	/**
 	 * 독서 시간 측정 시작
 	 *
 	 * @param bookStatusId
@@ -64,12 +96,14 @@ public class TimerService {
 		Duration duration = Duration.between(startTime, endTime);
 		Long currTime = duration.getSeconds();
 
+		TimerEntity timerEntity;
+
 		// bookStatusId로 타이머 가져오기, 존재하지 않다면 타이머 새로 만들기
 		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
 		if (optionalTimerEntity.isEmpty()) {
 			// TODO: bookStatusId로 bookId 가져와서 추가하기
 			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
-			timerRepository.save(TimerEntity.builder()
+			timerEntity = timerRepository.save(TimerEntity.builder()
 				.userId(userId)
 				.bookId(bookId)
 				.bookStatusId(bookStatusId)
@@ -78,7 +112,7 @@ public class TimerService {
 				.endTime(endTime.toLocalDate())
 				.build());
 		} else {
-			TimerEntity timerEntity = optionalTimerEntity.get();
+			timerEntity = optionalTimerEntity.get();
 			// 로그인한 유저의 타이머가 맞는지 확인
 			if (!userId.equals(timerEntity.getUserId())) {
 				throw new CustomException(ErrorCode.INVALID_REQUEST);
@@ -87,20 +121,22 @@ public class TimerService {
 			// 타이머 종료 및 누적시간 계산
 			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
 
-			// 일일통계 계산 (오늘 통계 가져오기)
-			DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
-			if (dailyStatisticsEntity == null) {
-				dailyStatisticsEntity = DailyStatisticsEntity.builder()
-					.userId(userId)
-					.bookId(timerEntity.getBookId())
-					.accumTime(Math.toIntExact(currTime))
-					.recordDate(LocalDate.now())
-					.build();
-			} else {
-				dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
-			}
-			dailyStatisticsRepository.save(dailyStatisticsEntity);
 		}
+
+		// 일일통계 계산 (오늘 통계 가져오기)
+		DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
+		if (dailyStatisticsEntity == null) {
+			dailyStatisticsEntity = DailyStatisticsEntity.builder()
+				.userId(userId)
+				.bookId(timerEntity.getBookId())
+				.accumTime(Math.toIntExact(currTime))
+				.recordDate(LocalDate.now())
+				.build();
+		} else {
+			dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
+		}
+
+		dailyStatisticsRepository.save(dailyStatisticsEntity);
 
 	}
 
