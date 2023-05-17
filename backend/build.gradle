@@ -1,0 +1,104 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.11'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+bootJar.enabled = false
+
+subprojects {
+    group = 'com.dokki'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
+
+    apply plugin: 'java'
+    // build.gradle에서 api() 를 사용하려면 java-library 사용
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    // spring boot dependency를 사용하여 사용중인 부트 버전에서 자동으로 의존성을 가져온다.
+    apply plugin: 'io.spring.dependency-management'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // 관리하는 모듈에 공통 dependencies
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+// bootJar : 소스 파일과 함께 모든 의존성 파일들을 함께 빌드한다. 따라서 실행 가능한 jar 파일이 생성된다.
+// jar : 소스파일만 빌드한다. 의존 파일들이 빌드되지 않았으므로 생성되는 jar파일은 실행할 수 없다. -> 라이브러리 역할 모듈 빌드에 사용
+project(':util') { // 공용 라이브러리 용 모듈
+    bootJar { enabled = false }
+    jar { enabled = true }
+}
+
+project(":gateway") {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
+    dependencies {
+        implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
+    }
+}
+
+project(":book") {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
+    dependencies {
+        implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
+    }
+}
+
+project(':review') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+    dependencies {
+        implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
+    }
+}
+project(':user') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
+    dependencies {
+        implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
+    }
+}
+project(':timer') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
+    dependencies {
+        implementation project(':util')
+        // eureka
+        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.1'
+    }
+}
