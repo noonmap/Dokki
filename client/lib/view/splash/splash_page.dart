@@ -40,6 +40,10 @@ class _SplashPageState extends State<SplashPage> {
     });
   }
 
+  void ss() async {
+    await storage.deleteAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

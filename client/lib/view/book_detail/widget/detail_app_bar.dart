@@ -55,15 +55,6 @@ class _DetailAppBarState extends State<DetailAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      centerTitle: true,
-      title: const Text(
-        "Book Details",
-        style: TextStyle(
-          color: grayColor600,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
       backgroundColor: Colors.transparent,
       actions: <Widget>[
         !isStatusBook()

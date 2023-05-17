@@ -32,6 +32,7 @@ dependencies:
   flutter_custom_dialog: ^1.2.0
   image_picker: ^0.8.7+5
   flutter_rating_bar: ^4.0.1
+  audioplayers: ^4.0.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/config/.env
+    - assets/mp3/
 
   fonts:
     - family: Noto

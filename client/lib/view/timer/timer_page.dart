@@ -1,9 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dokki/common/constant/colors.dart';
-import 'package:dokki/common/widget/alert_dialog.dart';
-import 'package:dokki/common/widget/custom_app_bar.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
-import 'package:dokki/view/book_detail/book_detail_page.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:dokki/view/timer/widget/alert_dialog.dart';
 import 'package:dokki/view/timer/widget/dialog.dart';
@@ -35,10 +33,27 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
+  final audioPlayer = AudioPlayer();
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    setAudio();
     context.read<TimerProvider>().initTimer();
+  }
+
+  Future setAudio() async {
+    audioPlayer.setReleaseMode(ReleaseMode.loop);
+
+    final player = AudioCache(prefix: "assets/mp3/");
+    final url = await player.load('rain.mp3');
+    audioPlayer.setSourceUrl(url.path);
   }
 
   @override
@@ -50,15 +65,6 @@ class _TimerPageState extends State<TimerPage> {
       backgroundColor: brandColor200,
       appBar: AppBar(
         elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "Book Timer",
-          style: TextStyle(
-            color: grayColor600,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
         automaticallyImplyLeading: true,
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -133,7 +139,18 @@ class _TimerPageState extends State<TimerPage> {
                       );
                     },
                   ),
-                  Expanded(child: Container()),
+                  Expanded(
+                    child: Container(
+                        // child: ListView.builder(
+                        //   itemCount: tp.timerList.length,
+                        //   itemBuilder: (BuildContext context, int index) {
+                        //     return Container(
+                        //       child: Text(tp.timerList[index].toString()),
+                        //     );
+                        //   },
+                        // ),
+                        ),
+                  ),
                   Container(
                     height: 70,
                     child: Row(
@@ -166,12 +183,14 @@ class _TimerPageState extends State<TimerPage> {
                                     ),
                                   ),
                           ),
-                          onTap: () {
+                          onTap: () async {
                             if (tp.timerPlaying) {
                               // 종료
                               tp.pause(widget.bookStatusId);
+                              await audioPlayer.pause();
                             } else {
                               tp.start(widget.bookStatusId);
+                              await audioPlayer.resume();
                             }
                           },
                         ),

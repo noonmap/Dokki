@@ -7,7 +7,9 @@ class TimerProvider extends ChangeNotifier {
   final TimerRepository _timerRepository = TimerRepository();
   Timer? _timer;
   int currentTime = 0;
+  int tempTime = 0;
   bool timerPlaying = false;
+  List<int> timerList = [];
 
   void start(int bookStatusId) async {
     timerPlaying = true;
@@ -22,6 +24,8 @@ class TimerProvider extends ChangeNotifier {
   void pause(int bookStatusId) async {
     _timer?.cancel();
     timerPlaying = false;
+    tempTime = currentTime - tempTime;
+    timerList.add(tempTime);
     notifyListeners();
     await _timerRepository.readEnd(bookStatusId);
   }
