@@ -33,27 +33,23 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  final audioPlayer = AudioPlayer();
+  late AudioPlayer _audioPlayer;
+  late ScrollController _controller;
 
   @override
   void dispose() {
-    audioPlayer.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    setAudio();
+    _controller = ScrollController();
+    _audioPlayer = AudioPlayer()
+      ..setReleaseMode(ReleaseMode.loop)
+      ..setSourceAsset("mp3/rain.mp3");
     context.read<TimerProvider>().initTimer();
-  }
-
-  Future setAudio() async {
-    audioPlayer.setReleaseMode(ReleaseMode.loop);
-
-    final player = AudioCache(prefix: "assets/mp3/");
-    final url = await player.load('rain.mp3');
-    audioPlayer.setSourceUrl(url.path);
   }
 
   @override
@@ -68,14 +64,23 @@ class _TimerPageState extends State<TimerPage> {
         automaticallyImplyLeading: true,
         leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () {
+            onPressed: () async {
               if (tp.currentTime == 0) {
                 Navigator.pop(context);
               } else {
+                if (tp.timerPlaying) {
+                  tp.pause(widget.bookStatusId);
+                  await _audioPlayer.pause();
+                  _controller.animateTo(
+                      _controller.position.maxScrollExtent + 100,
+                      duration: const Duration(seconds: 1),
+                      curve: Curves.ease);
+                }
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return TimerPageAlertDialog(
+                      restTime: tp.timerList.length,
                       question: "타이머 종료",
                       onPressedOKFunction: () {
                         tp.exit();
@@ -114,8 +119,8 @@ class _TimerPageState extends State<TimerPage> {
         children: [
           Container(
             width: clientWidth,
-            height: clientHeight * 0.75,
-            margin: EdgeInsets.only(top: clientHeight * 0.25),
+            height: clientHeight * 0.8,
+            margin: EdgeInsets.only(top: clientHeight * 0.2),
             decoration: const BoxDecoration(
               color: brandColor100,
               borderRadius: BorderRadius.only(
@@ -124,7 +129,7 @@ class _TimerPageState extends State<TimerPage> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 50, 16, 10),
+              padding: const EdgeInsets.fromLTRB(16, 100, 16, 10),
               child: Column(
                 children: [
                   Consumer<TimerProvider>(
@@ -139,17 +144,63 @@ class _TimerPageState extends State<TimerPage> {
                       );
                     },
                   ),
+                  const SizedBox(height: 4),
                   Expanded(
                     child: Container(
-                        // child: ListView.builder(
-                        //   itemCount: tp.timerList.length,
-                        //   itemBuilder: (BuildContext context, int index) {
-                        //     return Container(
-                        //       child: Text(tp.timerList[index].toString()),
-                        //     );
-                        //   },
-                        // ),
-                        ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 10,
+                      ),
+                      child: ListView.separated(
+                        controller: _controller,
+                        itemCount: tp.timerList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: brandColor000,
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: brandColor300,
+                                    borderRadius: BorderRadius.circular(40.0),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "${index + 1}",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: brandColor100,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  Utils.secondTimeToFormatString2(
+                                    tp.timerList[index],
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const SizedBox(
+                            height: 12,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                   Container(
                     height: 70,
@@ -179,7 +230,7 @@ class _TimerPageState extends State<TimerPage> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: brandColor400,
+                                      color: brandColor300,
                                     ),
                                   ),
                           ),
@@ -187,10 +238,16 @@ class _TimerPageState extends State<TimerPage> {
                             if (tp.timerPlaying) {
                               // 종료
                               tp.pause(widget.bookStatusId);
-                              await audioPlayer.pause();
+
+                              await _audioPlayer.pause();
+
+                              _controller.animateTo(
+                                  _controller.position.maxScrollExtent + 100,
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.ease);
                             } else {
                               tp.start(widget.bookStatusId);
-                              await audioPlayer.resume();
+                              await _audioPlayer.resume();
                             }
                           },
                         ),
@@ -199,7 +256,7 @@ class _TimerPageState extends State<TimerPage> {
                             width: clientWidth / 2 - 24,
                             height: 45,
                             decoration: BoxDecoration(
-                              color: brandColor400,
+                              color: brandColor300,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Text(
@@ -207,16 +264,25 @@ class _TimerPageState extends State<TimerPage> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: brandColor200,
+                                color: brandColor100,
                               ),
                             ),
                             alignment: Alignment.center,
                           ),
-                          onTap: () {
+                          onTap: () async {
+                            if (tp.timerPlaying) {
+                              tp.pause(widget.bookStatusId);
+                              await _audioPlayer.pause();
+                              _controller.animateTo(
+                                  _controller.position.maxScrollExtent + 100,
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.ease);
+                            }
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return TimerPageAlertDialog(
+                                  restTime: tp.timerList.length,
                                   question: "타이머 종료",
                                   onPressedOKFunction: () {
                                     tp.exit();
@@ -237,7 +303,7 @@ class _TimerPageState extends State<TimerPage> {
             ),
           ),
           Container(
-            height: clientHeight * 0.34,
+            height: clientHeight * 0.28,
             child: BookItem(
               imagePath: widget.bookCoverPath,
               backImagePath: widget.bookCoverBackImagePath,

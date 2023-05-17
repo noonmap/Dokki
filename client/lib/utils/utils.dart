@@ -60,6 +60,21 @@ class Utils {
     return "$sHour : $sMin : $sSec";
   }
 
+  static String secondTimeToFormatString2(int second) {
+    // 초로된 시간을 00:00:00 String 형식으로 변환 하여 return
+    int min = (second / 60).floor();
+    int hour = (min / 60).floor();
+    int sec = second % 60;
+
+    if (hour == 0 && min == 0) {
+      return "$sec초";
+    } else if (hour == 0 && min != 0) {
+      return "$min분 $sec초";
+    }
+
+    return "$hour시간 $min분 $sec초";
+  }
+
   static toastMessage(String message) {
     Fluttertoast.showToast(
       msg: message,

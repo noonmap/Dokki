@@ -7,11 +7,13 @@ class TimerPageAlertDialog extends StatefulWidget {
   final String question;
   final int accumReadTime;
   final Function onPressedOKFunction;
+  final int restTime;
   const TimerPageAlertDialog({
     Key? key,
     required this.question,
     required this.onPressedOKFunction,
     required this.accumReadTime,
+    required this.restTime,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
 
   contentBox(BuildContext context) {
     return Container(
-      height: 200,
+      height: 215,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
         color: grayColor000,
@@ -51,6 +53,45 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: brandColor300,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Ionicons.restaurant,
+                      color: brandColor100,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      "휴식 횟수",
+                      style: TextStyle(
+                        color: brandColor100,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  "${widget.restTime > 0 ? widget.restTime - 1 : widget.restTime}번",
+                  style: TextStyle(
+                    color: brandColor100,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 10),
