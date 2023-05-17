@@ -156,218 +156,225 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
     }
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
-        child: Column(
-          children: [
-            // 상단 메뉴바
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 22,
-                      color: brandColor300,
-                    ),
-                  ),
-                ),
-                Paragraph(
-                  text: isEdit ? '감정 일기 수정' : '감정 일기 생성',
-                  size: 18,
-                  weightType: WeightType.medium,
-                ),
-                const SizedBox(
-                  width: 32,
-                  height: 32,
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  children: [
-                    // 책 정보
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.network(
-                          isEdit
-                              ? dp.diary!.bookCoverPath
-                              : widget.bookCoverPath!,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(width: 24),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Paragraph(
-                                text: isEdit
-                                    ? dp.diary!.bookTitle
-                                    : widget.bookTitle!,
-                                size: 24,
-                                weightType: WeightType.semiBold,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 12),
-                              Paragraph(
-                                text: isEdit
-                                    ? dp.diary!.bookAuthor
-                                    : widget.bookAuthor!,
-                                color: grayColor300,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Paragraph(
-                                text: isEdit
-                                    ? dp.diary!.bookPublishYear
-                                    : widget.bookPublishYear!,
-                                color: grayColor300,
-                              ),
-                              const SizedBox(height: 4),
-                              Paragraph(
-                                text: isEdit
-                                    ? dp.diary!.bookPublisher
-                                    : widget.bookPublisher!,
-                                color: grayColor300,
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 36),
-                    // 감정 일기 입력
-                    TextField(
-                      controller: _textEditingController,
-                      maxLength: 500,
-                      maxLines: 12,
-                      decoration: const InputDecoration(
-                        hintText: '감정 일기를 작성하세요.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: grayColor300,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: brandColor200,
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.all(24),
+      body: InkWell(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),
+          child: Column(
+            children: [
+              // 상단 메뉴바
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        size: 22,
+                        color: brandColor300,
                       ),
                     ),
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.warning_amber_rounded,
-                          color: brandColor400,
-                          size: 14,
-                        ),
-                        Paragraph(
-                          text: ' 이미지 생성은 하루에 5번만 가능합니다.',
-                          color: brandColor300,
-                          size: 14,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // 버튼들
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Brand300Button(
-                          text: '이미지 삽입',
-                          onPressed: getImageFromGallery,
-                        ),
-                        const SizedBox(width: 24),
-                        Column(
-                          children: [
-                            Brand300Button(
-                              text: '이미지 생성',
-                              onPressed: onCreateButtonPressed,
-                            ),
-                            Paragraph(
-                              text: '${dp.diaryImageCount} / 5',
-                              color: grayColor300,
-                              size: 14,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // 이미지 버튼 클릭하지 않았고, 등록 페이지면
-                        if (notClicked && !isEdit)
-                          SizedBox(
-                            width: maxWidth - 60,
-                            height: maxWidth - 60,
-                            child: const Center(
-                              child: Paragraph(text: '이미지를 등록해주세요.'),
-                            ),
-                          ),
-                        // 이미지 버튼 클릭하지 않았고, 수정 페이지면
-                        if (notClicked && isEdit)
-                          Image.network(
-                            dp.diary!.diaryImagePath,
-                            width: maxWidth - 60,
-                            height: maxWidth - 60,
-                            fit: BoxFit.cover,
-                          ),
-                        // 로딩중이면
-                        if (!notClicked && isImageLoading)
-                          SizedBox(
-                            width: maxWidth - 60,
-                            height: maxWidth - 60,
-                            child: const OpacityLoading(),
-                          ),
-                        // 로딩이 됐으면
-                        if (!notClicked && !isImageLoading && dp.isImageLoaded)
-                          Image.network(
-                            dp.diaryImage!,
-                            width: maxWidth - 60,
-                            height: maxWidth - 60,
-                            fit: BoxFit.cover,
-                          ),
-                      ],
-                    ),
-                    if (!notClicked || isEdit)
-                      Column(
+                  ),
+                  Paragraph(
+                    text: isEdit ? '감정 일기 수정' : '감정 일기 생성',
+                    size: 18,
+                    weightType: WeightType.medium,
+                  ),
+                  const SizedBox(
+                    width: 32,
+                    height: 32,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      // 책 정보
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 32),
-                          Brand300Button(
-                            text: '저장',
-                            onPressed: isImageLoading
-                                ? onSaveButtonPressedWithException
-                                : onSaveButtonPressed,
+                          Image.network(
+                            isEdit
+                                ? dp.diary!.bookCoverPath
+                                : widget.bookCoverPath!,
+                            height: 180,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(width: 24),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Paragraph(
+                                  text: isEdit
+                                      ? dp.diary!.bookTitle
+                                      : widget.bookTitle!,
+                                  size: 24,
+                                  weightType: WeightType.semiBold,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 12),
+                                Paragraph(
+                                  text: isEdit
+                                      ? dp.diary!.bookAuthor
+                                      : widget.bookAuthor!,
+                                  color: grayColor300,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Paragraph(
+                                  text: isEdit
+                                      ? dp.diary!.bookPublishYear
+                                      : widget.bookPublishYear!,
+                                  color: grayColor300,
+                                ),
+                                const SizedBox(height: 4),
+                                Paragraph(
+                                  text: isEdit
+                                      ? dp.diary!.bookPublisher
+                                      : widget.bookPublisher!,
+                                  color: grayColor300,
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 36),
+                      // 감정 일기 입력
+                      TextField(
+                        controller: _textEditingController,
+                        maxLength: 500,
+                        maxLines: 12,
+                        decoration: const InputDecoration(
+                          hintText: '감정 일기를 작성하세요.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: grayColor300,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: brandColor200,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.all(24),
+                        ),
+                      ),
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: brandColor400,
+                            size: 14,
+                          ),
+                          Paragraph(
+                            text: ' 이미지 생성은 하루에 5번만 가능합니다.',
+                            color: brandColor300,
+                            size: 14,
                           ),
                         ],
                       ),
-                  ],
+                      const SizedBox(height: 20),
+                      // 버튼들
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Brand300Button(
+                            text: '이미지 삽입',
+                            onPressed: getImageFromGallery,
+                          ),
+                          const SizedBox(width: 24),
+                          Column(
+                            children: [
+                              Brand300Button(
+                                text: '이미지 생성',
+                                onPressed: onCreateButtonPressed,
+                              ),
+                              Paragraph(
+                                text: '${dp.diaryImageCount} / 5',
+                                color: grayColor300,
+                                size: 14,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // 이미지 버튼 클릭하지 않았고, 등록 페이지면
+                          if (notClicked && !isEdit)
+                            SizedBox(
+                              width: maxWidth - 60,
+                              height: maxWidth - 60,
+                              child: const Center(
+                                child: Paragraph(text: '이미지를 등록해주세요.'),
+                              ),
+                            ),
+                          // 이미지 버튼 클릭하지 않았고, 수정 페이지면
+                          if (notClicked && isEdit)
+                            Image.network(
+                              dp.diary!.diaryImagePath,
+                              width: maxWidth - 60,
+                              height: maxWidth - 60,
+                              fit: BoxFit.cover,
+                            ),
+                          // 로딩중이면
+                          if (!notClicked && isImageLoading)
+                            SizedBox(
+                              width: maxWidth - 60,
+                              height: maxWidth - 60,
+                              child: const OpacityLoading(),
+                            ),
+                          // 로딩이 됐으면
+                          if (!notClicked &&
+                              !isImageLoading &&
+                              dp.isImageLoaded)
+                            Image.network(
+                              dp.diaryImage!,
+                              width: maxWidth - 60,
+                              height: maxWidth - 60,
+                              fit: BoxFit.cover,
+                            ),
+                        ],
+                      ),
+                      if (!notClicked || isEdit)
+                        Column(
+                          children: [
+                            const SizedBox(height: 32),
+                            Brand300Button(
+                              text: '저장',
+                              onPressed: isImageLoading
+                                  ? onSaveButtonPressedWithException
+                                  : onSaveButtonPressed,
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
