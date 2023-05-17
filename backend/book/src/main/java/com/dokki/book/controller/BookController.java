@@ -176,7 +176,7 @@ public class BookController {
 	@PostMapping("/simple/list")
 	@ApiOperation(value = "도서 요약 정보의 리스트를 조회합니다.")
 	public ResponseEntity<List<BookSimpleResponseDto>> getBookSimpleList(@RequestBody List<String> bookIdList) {
-		List<BookEntity> bookList = bookService.getBookListByIdIn(bookIdList);
+		List<BookEntity> bookList = bookService.getBookListByIdInOrderByIdList(bookIdList);
 		List<BookSimpleResponseDto> result = bookList.stream().map(
 			o -> BookSimpleResponseDto.builder()
 				.bookId(o.getId())
