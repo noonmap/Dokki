@@ -74,7 +74,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
             child: SingleChildScrollView(
               controller: _scrollController,
               child: Column(
