@@ -44,7 +44,7 @@ class DiaryProvider extends ChangeNotifier {
     try {
       Map<String, dynamic> diariesData =
           await _diaryRepository.getDiariesData(page: page);
-      diaries.addAll(diariesData['diaries']);
+      diaries = diariesData['diaries'];
       pageData = diariesData['pageData'];
     } finally {
       isLoading = false;

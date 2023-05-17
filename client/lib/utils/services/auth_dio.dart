@@ -14,6 +14,9 @@ class CustomInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final token = await storage.read(key: 'ACCESS_TOKEN');
+    final refresh = await storage.read(key: 'REFRESH_TOKEN');
+    print("access : $token");
+    print("refresh : $refresh");
     options.headers.addAll({'authorization': 'Bearer $token'});
     return super.onRequest(options, handler);
   }
