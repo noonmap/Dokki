@@ -12,6 +12,7 @@ class DiaryProvider extends ChangeNotifier {
   bool isCountLoading = false;
   bool isImageLoading = false;
   bool isImageLoaded = false;
+  bool isImageError = false;
 
   List<DiaryModel> diaries = [];
   Map<String, dynamic> pageData = {};
@@ -27,6 +28,8 @@ class DiaryProvider extends ChangeNotifier {
     isCountLoading = false;
     isImageLoading = false;
     isImageLoaded = false;
+    isImageError = false;
+    diary = null;
   }
 
   // GET : 감정 일기 목록 조회
@@ -85,6 +88,7 @@ class DiaryProvider extends ChangeNotifier {
     isImageLoading = true;
     isImageLoaded = false;
     isCountLoading = true;
+    isImageError = false;
 
     try {
       Map<String, dynamic> rst =
@@ -92,7 +96,11 @@ class DiaryProvider extends ChangeNotifier {
       diaryImage = rst['diaryImagePath'];
       diaryImageCount = rst['count'];
     } on DioError catch (e) {
-      print(e.response);
+      var code = e.response!.data['code'];
+      if (code == 'R003' || code == 'R004') {
+        isImageError = true;
+        notifyListeners();
+      }
     } finally {
       isImageLoading = false;
       isImageLoaded = true;

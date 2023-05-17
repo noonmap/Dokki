@@ -77,7 +77,6 @@ class DiaryRepository {
           await _apiService.post('/$commonPath/image/creation', data);
       String diaryImageData = response.data['diaryImagePath'];
       int diaryImageCountData = response.data['count'];
-
       Map<String, dynamic> rst = {
         'diaryImagePath': diaryImageData,
         'count': diaryImageCountData,
