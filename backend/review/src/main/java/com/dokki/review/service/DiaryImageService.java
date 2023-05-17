@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -97,7 +98,7 @@ public class DiaryImageService {
 		List<String> imageUrlList = dallE2ResponseDto.getData().stream().map(url -> url.get("url")).collect(Collectors.toList());
 
 		// 생성한 이미지를 저장
-		String savedImagePath = fileUtils.saveFile(imageUrlList.get(0));
+		String savedImagePath = fileUtils.storeFileFromExternalUrl(imageUrlList.get(0));
 		return savedImagePath;
 		/**
 		 * ChatGPT Response Format
@@ -193,6 +194,21 @@ public class DiaryImageService {
 	public Integer getImageCreationRemainCount(Long userId) {
 		Integer requestCount = getImageCreationRequestCount(userId);
 		return AI_IMAGE_COUNT_MAX - requestCount;
+	}
+
+
+	public String uploadUserSelectedImage(MultipartFile image) {
+		if (image == null || image.isEmpty()) {
+			throw new CustomException(ErrorCode.FILE_IS_EMPTY);
+		}
+		String savedPath = "";
+		try {
+			savedPath = fileUtils.storeImageFile(image);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL);
+		}
+		return savedPath;
 	}
 
 }
