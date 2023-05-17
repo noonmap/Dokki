@@ -70,6 +70,15 @@ public class TimerController {
 	}
 
 
+	@GetMapping("/{bookStatusId}/reset")
+	@ApiOperation(value = "타이머 누적 시간 초기화", notes = "다 읽은 책을 다시 읽을 경우 초기화")
+	public ResponseEntity<Boolean> resetAccumTime(@PathVariable Long bookStatusId) {
+		Long userId = SessionUtils.getUserId();
+		timerService.resetAccumTime(userId, bookStatusId);
+		return ResponseEntity.ok(null);
+	}
+
+
 	@PostMapping("/accum")
 	@ApiOperation(value = "타이머 정보 중 누적 시간을 조회합니다.", notes = "조회하고 싶은 도서의 book_status_id를 리스트로 Request에 담아 요청합니다. 타이머 뷰에서 이용합니다.")
 	public ResponseEntity<List<TimerSimpleResponseDto>> getAccumTime(@RequestBody List<Long> bookStatusIdList) {
