@@ -1,4 +1,4 @@
-package com.dokki.timer.redis;
+package com.dokki.timer.redis.dto;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
