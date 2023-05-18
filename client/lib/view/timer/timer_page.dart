@@ -51,6 +51,7 @@ class _TimerPageState extends State<TimerPage> {
   }
 
   Future setAudio() async {
+    audioPlayer = AudioPlayer();
     audioPlayer.setReleaseMode(ReleaseMode.loop);
 
     final player = AudioCache(prefix: "assets/mp3/");
@@ -143,8 +144,8 @@ class _TimerPageState extends State<TimerPage> {
           children: [
             Container(
               width: clientWidth,
-              height: clientHeight * 0.8,
-              margin: EdgeInsets.only(top: clientHeight * 0.2),
+              height: clientHeight * 0.78,
+              margin: EdgeInsets.only(top: clientHeight * 0.22),
               decoration: const BoxDecoration(
                 color: brandColor100,
                 borderRadius: BorderRadius.only(
@@ -342,7 +343,7 @@ class _TimerPageState extends State<TimerPage> {
               ),
             ),
             Container(
-              height: clientHeight * 0.28,
+              height: clientHeight * 0.3,
               child: TimerRotateBookTimer(
                 imagePath: widget.bookCoverPath,
                 backImagePath: widget.bookCoverBackImagePath,

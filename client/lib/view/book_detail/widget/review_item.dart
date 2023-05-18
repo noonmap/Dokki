@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/colors.dart';
-import 'package:dokki/common/constant/common.dart';
 import 'package:dokki/common/widget/alert_dialog.dart';
 import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/review_provider.dart';
+import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
-import 'package:dokki/view/timer/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,17 +38,23 @@ class ReviewItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(54))),
-                child: Image.network(
-                  profileImagePath,
-                  width: 54,
-                  height: 54,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, RoutesName.profile,
+                      arguments: {"userId": userId.toString()});
+                },
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(54))),
+                  child: Image.network(
+                    profileImagePath,
+                    width: 54,
+                    height: 54,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
