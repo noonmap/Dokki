@@ -59,7 +59,7 @@ class ReadingBookItem extends StatelessWidget {
           final sbp = Provider.of<StatusBookProvider>(context, listen: false);
           sbp.readingBookList = [];
           Future.wait([
-            sbp.getReadTimeToday("0"),
+            sbp.getReadTimeToday(userId),
             sbp.getReadingBookList("0", PAGE_LIMIT),
           ]);
         });

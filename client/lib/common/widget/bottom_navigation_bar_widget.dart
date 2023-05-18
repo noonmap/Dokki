@@ -26,7 +26,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
           const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
       elevation: 10,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Ionicons.home_sharp), label: "독기"),
+        BottomNavigationBarItem(icon: Icon(Ionicons.home_sharp), label: "기록"),
         BottomNavigationBarItem(icon: Icon(Ionicons.search_sharp), label: "검색"),
         BottomNavigationBarItem(
             icon: Icon(Ionicons.library_sharp), label: "서재"),

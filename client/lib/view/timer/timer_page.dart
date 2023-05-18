@@ -272,7 +272,7 @@ class _TimerPageState extends State<TimerPage> {
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Text(
-                                    "COMPLETE",
+                                    "완독",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
