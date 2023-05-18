@@ -15,9 +15,9 @@ public class BookSimpleResponseDto {
 
 	private String bookId;
 	private String bookTitle;
-	private String bookCoverPath;
 	private String bookAuthor;
 	private String bookPublishYear;
 	private String bookPublisher;
-	
+	private String bookCoverPath;
+
 }
