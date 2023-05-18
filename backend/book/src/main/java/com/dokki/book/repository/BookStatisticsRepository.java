@@ -37,9 +37,11 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatisticsEn
 	@Transactional
 	@Modifying
 	@Query(value = "update dokki.book_statistics "
-		+ "set mean_read_time = "
-		+ "(((mean_read_time * completed_users) + :accumTime) / (completed_users + 1))"
-		+ ", completed_users = completed_users + 1,"
+		+ " set mean_read_time = "
+		+ " case when mean_read_time = 0 then :accumTime "
+		+ " else (((mean_read_time * completed_users) + :accumTime) / (completed_users + 1)) "
+		+ " end, "
+		+ " completed_users = completed_users + 1,"
 		+ " reading_users = reading_users - 1"
 		+ " where book_id = :bookId",
 		nativeQuery = true)
