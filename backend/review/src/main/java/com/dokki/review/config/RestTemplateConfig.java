@@ -27,7 +27,7 @@ public class RestTemplateConfig {
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder
 			.setConnectTimeout(Duration.ofSeconds(5)) // 5초 timeout 설정
-			.setReadTimeout(Duration.ofSeconds(5))
+			.setReadTimeout(Duration.ofSeconds(10))
 			.additionalInterceptors(clientHttpRequestInterceptor(), new LoggingInterceptor()) // 실패 시 retry, 로깅
 			.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory())) // 응답 Stream의 데이터들이 컨슘된 상태라 데이터가 없어 에러가 발생하는 에러를 방지
 			.build();
@@ -41,6 +41,8 @@ public class RestTemplateConfig {
 			try {
 				return retryTemplate.execute(context -> {
 					log.info("Retry {}... (Exception : {})", context.getRetryCount(), context.getLastThrowable().getMessage());
+					log.info("[{}] URI: {}, Method: {}, Headers:{}, Body:{} ",
+						"-1", request.getURI(), request.getMethod(), request.getHeaders(), new String(body, StandardCharsets.UTF_8));
 					return execution.execute(request, body);
 				});
 			} catch (Throwable throwable) {
