@@ -101,6 +101,9 @@ public class DiaryImageService {
 		// DALL-E2 요청
 		log.info("Call DALL-E2");
 		String imageGenPrompt = chatGPTResponseDto.getChoices()[0].getMessage().get("content");
+		// content에 쌍따옴표로 감싸여져있는 경우가 있음. API 요청 에러를 발생시킴 -> 제거해주기
+		imageGenPrompt.replaceAll("\"", "");
+
 		String imageGenRequestBody = String.format("{\"prompt\": \"%s\", \"size\": \"256x256\"}", imageGenPrompt);
 		String imageGenResponse = requestOpenAPI(imageGenRequestBody, IMAGE_GENERATION_URL);
 		DallE2ResponseDto dallE2ResponseDto = null;
