@@ -127,6 +127,9 @@ public class BookStatusService {
 			statusEntity.setStatus(STATUS_IN_PROGRESS);
 			bookStatusRepository.save(statusEntity);
 
+			// 이전 타이머 정보 삭제
+			timerClient.deleteTimer(statusEntity.getId());
+
 			// 통계 수정 - 평균 책 읽은시간에 제외
 			try {
 				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(statusEntity.getId()));
