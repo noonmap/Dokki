@@ -184,10 +184,10 @@ public class BookStatusService {
 
 			// 통계 수정 및 완독 날짜 수정
 			try {
+				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
+
 				// 완독 날짜 수정
 				timerClient.modifyEndTime(bookStatusId);
-
-				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
 				// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
 				if (!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0) {
 					bookStatisticRepository.updateReadDataReadToComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
