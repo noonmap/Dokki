@@ -21,47 +21,40 @@ class DiaryItem extends StatelessWidget {
             arguments: {"bookId": diaryData.bookId});
       },
       child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         decoration: BoxDecoration(
           border: Border.all(color: grayColor100),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Hero(
-              tag: diaryData.diaryId,
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
               child: Image.network(
-                diaryData.diaryImagePath,
-                width: 168,
-                height: 156,
-                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 180,
+                diaryData.bookCoverPath,
+                fit: BoxFit.fill,
               ),
             ),
+            const SizedBox(height: 6),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Paragraph(
-                        text: diaryData.bookTitle,
-                        weightType: WeightType.semiBold,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+                Paragraph(
+                  text: diaryData.bookTitle,
+                  weightType: WeightType.semiBold,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Paragraph(
-                      text: DateFormat('yyyy.MM.dd').format(diaryData.created),
-                      size: 12,
-                      color: grayColor300,
-                    ),
-                  ],
+                Paragraph(
+                  text: DateFormat('yyyy.MM.dd').format(diaryData.created),
+                  size: 12,
+                  color: grayColor300,
                 ),
               ],
             ),
