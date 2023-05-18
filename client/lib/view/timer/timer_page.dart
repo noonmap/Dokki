@@ -1,8 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
-import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:dokki/view/timer/widget/alert_dialog.dart';
 import 'package:dokki/view/timer/widget/dialog.dart';
 import 'package:dokki/view/timer/widget/timer_rotate_book_item.dart';
@@ -83,6 +83,7 @@ class _TimerPageState extends State<TimerPage> {
                 restTime: tp.timerList.length,
                 question: "타이머를 종료합니다.",
                 onPressedOKFunction: () {
+                  audioPlayer.stop();
                   tp.exit();
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -124,6 +125,7 @@ class _TimerPageState extends State<TimerPage> {
                       question: "타이머를 종료합니다.",
                       onPressedOKFunction: () {
                         tp.exit();
+                        audioPlayer.stop();
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
@@ -314,6 +316,17 @@ class _TimerPageState extends State<TimerPage> {
                                         accumReadTime: widget.accumReadTime +
                                             provider.currentTime,
                                         bookStatusId: widget.bookStatusId,
+                                        onPressedOkCallback: () async {
+// 완독 + 리뷰 작
+                                          await context
+                                              .read<BookProvider>()
+                                              .updateCompleteBook(
+                                                  widget.bookStatusId);
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          Utils.flushBarSuccessMessage(
+                                              "해당 책이 서재로 이동되었습니다.", context);
+                                        },
                                       );
                                     },
                                   );

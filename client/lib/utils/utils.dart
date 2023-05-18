@@ -41,6 +41,7 @@ class Utils {
     int min = (second / 60).floor();
     int hour = (min / 60).floor();
     int sec = second % 60;
+    min = (min % 60).floor();
     late String sMin;
     late String sHour;
     late String sSec;
