@@ -1,15 +1,13 @@
 package com.dokki.timer.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor
@@ -38,6 +36,11 @@ public class TimerEntity {
 	public void updateTimerStop(int currTime, LocalDate endTime) {
 		this.accumTime += currTime;
 		this.endTime = endTime;
+	}
+
+
+	public void updateAccumTime(int currTime) {
+		this.accumTime += currTime;
 	}
 
 
