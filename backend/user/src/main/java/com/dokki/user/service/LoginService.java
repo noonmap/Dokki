@@ -150,12 +150,13 @@ public class LoginService {
 		}
 		Authentication authentication = tokenProvider.getAuthentication(tokenProvider.resolveToken(refreshToken));
 		redisService.delValues(tokenProvider.resolveToken(refreshToken));
+		log.info("refresh token baerer 뗀값 -> {}",tokenProvider.resolveToken(refreshToken));
 
 		String accessToken = tokenProvider.createAccessToken(authentication);
 		String newRefreshToken = tokenProvider.createRefreshToken(authentication);
 
 		String id = SecurityUtil.getCurrentId().get();
-
+		log.info("reissue : 시큐리티에 있는 현재 유저의 id값 -> {}" , id);
 		redisService.setValues(newRefreshToken, id);
 		token.setAccessToken(accessToken);
 		token.setRefreshToken(newRefreshToken);
