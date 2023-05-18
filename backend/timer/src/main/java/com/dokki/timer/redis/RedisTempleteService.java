@@ -22,32 +22,42 @@ import java.util.stream.Collectors;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class TimerRedisTempleteService {
+public class RedisTempleteService {
 
 	private final RedisTemplate<String, Object> redisTemplate;
+	
 
-
-	public List<String> getIdListByUserId(Long userId) {
-		// keys "timer:{userId}:{LocalDate.now()}:*"
+	public List<String> getTodayDailyStatisticsIdListByUserId(Long userId) {
+		// keys "daily:{userId}:{LocalDate.now()}:*"
 		ZonedDateTime zonedDateTime = (LocalDateTime.now()).atZone(ZoneId.of("Asia/Seoul"));
 		String todayStr = zonedDateTime.toLocalDate().toString();
 
-		String patternStr = String.format("timer:%d:%s:*", userId, todayStr);
-		return getIdListPattern(patternStr);
+		String patternStr = String.format("daily:%d:%s:*", userId, todayStr);
+		return getIdListPattern(patternStr, "daily");
 	}
 
 
-	public List<String> getIdListPastData(int minusDay) {
+	public List<String> getTimerIdListPastData(int minusDay) {
 		// keys "timer:*:{date}:*"
 		ZonedDateTime zonedDateTime = (LocalDateTime.now()).atZone(ZoneId.of("Asia/Seoul"));
 		LocalDate localDate = zonedDateTime.toLocalDate();
 
 		String patternStr = String.format("timer:*:%s:*", localDate.minusDays(minusDay));
-		return getIdListPattern(patternStr);
+		return getIdListPattern(patternStr, "timer");
 	}
 
 
-	private List<String> getIdListPattern(String pattern) {
+	public List<String> getDailyStatisticsIdListPastData(int minusDay) {
+		// keys "daily:*:{date}:*"
+		ZonedDateTime zonedDateTime = (LocalDateTime.now()).atZone(ZoneId.of("Asia/Seoul"));
+		LocalDate localDate = zonedDateTime.toLocalDate();
+
+		String patternStr = String.format("daily:*:%s:*", localDate.minusDays(minusDay));
+		return getIdListPattern(patternStr, "daily");
+	}
+
+
+	private List<String> getIdListPattern(String pattern, String hashValue) {
 		Set<String> idSet = new HashSet<>();
 		ScanOptions scanOptions = ScanOptions.scanOptions().match(pattern).count(10).build();
 		Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(scanOptions);
@@ -57,12 +67,12 @@ public class TimerRedisTempleteService {
 			String matchedKey = new String(next, Charsets.UTF_8);
 			idSet.add(matchedKey);
 		}
-		return convertToRepositoryId(List.copyOf(idSet));
+		return convertToRepositoryId(List.copyOf(idSet), hashValue);
 	}
 
 
-	private List<String> convertToRepositoryId(List<String> templeteIdList) {
-		return templeteIdList.stream().map(o -> o.replaceFirst("timer:", "")).collect(Collectors.toList());   // 키에서 RedisHash value 제거
+	private List<String> convertToRepositoryId(List<String> templeteIdList, String hashValue) {
+		return templeteIdList.stream().map(o -> o.replaceFirst(hashValue + ":", "")).collect(Collectors.toList());   // 키에서 RedisHash value 제거
 	}
 
 }
