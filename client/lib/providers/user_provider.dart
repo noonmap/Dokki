@@ -30,6 +30,12 @@ class UserProvider extends ChangeNotifier {
   List<UserSimpleModel> followList = [];
   Map<String, dynamic> followListPageData = {};
 
+  void UserInitProvider() {
+    userBio = null;
+    userMonthlyCalendar = [];
+    userMonthlyCount = [];
+  }
+
   void initProvider() {
     wishlistBooks = [];
     wishlistPageData = {};
