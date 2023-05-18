@@ -5,6 +5,9 @@ import com.dokki.timer.client.BookClient;
 import com.dokki.timer.dto.response.DailyStatisticsResponseDto;
 import com.dokki.timer.dto.response.MonthlyStatisticsResponseDto;
 import com.dokki.timer.entity.DailyStatisticsEntity;
+import com.dokki.timer.redis.DailyStatisticsRedisService;
+import com.dokki.timer.redis.RedisTempleteService;
+import com.dokki.timer.redis.dto.DailyStatisticsRedisDto;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.util.book.dto.response.BookSimpleResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,9 @@ import java.util.stream.Collectors;
 public class HistoryService {
 
 	private final DailyStatisticsRepository dailyStatisticsRepository;
+
+	private final RedisTempleteService redisTempleteService;
+	private final DailyStatisticsRedisService dailyStatisticsRedisService;
 
 	private final BookClient bookClient;
 
@@ -79,6 +85,7 @@ public class HistoryService {
 	 * @return DailyStatisticsResponse
 	 */
 	public List<DailyStatisticsResponseDto> getDailyStatisticsList(Long userId, int year, int month) {
+
 		LocalDate startDate = LocalDate.of(year, month, 1);
 		LocalDate endDate = LocalDate.of(year, month + 1, 1);
 		List<DailyStatisticsEntity> dailyStatisticsEntityList = dailyStatisticsRepository.getDailyStatisticsList(userId, startDate, endDate);
@@ -86,7 +93,22 @@ public class HistoryService {
 		List<DailyStatisticsEntity> removeDuplicateList = dailyStatisticsEntityList.stream().filter(distinctByKeys(DailyStatisticsEntity::getRecordDate, DailyStatisticsEntity::getAccumTime))
 			.collect(Collectors.toList());
 
-		// dailyStatisticsEntityList에서 bookId 리스트 만들어서 책 정보 요청
+		// 이번달이면 오늘 날짜 기록 있는지 확인 후 추가 (db에는 추가하지 않음)
+		if (LocalDate.now().getMonth().getValue() == month) {
+			List<String> idList = redisTempleteService.getTodayDailyStatisticsIdListByUserId(userId);
+			List<DailyStatisticsRedisDto> dailyStatisticsRedisDtoList = dailyStatisticsRedisService.getListByIdIn(idList);
+			if (dailyStatisticsRedisDtoList != null && !dailyStatisticsRedisDtoList.isEmpty()) {
+				DailyStatisticsRedisDto todayTop = dailyStatisticsRedisDtoList.stream().max((Comparator.comparingInt(DailyStatisticsRedisDto::getAccumTime))).get();
+				removeDuplicateList.add(DailyStatisticsEntity.builder()
+					.bookId(todayTop.getBookIdFromId())
+					.userId(todayTop.getUserIdFromId())
+					.recordDate(todayTop.getDateFromId())
+					.accumTime(todayTop.getAccumTime())
+					.build());
+			}
+		}
+
+		// 중복 제거한 dailyStatisticsEntityList에서 bookId 리스트 만들어서 책 정보 요청
 		List<String> bookIdList = removeDuplicateList.stream()
 			.map(DailyStatisticsEntity::getBookId)
 			.collect(Collectors.toList());
@@ -96,8 +118,10 @@ public class HistoryService {
 	}
 
 
-	public Long getTodayReadTime(Long userId) {
-		return dailyStatisticsRepository.getTodayReadTime(userId);
+	public int getTodayReadTime(Long userId) {
+		List<String> idList = redisTempleteService.getTodayDailyStatisticsIdListByUserId(userId);
+		List<DailyStatisticsRedisDto> dailyStatisticsRedisDtoList = dailyStatisticsRedisService.getListByIdIn(idList);
+		return dailyStatisticsRedisDtoList.stream().mapToInt(DailyStatisticsRedisDto::getAccumTime).sum();
 	}
 
 }

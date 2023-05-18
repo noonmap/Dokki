@@ -3,11 +3,13 @@ package com.dokki.timer.service;
 
 import com.dokki.timer.client.BookClient;
 import com.dokki.timer.config.exception.CustomException;
-import com.dokki.timer.entity.DailyStatisticsEntity;
 import com.dokki.timer.entity.TimerEntity;
-import com.dokki.timer.redis.TimerRedis;
+import com.dokki.timer.redis.DailyStatisticsRedisService;
+import com.dokki.timer.redis.RunTimerRedisService;
 import com.dokki.timer.redis.TimerRedisService;
-import com.dokki.timer.repository.DailyStatisticsRepository;
+import com.dokki.timer.redis.dto.DailyStatisticsRedisDto;
+import com.dokki.timer.redis.dto.RunTimerRedisDto;
+import com.dokki.timer.redis.dto.TimerRedisDto;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.book.dto.request.BookCompleteDirectRequestDto;
 import com.dokki.util.common.error.ErrorCode;
@@ -32,9 +34,10 @@ import java.util.stream.Collectors;
 public class TimerService {
 
 	private final TimerRepository timerRepository;
-	private final DailyStatisticsRepository dailyStatisticsRepository;
 
+	private final RunTimerRedisService runTimerRedisService;
 	private final TimerRedisService timerRedisService;
+	private final DailyStatisticsRedisService dailyStatisticsRedisService;
 
 	private final BookClient bookClient;
 
@@ -56,6 +59,15 @@ public class TimerService {
 			if (!userId.equals(timerEntity.getUserId())) {
 				throw new CustomException(ErrorCode.INVALID_REQUEST);
 			}
+
+			// 레디스에 오늘자 타이머 정보 있을 경우 누적시간 수정
+			try {
+				TimerRedisDto timerRedisDto = timerRedisService.getTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
+				timerEntity.updateTimerStop(timerRedisDto.getAccumTimeToday(), timerRedisDto.getEndTime());
+			} catch (Exception e) {
+				// do nothing
+			}
+
 			response = TimerResponseDto.builder()
 				.id(timerEntity.getId())
 				.bookStatusId(timerEntity.getBookStatusId())
@@ -76,7 +88,31 @@ public class TimerService {
 	 * @param bookStatusId
 	 */
 	public void startTimer(Long userId, Long bookStatusId) {
-		timerRedisService.setTimerRedis(userId, bookStatusId);
+		RunTimerRedisDto runTimer = runTimerRedisService.setRunTimerRedis(userId, bookStatusId);
+		try {
+			timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+		} catch (CustomException e) {   // 기존에 존재하지 않는 타이머일 경우 db에 타이머 추가
+			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
+			TimerEntity timerEntity = timerRepository.save(TimerEntity.builder()
+				.userId(userId)
+				.bookId(bookId)
+				.bookStatusId(bookStatusId)
+				.accumTime(0)
+				.startTime(runTimer.getStartAt().toLocalDate())
+				.endTime(runTimer.getStartAt().toLocalDate())
+				.build());
+
+			// 추가된 타이머 레디스에 저장
+			TimerRedisDto timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerEntity);
+			log.info("timer service - create {}", timerRedisDto);
+
+			// 오늘자 통계 있는지 확인 후 없으면 추가
+			if (!dailyStatisticsRedisService.existTodayDailyStatisticsRedisByUserIdAndBookId(userId, timerEntity.getBookId())) {
+				DailyStatisticsRedisDto redisDto = dailyStatisticsRedisService.createDailyStatisticsRedis(userId, timerRedisDto.getBookId());
+				log.info("daily redis 추가 - {}", redisDto.getId());
+			}
+
+		}
 	}
 
 
@@ -87,57 +123,25 @@ public class TimerService {
 	 */
 	@Transactional
 	public void endTimer(Long bookStatusId, Long userId) {
-		// 타이머 시작기록 가져온 후 redis에서 삭제
-		TimerRedis getTimer = timerRedisService.getTimerRedis(userId);
-		timerRedisService.deleteTimerRedis(userId);
-		LocalDateTime startTime = getTimer.getStartAt();
-
 		LocalDateTime endTime = LocalDateTime.now();
+
+		// 타이머 시작기록 가져온 후 redis에서 삭제
+		RunTimerRedisDto getRunTimer = runTimerRedisService.getRunTimerRedis(userId);
+		runTimerRedisService.deleteRunTimerRedis(userId);
+		LocalDateTime startTime = getRunTimer.getStartAt();
+
 		Duration duration = Duration.between(startTime, endTime);
-		Long currTime = duration.getSeconds();
+		long currTime = duration.getSeconds();
 
-		TimerEntity timerEntity;
+		// 데이터 가져오기
+		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+		DailyStatisticsRedisDto dailyStatisticsRedisDto = dailyStatisticsRedisService.getTodayDailyStatisticsRedisByUserIdAndBookId(userId, timerRedisDto.getBookId());
 
-		// bookStatusId로 타이머 가져오기, 존재하지 않다면 타이머 새로 만들기
-		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(bookStatusId);
-		if (optionalTimerEntity.isEmpty()) {
-			// TODO: bookStatusId로 bookId 가져와서 추가하기
-			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
-			timerEntity = timerRepository.save(TimerEntity.builder()
-				.userId(userId)
-				.bookId(bookId)
-				.bookStatusId(bookStatusId)
-				.accumTime(Math.toIntExact(currTime))      // toIntExact -> ArithmeticException (if the argument overflows an int)
-				.startTime(startTime.toLocalDate())
-				.endTime(endTime.toLocalDate())
-				.build());
-		} else {
-			timerEntity = optionalTimerEntity.get();
-			// 로그인한 유저의 타이머가 맞는지 확인
-			if (!userId.equals(timerEntity.getUserId())) {
-				throw new CustomException(ErrorCode.INVALID_REQUEST);
-			}
+		timerRedisDto.updateTimerStop(Math.toIntExact(currTime), startTime.toLocalDate());  // toIntExact -> ArithmeticException (if the argument overflows an int)
+		dailyStatisticsRedisDto.updateTimerStop(Math.toIntExact(currTime));
 
-			// 타이머 종료 및 누적시간 계산
-			timerEntity.updateTimerStop(Math.toIntExact(currTime), endTime.toLocalDate());
-
-		}
-
-		// 일일통계 계산 (오늘 통계 가져오기)
-		DailyStatisticsEntity dailyStatisticsEntity = dailyStatisticsRepository.getByUserIdAndBookIdAndRecordDateIs(userId, timerEntity.getBookId(), LocalDate.now());
-		if (dailyStatisticsEntity == null) {
-			dailyStatisticsEntity = DailyStatisticsEntity.builder()
-				.userId(userId)
-				.bookId(timerEntity.getBookId())
-				.accumTime(Math.toIntExact(currTime))
-				.recordDate(LocalDate.now())
-				.build();
-		} else {
-			dailyStatisticsEntity.updateTimerStop(Math.toIntExact(currTime));
-		}
-
-		dailyStatisticsRepository.save(dailyStatisticsEntity);
-
+		timerRedisService.createOrModifyTimerRedis(timerRedisDto);
+		dailyStatisticsRedisService.createOrModifyDailyStatisticsRedis(dailyStatisticsRedisDto);
 	}
 
 
@@ -146,8 +150,10 @@ public class TimerService {
 	 *
 	 * @param bookStatusId
 	 */
-	public void deleteTimer(Long bookStatusId) {
+	public void deleteTimer(Long userId, Long bookStatusId) {
 		timerRepository.deleteByBookStatusId(bookStatusId);
+		timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
+		log.info("timer service - delete timer (bookStatusId - {})", bookStatusId);
 	}
 
 
@@ -159,19 +165,20 @@ public class TimerService {
 	 * @param bookStatusIdList
 	 * @return
 	 */
-	public List<TimerSimpleResponseDto> getAccumTimeList(List<Long> bookStatusIdList) {
-		List<TimerEntity> timerList = timerRepository.findByBookStatusIdIn(bookStatusIdList);
+	public List<TimerSimpleResponseDto> getAccumTimeList(Long userId, List<Long> bookStatusIdList) {
+		List<TimerRedisDto> timerList = timerRedisService.getListByTodayAndBookStatusIdIn(userId, bookStatusIdList);
 		return timerList.stream().map(
 			o -> TimerSimpleResponseDto.builder()
-				.bookStatusId(o.getBookStatusId())
-				.accumTime(o.getAccumTime())
+				.bookStatusId(o.getBookStatusIdFromId())
+				.accumTime(o.getAccumTimeBefore() + o.getAccumTimeToday())
 				.build()
 		).collect(Collectors.toList());
 	}
 
 
 	/**
-	 * 독서 완독 시간 정보를 추가 또는 삭제(null)합니다.
+	 * 책 완독으로 변경될 경우에 사용
+	 * 독서 완독 시간 정보를 수정합니다.
 	 *
 	 * @param bookStatusId
 	 */
@@ -181,14 +188,21 @@ public class TimerService {
 		if (!userId.equals(timerEntity.getUserId())) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
+
+		// 누적시간 수정
+		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+		timerEntity.updateAccumTime(timerRedisDto.getAccumTimeToday());
 		timerEntity.updateBookComplete(LocalDate.now());
+
+		// 타이머 정보 삭제
+		timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
 	}
 
 
 	public void createTimerDirect(Long userId, BookCompleteDirectRequestDto request) {
 		Optional<TimerEntity> optionalTimerEntity = timerRepository.findTopByBookStatusId(request.getBookStatusId());
 
-		if (!optionalTimerEntity.isEmpty()) {// if timer already exist
+		if (optionalTimerEntity.isPresent()) {// if timer already exist
 			TimerEntity timerEntity = optionalTimerEntity.get();
 			// 로그인한 유저의 타이머가 맞는지 확인
 			if (!userId.equals(timerEntity.getUserId())) {
@@ -209,6 +223,11 @@ public class TimerService {
 				.build());
 		}
 
+	}
+
+
+	public void resetAccumTime(Long userId, Long bookStatusId) {
+		timerRepository.resetAccumTimeByUserIdAndBookStatusId(userId, bookStatusId);
 	}
 
 }

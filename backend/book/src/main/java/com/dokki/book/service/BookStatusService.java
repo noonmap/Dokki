@@ -117,6 +117,25 @@ public class BookStatusService {
 
 
 	/**
+	 * 도서 상태 삭제 (책 id로)
+	 */
+	@Transactional
+	public void deleteStatusByUserIdAndBookId(Long userId, String bookId) {
+		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
+
+		if (bookStatusEntity == null) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+
+		if (STATUS_IN_PROGRESS.equals(bookStatusEntity.getStatus())) {
+			bookTimerService.deleteBookTimer(bookStatusEntity);
+		} else {
+			deleteCollection(userId, bookStatusEntity);
+		}
+	}
+
+
+	/**
 	 * 도서 상태 변경
 	 * ⇒ 완독(컬렉션) → 진행중(타이머)
 	 */
@@ -126,6 +145,9 @@ public class BookStatusService {
 			// 상태 변경
 			statusEntity.setStatus(STATUS_IN_PROGRESS);
 			bookStatusRepository.save(statusEntity);
+
+			// 이전 타이머 정보 삭제
+			timerClient.deleteTimer(statusEntity.getId());
 
 			// 통계 수정 - 평균 책 읽은시간에 제외
 			try {
@@ -162,10 +184,10 @@ public class BookStatusService {
 
 			// 통계 수정 및 완독 날짜 수정
 			try {
+				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
+
 				// 완독 날짜 수정
 				timerClient.modifyEndTime(bookStatusId);
-
-				List<TimerSimpleResponseDto> accumTimeList = timerClient.getAccumTime(List.of(bookStatusId));
 				// TODO : 이후 수정하기 - 책 읽은 시간 10페이지 1분 기준으로 통계 반영
 				if (!accumTimeList.isEmpty() && accumTimeList.get(0).getAccumTime() > 0) {
 					bookStatisticRepository.updateReadDataReadToComplete(bookStatusEntity.getBookId().getId(), accumTimeList.get(0).getAccumTime());
