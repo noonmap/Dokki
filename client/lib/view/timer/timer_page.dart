@@ -71,6 +71,8 @@ class _TimerPageState extends State<TimerPage> {
           if (tp.timerPlaying) {
             tp.pause(widget.bookStatusId);
             audioPlayer.pause();
+            tp.rotatePause();
+
             _controller.animateTo(_controller.position.maxScrollExtent + 100,
                 duration: const Duration(seconds: 1), curve: Curves.ease);
           }
@@ -105,6 +107,8 @@ class _TimerPageState extends State<TimerPage> {
               } else {
                 if (tp.timerPlaying) {
                   tp.pause(widget.bookStatusId);
+                  tp.rotatePause();
+
                   audioPlayer.pause();
 
                   _controller.animateTo(
@@ -291,6 +295,8 @@ class _TimerPageState extends State<TimerPage> {
                                 onTap: () async {
                                   if (provider.timerPlaying) {
                                     provider.pause(widget.bookStatusId);
+                                    provider.rotatePause();
+
                                     audioPlayer.pause();
 
                                     _controller.animateTo(

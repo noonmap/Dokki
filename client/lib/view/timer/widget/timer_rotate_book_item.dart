@@ -38,7 +38,6 @@ class _TimerRotateBookTimerState extends State<TimerRotateBookTimer> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.rotateValue);
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, widget.depth / -2),
       child: Container(
@@ -88,50 +87,22 @@ class _TimerRotateBookTimerState extends State<TimerRotateBookTimer> {
     late final bottom = _buildSide(side: 2);
     late final port = _buildSide(side: 3);
     List<Widget> children = [bottom];
-    if (widget.rotateValue >= 0) {
-      if (widget.rotateValue < pi / 4) {
-        print("1");
-        children = [starboard, front];
-      } else if (widget.rotateValue < pi / 2) {
-        print("2");
-        children = [front, starboard];
-      } else if (widget.rotateValue < 3 * pi / 4) {
-        print("3");
-        children = [back, starboard];
-      } else if (widget.rotateValue < pi) {
-        print("4");
-        children = [starboard, back];
-      } else if (widget.rotateValue < 5 * pi / 4) {
-        print("5");
-        children = [port, back];
-      } else if (widget.rotateValue < 3 * pi / 2) {
-        print("6");
-        children = [back, port];
-      } else if (widget.rotateValue < 7 * pi / 4) {
-        print("7");
-        children = [front, port];
-      } else {
-        print("8");
-        children = [port, front];
-      }
+    if (widget.rotateValue < pi / 4) {
+      children = [starboard, front];
+    } else if (widget.rotateValue < pi / 2) {
+      children = [front, starboard];
+    } else if (widget.rotateValue < 3 * pi / 4) {
+      children = [back, starboard];
+    } else if (widget.rotateValue < pi) {
+      children = [starboard, back];
+    } else if (widget.rotateValue < 5 * pi / 4) {
+      children = [port, back];
+    } else if (widget.rotateValue < 3 * pi / 2) {
+      children = [back, port];
+    } else if (widget.rotateValue < 7 * pi / 4) {
+      children = [front, port];
     } else {
-      if (widget.rotateValue > pi / 4 * -1) {
-        children = [port, front];
-      } else if (widget.rotateValue > pi / 2 * -1) {
-        children = [front, port];
-      } else if (widget.rotateValue > 3 * pi / 4 * -1) {
-        children = [back, port];
-      } else if (widget.rotateValue > -pi) {
-        children = [port, back];
-      } else if (widget.rotateValue > 5 * pi / 4 * -1) {
-        children = [starboard, back];
-      } else if (widget.rotateValue > 3 * pi / 2 * -1) {
-        children = [back, starboard];
-      } else if (widget.rotateValue > 7 * pi / 4 * -1) {
-        children = [front, starboard];
-      } else {
-        children = [starboard, front];
-      }
+      children = [port, front];
     }
     return Container(
       width: double.infinity,
