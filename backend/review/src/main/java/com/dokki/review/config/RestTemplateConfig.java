@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 
 @Configuration
+@Slf4j
 public class RestTemplateConfig {
 
 	@Bean
@@ -38,7 +39,10 @@ public class RestTemplateConfig {
 			RetryTemplate retryTemplate = new RetryTemplate();
 			retryTemplate.setRetryPolicy(new SimpleRetryPolicy(5)); // 5번까지 retry
 			try {
-				return retryTemplate.execute(context -> execution.execute(request, body));
+				return retryTemplate.execute(context -> {
+					log.info("Retry {}... (Exception : {})", context.getRetryCount(), context.getLastThrowable().getMessage());
+					return execution.execute(request, body);
+				});
 			} catch (Throwable throwable) {
 				throw new RuntimeException(throwable);
 			}
