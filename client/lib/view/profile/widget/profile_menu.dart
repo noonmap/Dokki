@@ -5,12 +5,12 @@ import 'package:ionicons/ionicons.dart';
 
 class ProfileMenu extends StatelessWidget {
   const ProfileMenu({
-    super.key,
+    Key? key,
     required this.userId,
     required this.nickname,
     required this.isMine,
     required this.keys,
-  });
+  }) : super(key: key);
 
   final String userId, nickname;
   final bool isMine;
@@ -23,13 +23,20 @@ class ProfileMenu extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          ProfileMenuItem(
+            icon: Ionicons.heart_outline,
+            label: '찜한 책',
+            onTap: () {
+              Navigator.pushNamed(context, RoutesName.wishlist,
+                  arguments: {"loginUserId": userId});
+            },
+          ),
           isMine
               ? ProfileMenuItem(
-                  icon: Ionicons.heart_outline,
-                  label: '찜한 책',
+                  icon: Ionicons.book_outline,
+                  label: '감정 일기',
                   onTap: () {
-                    Navigator.pushNamed(context, RoutesName.wishlist,
-                        arguments: {"loginUserId": userId});
+                    Navigator.pushNamed(context, RoutesName.diary);
                   },
                 )
               : ProfileMenuItem(
@@ -39,22 +46,6 @@ class ProfileMenu extends StatelessWidget {
                     Navigator.pushNamed(context, RoutesName.library,
                         arguments: {'userId': userId, 'nickname': nickname});
                   },
-                ),
-          isMine
-              ? ProfileMenuItem(
-                  icon: Ionicons.book_outline,
-                  label: '감정 일기',
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.diary);
-                    // 🍇 감정 일기 생성 페이지 위해서 임시 수정
-                    // Navigator.pushNamed(context, RoutesName.diaryCreate,
-                    //     arguments: {"bookId": '8809894540898'});
-                  },
-                )
-              : ProfileMenuItem(
-                  icon: Ionicons.leaf_outline,
-                  label: '텃밭',
-                  onTap: () {},
                 ),
           ProfileMenuItem(
             icon: Ionicons.calendar_outline,
