@@ -5,12 +5,12 @@ import com.dokki.util.common.enums.DefaultEnum;
 import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,15 +23,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileUtils {
 
-	public static final String NGINX_PATH = "/resources/";
 	// FIXME: Property는 호출하는 서비스 쪽과 같은 패키지 내에 있는 파일 (application.yml)만 참고함.
 	//        예) Review 서비스를 실행한 경우, Util 쪽 application.yml이 아니라 REVIEW의 application.yml을 실행해야 함
-	//	@Value("${file.upload.uri}")
-	private static final String hostUri = "https://dokki.kr";
-	@Value("${UPLOAD_PATH}")
-	private String uploadPath;
-	@Value("${UPLOAD_DIR}")
-	private String uploadDir;
+	private static String hostUri;// = "https://dokki.kr";
+	private static String uploadPath;
+	private static String uploadDir;
 	// 지원하는 이미지 확장자 종류
 	private String[] imageExtensions = { ".jpg", ".jpeg", ".jfif", ".gif", ".png" };
 
@@ -42,16 +38,26 @@ public class FileUtils {
 			return filePath;
 		}
 		// uploadPath 부분 없애고 상대 경로 남김
-		String uploadPath = System.getenv("UPLOAD_PATH"); // static에서는 @Value로 값을 가져올 수 없어서 환경변수를 읽어옴
+		uploadPath = System.getenv("UPLOAD_PATH"); // static에서는 @Value로 값을 가져올 수 없어서 환경변수를 읽어옴
 		if (filePath.startsWith(uploadPath)) {
 			filePath = filePath.substring(uploadPath.length());
 		} else if (filePath.startsWith("/" + uploadPath)) {
 			filePath = filePath.substring(("/" + uploadPath).length());
 		}
+		hostUri = System.getenv("HOST_URI"); // static 에서 환경변수 사용
 		if (filePath.startsWith("/")) {
 			return hostUri + filePath;
 		}
 		return hostUri + "/" + filePath;
+	}
+
+
+	@PostConstruct
+	public void init() {
+		FileUtils.uploadPath = System.getenv("UPLOAD_PATH");
+		FileUtils.uploadDir = System.getenv("UPLOAD_DIR");
+		FileUtils.hostUri = System.getenv("HOST_URI");
+		//		log.info("PostConstruct : uploadPath = {}, uploadDir = {}, hostUri = {}", uploadPath, uploadDir, hostUri);
 	}
 
 
