@@ -27,6 +27,7 @@ void main() async {
   KakaoSdk.init(
     nativeAppKey: dotenv.env["KAKAO_NATIVE_KEY"],
   );
+
   runApp(const MyApp());
 }
 

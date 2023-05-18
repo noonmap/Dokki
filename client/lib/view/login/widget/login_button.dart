@@ -20,6 +20,7 @@ class LoginButton extends StatelessWidget {
       onTap: () async {
         final Dio dio = Dio();
         bool isInstalled = await isKakaoTalkInstalled();
+        print(isInstalled);
         if (isInstalled) {
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
