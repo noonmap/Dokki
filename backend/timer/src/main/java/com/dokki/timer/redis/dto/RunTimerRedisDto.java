@@ -1,4 +1,4 @@
-package com.dokki.timer.redis;
+package com.dokki.timer.redis.dto;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,19 +8,17 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.TimeToLive;
-
 
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@RedisHash(value = "timer", timeToLive = 24*60*60)
-public class TimerRedis {
+@RedisHash(value = "run", timeToLive = 24 * 60 * 60)
+public class RunTimerRedisDto {
+
 	@Id
 	private Long userId;
 
@@ -29,7 +27,5 @@ public class TimerRedis {
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime startAt;
-
-
 
 }

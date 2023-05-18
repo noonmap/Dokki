@@ -130,11 +130,11 @@ public class BookController {
 	}
 
 
-	@DeleteMapping("/status/{bookStatusId}")
+	@DeleteMapping("/status/{bookId}")
 	@ApiOperation(value = "책 상태 삭제 | 타이머 또는 컬렉션에서 삭제")
-	public ResponseEntity<HttpStatus> deleteStatus(@PathVariable Long bookStatusId) {
+	public ResponseEntity<HttpStatus> deleteStatus(@PathVariable String bookId) {
 		Long userId = SessionUtils.getUserId();
-		bookStatusService.deleteStatus(userId, bookStatusId);
+		bookStatusService.deleteStatusByUserIdAndBookId(userId, bookId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -165,6 +165,9 @@ public class BookController {
 			.bookId(bookId)
 			.bookTitle(book.getTitle())
 			.bookCoverPath(book.getCoverFrontImagePath())
+			.bookAuthor(book.getAuthor())
+			.bookPublishYear(Integer.toString(book.getPublishDate().getYear()))
+			.bookPublisher(book.getPublisher())
 			.build();
 		return ResponseEntity.ok(bookSimpleResponseDto);
 	}
@@ -173,12 +176,15 @@ public class BookController {
 	@PostMapping("/simple/list")
 	@ApiOperation(value = "도서 요약 정보의 리스트를 조회합니다.")
 	public ResponseEntity<List<BookSimpleResponseDto>> getBookSimpleList(@RequestBody List<String> bookIdList) {
-		List<BookEntity> bookList = bookService.getBookListByIdIn(bookIdList);
+		List<BookEntity> bookList = bookService.getBookListByIdInOrderByIdList(bookIdList);
 		List<BookSimpleResponseDto> result = bookList.stream().map(
 			o -> BookSimpleResponseDto.builder()
 				.bookId(o.getId())
 				.bookTitle(o.getTitle())
 				.bookCoverPath(o.getCoverFrontImagePath())
+				.bookAuthor(o.getAuthor())
+				.bookPublishYear(Integer.toString(o.getPublishDate().getYear()))
+				.bookPublisher(o.getPublisher())
 				.build()
 		).collect(Collectors.toList());
 		return ResponseEntity.ok(result);
