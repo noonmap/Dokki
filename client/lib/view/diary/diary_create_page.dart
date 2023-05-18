@@ -129,6 +129,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
             imagePath: dp.diaryImage!);
       }
 
+      dp.getDiaries(page: 0);
       Navigator.popAndPushNamed(
         context,
         RoutesName.diaryDetail,
@@ -156,10 +157,13 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
         setState(() {
           selectClicked = true;
           createClicked = false;
-          isImageLoading = false;
         });
         Utils.scrollToBottom(_scrollController);
       }
+
+      setState(() {
+        isImageLoading = false;
+      });
     }
 
     return Scaffold(
