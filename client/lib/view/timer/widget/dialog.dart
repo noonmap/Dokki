@@ -1,23 +1,22 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/providers/book_provider.dart';
-import 'package:dokki/providers/review_provider.dart';
-import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:provider/provider.dart';
 
 class CustomDialogBox extends StatefulWidget {
   final int bookStatusId;
   final String bookId;
   final String title;
   final int accumReadTime;
+  final Function onPressedOkCallback;
   const CustomDialogBox({
     Key? key,
     required this.title,
     required this.accumReadTime,
     required this.bookStatusId,
     required this.bookId,
+    required this.onPressedOkCallback,
   }) : super(key: key);
 
   @override
@@ -86,14 +85,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () async {
-                  // 완독 + 리뷰 작성
-                  await context
-                      .read<BookProvider>()
-                      .updateCompleteBook(widget.bookStatusId);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Utils.flushBarSuccessMessage("해당 책이 서재로 이동되었습니다.", context);
+                onPressed: () {
+                  widget.onPressedOkCallback();
                 },
                 child: Container(
                   width: 90,
