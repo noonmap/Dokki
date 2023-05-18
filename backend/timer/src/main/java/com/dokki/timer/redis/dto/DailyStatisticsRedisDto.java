@@ -16,19 +16,14 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@RedisHash(value = "daily_statistics", timeToLive = 2 * 24 * 60 * 60)  // 2 days
+@RedisHash(value = "daily", timeToLive = 2 * 24 * 60 * 60)  // 2 days
 public class DailyStatisticsRedisDto {
 
 	@Id
 	private String id;
 
 	private int accumTime;
-
-
-	public static String toId(Long userId, Long bookStatusId, LocalDate date) {
-		return userId + ":" + date + ":" + bookStatusId.toString();
-	}
-
+	
 
 	public static String toIdToday(Long userId, String bookId) {
 		ZonedDateTime zonedDateTime = (LocalDateTime.now()).atZone(ZoneId.of("Asia/Seoul"));
@@ -39,6 +34,11 @@ public class DailyStatisticsRedisDto {
 
 	public void updateTimerStop(int currTime) {
 		this.accumTime += currTime;
+	}
+
+
+	public Long getUserIdFromId() {
+		return Long.parseLong(this.id.split(":")[0]);
 	}
 
 

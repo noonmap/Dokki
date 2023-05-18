@@ -2,6 +2,7 @@ package com.dokki.timer.redis;
 
 
 import com.dokki.timer.entity.DailyStatisticsEntity;
+import com.dokki.timer.redis.dto.DailyStatisticsRedisDto;
 import com.dokki.timer.redis.dto.TimerRedisDto;
 import com.dokki.timer.repository.DailyStatisticsRepository;
 import com.dokki.timer.repository.TimerRepository;
@@ -21,28 +22,31 @@ public class TimerScheduler {
 
 	private final TimerRepository timerRepository;
 	private final DailyStatisticsRepository dailyStatisticsRepository;
-	private final TimerRedisTempleteService timerRedisTempleteService;
+	private final RedisTempleteService redisTempleteService;
 	private final TimerRedisService timerRedisService;
+	private final DailyStatisticsRedisService dailyStatisticsRedisService;
 
 
 	/**
 	 * 전날 타이머 데이터 db 업데이트
 	 * Write Back
 	 */
-	@Scheduled(cron = "0 0 5 * * *")
+	@Scheduled(cron = "0 0 4 * * *")    // 매일 AM 4시
 	public void updateDB() {
 		log.info("[timer scheduler] start");
-		List<String> idListYesterday = timerRedisTempleteService.getIdListPastData(1);
+		List<String> idListYesterday = redisTempleteService.getTimerIdListPastData(1);
+		List<String> statisticsIdListYesterday = redisTempleteService.getDailyStatisticsIdListPastData(1);
 		List<TimerRedisDto> timerRedisDtoList = timerRedisService.getListByIdIn(idListYesterday);
+		List<DailyStatisticsRedisDto> dailyStatisticsRedisDtoList = dailyStatisticsRedisService.getListByIdIn(statisticsIdListYesterday);
 
 		// 타이머 update
 		timerRedisDtoList.forEach(o -> timerRepository.updateAccumTimeAndEndTime(o.getAccumTimeToday(), o.getEndTime(), o.getTimerId()));
 
 		// 통계 save
-		dailyStatisticsRepository.saveAllAndFlush(timerRedisDtoList.stream().filter(o -> o.getAccumTimeToday() != 0).map(o -> DailyStatisticsEntity.builder()
-			.userId(o.getUserId())
-			.accumTime(o.getAccumTimeToday())
-			.bookId(o.getBookId())
+		dailyStatisticsRepository.saveAllAndFlush(dailyStatisticsRedisDtoList.stream().filter(o -> o.getAccumTime() != 0).map(o -> DailyStatisticsEntity.builder()
+			.userId(o.getUserIdFromId())
+			.accumTime(o.getAccumTime())
+			.bookId(o.getBookIdFromId())
 			.recordDate(o.getDateFromId())
 			.build()).collect(Collectors.toList()));
 

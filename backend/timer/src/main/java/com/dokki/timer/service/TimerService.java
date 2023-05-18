@@ -7,6 +7,7 @@ import com.dokki.timer.entity.TimerEntity;
 import com.dokki.timer.redis.DailyStatisticsRedisService;
 import com.dokki.timer.redis.RunTimerRedisService;
 import com.dokki.timer.redis.TimerRedisService;
+import com.dokki.timer.redis.dto.DailyStatisticsRedisDto;
 import com.dokki.timer.redis.dto.RunTimerRedisDto;
 import com.dokki.timer.redis.dto.TimerRedisDto;
 import com.dokki.timer.repository.TimerRepository;
@@ -105,8 +106,11 @@ public class TimerService {
 			TimerRedisDto timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerEntity);
 			log.info("timer service - create {}", timerRedisDto);
 
-			// 통계 추가
-			dailyStatisticsRedisService.createDailyStatisticsRedis(userId, timerRedisDto.getBookId());
+			// 오늘자 통계 있는지 확인 후 없으면 추가
+			if (!dailyStatisticsRedisService.existTodayDailyStatisticsRedisByUserIdAndBookId(userId, timerEntity.getBookId())) {
+				DailyStatisticsRedisDto redisDto = dailyStatisticsRedisService.createDailyStatisticsRedis(userId, timerRedisDto.getBookId());
+				log.info("daily redis 추가 - {}", redisDto.getId());
+			}
 
 		}
 	}
@@ -128,10 +132,16 @@ public class TimerService {
 
 		Duration duration = Duration.between(startTime, endTime);
 		long currTime = duration.getSeconds();
+
+		// 데이터 가져오기
 		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+		DailyStatisticsRedisDto dailyStatisticsRedisDto = dailyStatisticsRedisService.getTodayDailyStatisticsRedisByUserIdAndBookId(userId, timerRedisDto.getBookId());
 
 		timerRedisDto.updateTimerStop(Math.toIntExact(currTime), startTime.toLocalDate());  // toIntExact -> ArithmeticException (if the argument overflows an int)
-		timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerRedisDto);
+		dailyStatisticsRedisDto.updateTimerStop(Math.toIntExact(currTime));
+
+		timerRedisService.createOrModifyTimerRedis(timerRedisDto);
+		dailyStatisticsRedisService.createOrModifyDailyStatisticsRedis(dailyStatisticsRedisDto);
 	}
 
 
@@ -167,6 +177,7 @@ public class TimerService {
 
 
 	/**
+	 * 책 완독으로 변경될 경우에 사용
 	 * 독서 완독 시간 정보를 수정합니다.
 	 *
 	 * @param bookStatusId
@@ -177,8 +188,14 @@ public class TimerService {
 		if (!userId.equals(timerEntity.getUserId())) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
+
+		// 누적시간 수정
+		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+		timerEntity.updateAccumTime(timerRedisDto.getAccumTimeToday());
 		timerEntity.updateBookComplete(LocalDate.now());
-		timerRedisService.createOrModifyTimerRedis(timerEntity);
+
+		// 타이머 정보 삭제
+		timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
 	}
 
 
