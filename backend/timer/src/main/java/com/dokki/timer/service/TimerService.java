@@ -4,6 +4,7 @@ package com.dokki.timer.service;
 import com.dokki.timer.client.BookClient;
 import com.dokki.timer.config.exception.CustomException;
 import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.DailyStatisticsRedisService;
 import com.dokki.timer.redis.RunTimerRedisService;
 import com.dokki.timer.redis.TimerRedisService;
 import com.dokki.timer.redis.dto.RunTimerRedisDto;
@@ -35,6 +36,7 @@ public class TimerService {
 
 	private final RunTimerRedisService runTimerRedisService;
 	private final TimerRedisService timerRedisService;
+	private final DailyStatisticsRedisService dailyStatisticsRedisService;
 
 	private final BookClient bookClient;
 
@@ -102,6 +104,10 @@ public class TimerService {
 			// 추가된 타이머 레디스에 저장
 			TimerRedisDto timerRedisDto = timerRedisService.createOrModifyTimerRedis(timerEntity);
 			log.info("timer service - create {}", timerRedisDto);
+
+			// 통계 추가
+			dailyStatisticsRedisService.createDailyStatisticsRedis(userId, timerRedisDto.getBookId());
+
 		}
 	}
 

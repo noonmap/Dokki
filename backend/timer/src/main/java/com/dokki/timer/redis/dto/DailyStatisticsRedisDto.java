@@ -37,7 +37,7 @@ public class DailyStatisticsRedisDto {
 	}
 
 
-	public void updateTimerStop(int currTime, LocalDate endTime) {
+	public void updateTimerStop(int currTime) {
 		this.accumTime += currTime;
 	}
 

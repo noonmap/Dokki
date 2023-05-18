@@ -3,8 +3,12 @@ package com.dokki.timer.redis;
 
 import com.dokki.timer.config.exception.CustomException;
 import com.dokki.timer.entity.TimerEntity;
+import com.dokki.timer.redis.dto.DailyStatisticsRedisDto;
 import com.dokki.timer.redis.dto.TimerRedisDto;
 import com.dokki.timer.redis.dto.TodayAccessRedisDto;
+import com.dokki.timer.redis.repository.DailyStatisticsRedisRepository;
+import com.dokki.timer.redis.repository.TimerRedisRepository;
+import com.dokki.timer.redis.repository.TodayAccessRedisRepository;
 import com.dokki.timer.repository.TimerRepository;
 import com.dokki.util.common.error.ErrorCode;
 import com.google.common.collect.Lists;
@@ -26,6 +30,7 @@ public class TimerRedisService {
 	private final TimerRepository timerRepository;
 	private final TodayAccessRedisRepository todayAccessRedisRepository;
 	private final TimerRedisRepository timerRedisRepository;
+	private final DailyStatisticsRedisRepository dailyStatisticsRedisRepository;
 
 
 	/**
@@ -58,6 +63,8 @@ public class TimerRedisService {
 	public List<TimerRedisDto> createTimerRedisListByTodayFirstAccess(Long userId, List<Long> bookStatusIdList) {
 		List<TimerRedisDto> resultList;
 		List<TimerEntity> timerEntityList = timerRepository.findByBookStatusIdIn(bookStatusIdList);
+
+		// 타이머 정보로 당일 타이머 저장
 		resultList = Lists.newArrayList(timerRedisRepository.saveAll(
 			timerEntityList.stream().map(e ->
 				TimerRedisDto.builder()
@@ -69,6 +76,12 @@ public class TimerRedisService {
 					.userId(userId)
 					.id(TimerRedisDto.toIdToday(userId, e.getBookStatusId()))
 					.build()).collect(Collectors.toList())));
+
+		// 타이머 정보로 당일 통계 저장
+		dailyStatisticsRedisRepository.saveAll(timerEntityList.stream().map(e ->
+			DailyStatisticsRedisDto.builder()
+				.id(DailyStatisticsRedisDto.toIdToday(userId, e.getBookId()))
+				.build()).collect(Collectors.toList()));
 
 		// 오늘 방문 여부 (timer 저장 여부) 추가
 		todayAccessRedisRepository.save(TodayAccessRedisDto.builder()

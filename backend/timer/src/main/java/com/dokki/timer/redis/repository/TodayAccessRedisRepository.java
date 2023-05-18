@@ -1,4 +1,4 @@
-package com.dokki.timer.redis;
+package com.dokki.timer.redis.repository;
 
 
 import com.dokki.timer.redis.dto.TodayAccessRedisDto;

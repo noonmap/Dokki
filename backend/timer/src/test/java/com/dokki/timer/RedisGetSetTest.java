@@ -2,7 +2,7 @@ package com.dokki.timer;
 
 
 import com.dokki.timer.redis.dto.RunTimerRedisDto;
-import com.dokki.timer.repository.RunTimerRedisRepository;
+import com.dokki.timer.redis.repository.RunTimerRedisRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
