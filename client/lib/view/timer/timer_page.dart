@@ -33,7 +33,7 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  final audioPlayer = AudioPlayer();
+  late AudioPlayer audioPlayer;
   late ScrollController _controller;
 
   @override
