@@ -38,6 +38,7 @@ class _DiaryDetailPageState extends State<DiaryDetailPage> {
 
     Future<void> onDeleteButtonTap() async {
       await dp.deleteDiary(diaryId: dp.diary!.diaryId);
+      await dp.getDiaries(page: 0);
       Navigator.pushNamed(context, RoutesName.diary);
     }
 
