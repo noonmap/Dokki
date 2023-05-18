@@ -184,18 +184,32 @@ public class TimerService {
 	 */
 	@Transactional
 	public void modifyEndTime(Long userId, Long bookStatusId) {
-		TimerEntity timerEntity = timerRepository.findTopByBookStatusId(bookStatusId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST));
-		if (!userId.equals(timerEntity.getUserId())) {
-			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		TimerEntity timerEntity = timerRepository.findTopByBookStatusId(bookStatusId).orElse(null);
+
+		if (timerEntity == null) {  // 추가된 후 타이머로 읽지 않고 완독으로 옮겼을 경우
+			String bookId = bookClient.getBookIdByBookStatusId(bookStatusId);
+			timerRepository.save(TimerEntity.builder()
+				.userId(userId)
+				.bookId(bookId)
+				.bookStatusId(bookStatusId)
+				.startTime(LocalDate.now())
+				.endTime(LocalDate.now())
+				.accumTime(0)
+				.build());
+		} else {
+			if (!userId.equals(timerEntity.getUserId())) {
+				throw new CustomException(ErrorCode.INVALID_REQUEST);
+			}
+
+			// 누적시간 수정
+			TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
+			timerEntity.updateAccumTime(timerRedisDto.getAccumTimeToday());
+			timerEntity.updateBookComplete(LocalDate.now());
+
+			// 타이머 정보 삭제
+			timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
 		}
 
-		// 누적시간 수정
-		TimerRedisDto timerRedisDto = timerRedisService.getTimerRedisByTodayAndBookStatusId(userId, bookStatusId);
-		timerEntity.updateAccumTime(timerRedisDto.getAccumTimeToday());
-		timerEntity.updateBookComplete(LocalDate.now());
-
-		// 타이머 정보 삭제
-		timerRedisService.deleteTimerRedis(TimerRedisDto.toIdToday(userId, bookStatusId));
 	}
 
 

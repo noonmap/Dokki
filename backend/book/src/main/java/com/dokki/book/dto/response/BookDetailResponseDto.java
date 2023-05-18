@@ -36,7 +36,7 @@ public class BookDetailResponseDto {
 	private List<CommentResponseDto> review;
 	private Integer readerCount;    // 읽은 사람
 	private Float meanScore;
-	private Integer meanReadTime;
+	private Float meanReadTime;
 
 	@JsonProperty("isBookMarked")
 	private Boolean isBookMarked;
@@ -69,12 +69,12 @@ public class BookDetailResponseDto {
 		if (item.getStatistics() == null) {
 			responseDto.readerCount = 0;
 			responseDto.meanScore = 0.0F;
-			responseDto.meanReadTime = 0;
+			responseDto.meanReadTime = 0.0F;
 		} else {
 			BookStatisticsEntity statistics = item.getStatistics();
 			responseDto.readerCount = statistics.getCompletedUsers();
 			responseDto.meanScore = statistics.getMeanScore();
-			responseDto.meanReadTime = statistics.getMeanReadTime();
+			responseDto.meanReadTime = (float) (Math.round((statistics.getMeanReadTime() / 3600.0 * 10.0)) / 10.0);
 		}
 		return responseDto;
 	}
