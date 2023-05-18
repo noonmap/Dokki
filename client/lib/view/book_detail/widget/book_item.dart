@@ -34,23 +34,7 @@ class BookItem extends StatefulWidget {
 
 class _BookItemState extends State<BookItem> {
   late double _sry;
-  late Timer timer;
   double rotateY = -0.6;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (widget.isPlaying) {
-      timer = Timer(Duration(seconds: 1), () {
-        setState(() {
-          rotateY += 1 * pi / 180;
-        });
-      });
-    } else {
-      timer.cancel();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
