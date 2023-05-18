@@ -35,7 +35,7 @@ public class AuthenticationFilterFactory extends AbstractGatewayFilterFactory<Au
 			log.info("[AuthorizationFilter] Request API : {} {}", exchange.getRequest().getMethod(), exchange.getRequest().getPath());
 			// Swagger-ui 요청 시 그냥 반환
 			String[] uriPath = exchange.getRequest().getPath().toString().split("/");
-			if (uriPath.length > 4 && uriPath[2].equals("swagger-ui") && uriPath[3].startsWith("index.html")) {
+			if (uriPath.length >= 4 && uriPath[2].equals("swagger-ui") && uriPath[3].startsWith("index.html")) {
 				return chain.filter(exchange);
 			}
 
