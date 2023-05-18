@@ -35,7 +35,7 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
 
   contentBox(BuildContext context) {
     return Container(
-      height: 215,
+      height: 231,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
         color: grayColor000,
@@ -43,51 +43,35 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
             child: Text(
               widget.question,
               style: TextStyle(
                 color: grayColor600,
-                fontSize: 17,
+                fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: brandColor300,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+          const SizedBox(height: 25),
+          SizedBox(
+            width: 180,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Ionicons.restaurant,
-                      color: brandColor100,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      "휴식 횟수",
-                      style: TextStyle(
-                        color: brandColor100,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  ],
+                const Icon(
+                  Ionicons.book_outline,
+                  color: brandColor300,
+                  size: 28,
                 ),
                 Text(
-                  "${widget.restTime > 0 ? widget.restTime - 1 : widget.restTime}번",
-                  style: TextStyle(
-                    color: brandColor100,
-                    fontSize: 16,
+                  "${widget.restTime}회",
+                  style: const TextStyle(
+                    color: brandColor300,
+                    fontSize: 22,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -95,80 +79,76 @@ class _TimerPageAlertDialogState extends State<TimerPageAlertDialog> {
             ),
           ),
           const SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: brandColor300,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+          SizedBox(
+            width: 180,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Ionicons.time,
-                      color: brandColor100,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      "읽은 시간",
-                      style: TextStyle(
-                        color: brandColor100,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  ],
+                const Icon(
+                  Ionicons.time_outline,
+                  color: brandColor300,
+                  size: 32,
                 ),
                 Text(
-                  "${Utils.secondTimeToFormatString(widget.accumReadTime)}",
-                  style: TextStyle(
-                    color: brandColor100,
-                    fontSize: 16,
+                  Utils.secondTimeToFormatString(widget.accumReadTime),
+                  style: const TextStyle(
+                    color: brandColor300,
+                    fontSize: 22,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   widget.onPressedOKFunction();
                 },
-                child: Text("확인"),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return brandColor300;
-                      }
-                      return brandColor300;
-                    },
+                child: Container(
+                  width: 90,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: brandColor300,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "확인",
+                    style: TextStyle(
+                      color: brandColor100,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(
-                width: 20,
+              const SizedBox(
+                width: 12,
               ),
-              ElevatedButton(
-                onPressed: () {
+              TextButton(
+                onPressed: () async {
                   Navigator.pop(context);
                 },
-                child: Text("취소"),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return brandColor300;
-                      }
-                      return brandColor300;
-                    },
+                child: Container(
+                  width: 90,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: brandColor300,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "취소",
+                    style: TextStyle(
+                      color: brandColor100,
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),

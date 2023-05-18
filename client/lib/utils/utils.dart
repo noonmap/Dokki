@@ -30,7 +30,10 @@ class Utils {
     await storage.write(
         key: "profileImageUrl",
         value: response.data["userDto"]["profileImageUrl"]);
-    Navigator.popAndPushNamed(context, RoutesName.main);
+    final userId = await storage.read(key: "userId");
+    final nickname = await storage.read(key: "nickname");
+    Navigator.popAndPushNamed(context, RoutesName.main,
+        arguments: {"userId": userId, "nickname": nickname});
   }
 
   static String secondTimeToFormatString(int second) {

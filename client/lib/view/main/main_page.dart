@@ -7,50 +7,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final String userId;
+  final String nickname;
+  const MainPage({Key? key, required this.userId, required this.nickname})
+      : super(key: key);
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  final storage = const FlutterSecureStorage();
-  late String userId, nickname;
-
   List pages = [
-    const HomePage(userId: ''),
-    const SearchBookPage(userId: ''),
-    const LibraryPage(userId: '', nickname: ''),
-    const ProfilePage(userId: ''),
+    HomePage(userId: ""),
+    SearchBookPage(userId: ""),
+    LibraryPage(userId: "", nickname: ""),
+    ProfilePage(userId: ""),
   ];
 
   int currentIndex = 0;
   void onTap(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
-
-  void getUserIdFromStorage() async {
-    String? tmpId = await storage.read(key: "userId");
-    String? tmpName = await storage.read(key: 'nickname');
-    if (tmpId != null && tmpName != null) {
-      setState(() {
-        userId = tmpId;
-        nickname = tmpName;
-
-        pages[0] = HomePage(userId: userId);
-        pages[1] = SearchBookPage(userId: userId);
-        pages[2] = LibraryPage(userId: userId, nickname: nickname);
-        pages[3] = ProfilePage(userId: userId);
-      });
-    }
+    setState(
+      () {
+        currentIndex = index;
+      },
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    getUserIdFromStorage();
+    pages[0] = HomePage(userId: widget.userId);
+    pages[1] = SearchBookPage(userId: widget.userId);
+    pages[2] = LibraryPage(
+      userId: widget.userId,
+      nickname: widget.nickname,
+    );
+    pages[3] = ProfilePage(userId: widget.userId);
   }
 
   @override

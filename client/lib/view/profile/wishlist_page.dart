@@ -76,10 +76,10 @@ class _WishlistPageState extends State<WishlistPage> {
     final up = Provider.of<UserProvider>(context);
 
     return Scaffold(
-      backgroundColor: brandColor100,
+      backgroundColor: brandColor000,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: brandColor100,
+        backgroundColor: brandColor000,
         foregroundColor: grayColor600,
         centerTitle: true,
         title: Column(

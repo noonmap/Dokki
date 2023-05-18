@@ -78,7 +78,13 @@ class _DetailAppBarState extends State<DetailAppBar> {
                 icon: const Icon(Icons.add),
                 color: brandColor300,
               )
-            : SizedBox(),
+            : IconButton(
+                onPressed: () {},
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: const Icon(Icons.delete_forever_rounded),
+                color: brandColor300,
+              ),
         IconButton(
           onPressed: () {
             if (widget.isBookMarked) {

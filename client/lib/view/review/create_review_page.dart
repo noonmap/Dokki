@@ -55,7 +55,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
         backgroundColor: brandColor100,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "리뷰 작성",
             style: TextStyle(
               color: grayColor600,
@@ -63,13 +63,13 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
           ),
           backgroundColor: brandColor100,
           elevation: 0,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: grayColor600,
           ),
         ),
-        body: InkWell(
+        body: GestureDetector(
           onTap: () {
-            FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Container(
             width: MediaQuery.of(context).size.width,

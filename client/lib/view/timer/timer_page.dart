@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
@@ -54,15 +55,45 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("aa");
     final clientWidth = MediaQuery.of(context).size.width;
     final clientHeight = MediaQuery.of(context).size.height;
-    final tp = Provider.of<TimerProvider>(context);
-    return Scaffold(
-      backgroundColor: brandColor200,
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: true,
-        leading: IconButton(
+    final tp = Provider.of<TimerProvider>(context, listen: false);
+    return WillPopScope(
+      onWillPop: () async {
+        if (tp.currentTime == 0) {
+          Navigator.pop(context);
+        } else {
+          if (tp.timerPlaying) {
+            tp.pause(widget.bookStatusId);
+            await _audioPlayer.pause();
+            _controller.animateTo(_controller.position.maxScrollExtent + 100,
+                duration: const Duration(seconds: 1), curve: Curves.ease);
+          }
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return TimerPageAlertDialog(
+                restTime: tp.timerList.length,
+                question: "타이머를 종료합니다.",
+                onPressedOKFunction: () {
+                  tp.exit();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                accumReadTime: tp.currentTime,
+              );
+            },
+          );
+        }
+        return Future(() => false);
+      },
+      child: Scaffold(
+        backgroundColor: brandColor200,
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: true,
+          leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
               if (tp.currentTime == 0) {
@@ -81,7 +112,7 @@ class _TimerPageState extends State<TimerPage> {
                   builder: (BuildContext context) {
                     return TimerPageAlertDialog(
                       restTime: tp.timerList.length,
-                      question: "타이머 종료",
+                      question: "타이머를 종료합니다.",
                       onPressedOKFunction: () {
                         tp.exit();
                         Navigator.pop(context);
@@ -92,229 +123,212 @@ class _TimerPageState extends State<TimerPage> {
                   },
                 );
               }
-            }),
-        backgroundColor: brandColor200,
-        foregroundColor: grayColor600,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    bookId: widget.bookId,
-                    title: widget.bookTitle,
-                    accumReadTime: widget.accumReadTime + tp.currentTime,
-                    bookStatusId: widget.bookStatusId,
-                  );
-                },
-              );
             },
-            icon: Icon(Ionicons.book_outline),
-            iconSize: 24,
           ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          Container(
-            width: clientWidth,
-            height: clientHeight * 0.8,
-            margin: EdgeInsets.only(top: clientHeight * 0.2),
-            decoration: const BoxDecoration(
-              color: brandColor100,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(36.0),
-                topLeft: Radius.circular(36.0),
+          backgroundColor: brandColor200,
+          foregroundColor: grayColor600,
+        ),
+        body: Stack(
+          children: [
+            Container(
+              width: clientWidth,
+              height: clientHeight * 0.8,
+              margin: EdgeInsets.only(top: clientHeight * 0.2),
+              decoration: const BoxDecoration(
+                color: brandColor100,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(36.0),
+                  topLeft: Radius.circular(36.0),
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 100, 16, 10),
-              child: Column(
-                children: [
-                  Consumer<TimerProvider>(
-                    builder: (context, provider, child) {
-                      final time = provider.currentTime;
-                      return Text(
-                        Utils.secondTimeToFormatString(time),
-                        style: const TextStyle(
-                          fontSize: 55,
-                          fontWeight: FontWeight.w400,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 70, 16, 10),
+                child: Consumer<TimerProvider>(
+                  builder: (context, provider, child) {
+                    final time = provider.currentTime;
+                    return Column(
+                      children: [
+                        Text(
+                          Utils.secondTimeToFormatString(time),
+                          style: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 4),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 10,
-                      ),
-                      child: ListView.separated(
-                        controller: _controller,
-                        itemCount: tp.timerList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
+                        const SizedBox(height: 4),
+                        Expanded(
+                          child: Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: brandColor000,
-                              borderRadius: BorderRadius.circular(40.0),
+                              vertical: 10,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
+                            child: ListView.separated(
+                              controller: _controller,
+                              itemCount: provider.timerList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 30, vertical: 10),
                                   decoration: BoxDecoration(
-                                    color: brandColor300,
-                                    borderRadius: BorderRadius.circular(40.0),
+                                    color: brandColor000,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: brandColor200,
+                                          borderRadius:
+                                              BorderRadius.circular(40.0),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${index + 1}",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: brandColor300,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        Utils.secondTimeToFormatString(
+                                          provider.timerList[index],
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const SizedBox(
+                                  height: 12,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 70,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                child: Container(
+                                  width: clientWidth / 2 - 24,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    color: brandColor200,
+                                    borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   alignment: Alignment.center,
+                                  child: provider.timerPlaying
+                                      ? const Icon(
+                                          Icons.pause,
+                                          color: brandColor300,
+                                          size: 32,
+                                        )
+                                      : const Icon(
+                                          Icons.play_arrow,
+                                          color: brandColor300,
+                                          size: 32,
+                                        ),
+                                ),
+                                onTap: () async {
+                                  if (provider.timerPlaying) {
+                                    // 종료
+                                    provider.pause(widget.bookStatusId);
+
+                                    await _audioPlayer.pause();
+
+                                    _controller.animateTo(
+                                        _controller.position.maxScrollExtent +
+                                            100,
+                                        duration: const Duration(seconds: 1),
+                                        curve: Curves.ease);
+                                  } else {
+                                    provider.start(widget.bookStatusId);
+                                    await _audioPlayer.resume();
+                                  }
+                                },
+                              ),
+                              InkWell(
+                                child: Container(
+                                  width: clientWidth / 2 - 24,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    color: brandColor300,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                   child: Text(
-                                    "${index + 1}",
+                                    "COMPLETE",
                                     style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color: brandColor100,
                                     ),
                                   ),
+                                  alignment: Alignment.center,
                                 ),
-                                Text(
-                                  Utils.secondTimeToFormatString2(
-                                    tp.timerList[index],
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(
-                            height: 12,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 70,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          child: Container(
-                            width: clientWidth / 2 - 24,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: brandColor200,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            alignment: Alignment.center,
-                            child: tp.timerPlaying
-                                ? const Text(
-                                    "PAUSE",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: brandColor400,
-                                    ),
-                                  )
-                                : const Text(
-                                    "START",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: brandColor300,
-                                    ),
-                                  ),
+                                onTap: () async {
+                                  if (provider.timerPlaying) {
+                                    provider.pause(widget.bookStatusId);
+                                    await _audioPlayer.pause();
+                                    _controller.animateTo(
+                                        _controller.position.maxScrollExtent +
+                                            100,
+                                        duration: const Duration(seconds: 1),
+                                        curve: Curves.ease);
+                                  }
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CustomDialogBox(
+                                        bookId: widget.bookId,
+                                        title: widget.bookTitle,
+                                        accumReadTime: widget.accumReadTime +
+                                            provider.currentTime,
+                                        bookStatusId: widget.bookStatusId,
+                                      );
+                                    },
+                                  );
+                                },
+                              )
+                            ],
                           ),
-                          onTap: () async {
-                            if (tp.timerPlaying) {
-                              // 종료
-                              tp.pause(widget.bookStatusId);
-
-                              await _audioPlayer.pause();
-
-                              _controller.animateTo(
-                                  _controller.position.maxScrollExtent + 100,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.ease);
-                            } else {
-                              tp.start(widget.bookStatusId);
-                              await _audioPlayer.resume();
-                            }
-                          },
-                        ),
-                        InkWell(
-                          child: Container(
-                            width: clientWidth / 2 - 24,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: brandColor300,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Text(
-                              "EXIT",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: brandColor100,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                          ),
-                          onTap: () async {
-                            if (tp.timerPlaying) {
-                              tp.pause(widget.bookStatusId);
-                              await _audioPlayer.pause();
-                              _controller.animateTo(
-                                  _controller.position.maxScrollExtent + 100,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.ease);
-                            }
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return TimerPageAlertDialog(
-                                  restTime: tp.timerList.length,
-                                  question: "타이머 종료",
-                                  onPressedOKFunction: () {
-                                    tp.exit();
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  accumReadTime: tp.currentTime,
-                                );
-                              },
-                            );
-                          },
                         )
                       ],
-                    ),
-                  )
-                ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          Container(
-            height: clientHeight * 0.28,
-            child: BookItem(
-              imagePath: widget.bookCoverPath,
-              backImagePath: widget.bookCoverBackImagePath,
-              sideImagePath: widget.bookCoverSideImagePath,
-              width: clientWidth / 2.5,
-              height: clientWidth / 2,
-              isDetail: true,
-              depth: 50,
+            Container(
+              height: clientHeight * 0.28,
+              child: BookItem(
+                imagePath: widget.bookCoverPath,
+                backImagePath: widget.bookCoverBackImagePath,
+                sideImagePath: widget.bookCoverSideImagePath,
+                width: clientWidth / 2.5,
+                height: clientWidth / 2,
+                isDetail: true,
+                depth: 50,
+                isPlaying: context.watch<TimerProvider>().timerPlaying,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

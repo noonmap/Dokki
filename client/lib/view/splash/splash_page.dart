@@ -17,8 +17,13 @@ class _SplashPageState extends State<SplashPage> {
   _asyncLoginCheck() async {
     final accessToken = await storage.read(key: "ACCESS_TOKEN");
     final refreshToken = await storage.read(key: "REFRESH_TOKEN");
+    final userId = await storage.read(key: "userId");
+    final nickname = await storage.read(key: "nickname");
 
-    if (accessToken == null || refreshToken == null) {
+    if (accessToken == null ||
+        refreshToken == null ||
+        userId == null ||
+        nickname == null) {
       // 로그인 페이지로
       Timer(const Duration(milliseconds: 2500), () {
         Navigator.popAndPushNamed(context, RoutesName.login);
@@ -26,7 +31,8 @@ class _SplashPageState extends State<SplashPage> {
     } else {
       // 자동 로그인
       Timer(const Duration(milliseconds: 2500), () {
-        Navigator.pushReplacementNamed(context, RoutesName.main);
+        Navigator.pushReplacementNamed(context, RoutesName.main,
+            arguments: {"userId": userId, "nickname": nickname});
       });
     }
   }

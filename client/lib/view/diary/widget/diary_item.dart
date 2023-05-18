@@ -15,14 +15,12 @@ class DiaryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(diaryData);
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutesName.diaryDetail,
             arguments: {"bookId": diaryData.bookId});
       },
       child: Container(
-        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           border: Border.all(color: grayColor100),
           borderRadius: BorderRadius.circular(20),
@@ -34,42 +32,38 @@ class DiaryItem extends StatelessWidget {
               child: Image.network(
                 diaryData.diaryImagePath,
                 width: 168,
-                height: 168,
+                height: 156,
                 fit: BoxFit.cover,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Paragraph(
-                        text:
-                            DateFormat('yyyy.MM.dd').format(diaryData.created),
-                        size: 12,
-                        color: grayColor300,
+            Column(
+              children: [
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Paragraph(
+                        text: diaryData.bookTitle,
+                        weightType: WeightType.semiBold,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Paragraph(
-                          text: diaryData.bookTitle,
-                          weightType: WeightType.semiBold,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Paragraph(
+                      text: DateFormat('yyyy.MM.dd').format(diaryData.created),
+                      size: 12,
+                      color: grayColor300,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

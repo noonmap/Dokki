@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dokki/common/constant/colors.dart';
@@ -13,6 +14,7 @@ class BookItem extends StatefulWidget {
   final double width, height, depth;
   final bool isDetail;
   final int bookStatusId;
+  final bool isPlaying;
   const BookItem({
     Key? key,
     required this.width,
@@ -23,6 +25,7 @@ class BookItem extends StatefulWidget {
     required this.backImagePath,
     required this.isDetail,
     this.bookStatusId = -1,
+    this.isPlaying = false,
   }) : super(key: key);
 
   @override
@@ -31,11 +34,26 @@ class BookItem extends StatefulWidget {
 
 class _BookItemState extends State<BookItem> {
   late double _sry;
-
+  late Timer timer;
   double rotateY = -0.6;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.isPlaying) {
+      timer = Timer(Duration(seconds: 1), () {
+        setState(() {
+          rotateY += 1 * pi / 180;
+        });
+      });
+    } else {
+      timer.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tp = Provider.of<TimerProvider>(context);
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, widget.depth / -2),
       child: Container(
@@ -58,7 +76,8 @@ class _BookItemState extends State<BookItem> {
     );
 
     late final back = Transform(
-      transform: Matrix4.translationValues(0.0, 0.0, widget.depth / 2),
+      transform: Matrix4.translationValues(0.0, 0.0, widget.depth / 2)
+        ..rotateY(180 * pi / 180),
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
@@ -67,7 +86,7 @@ class _BookItemState extends State<BookItem> {
               color: grayColor200,
               blurRadius: widget.isDetail ? 4.0 : 0,
               spreadRadius: widget.isDetail ? 1.0 : 0,
-              offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
+              offset: widget.isDetail ? const Offset(0, 4) : const Offset(0, 0),
             ),
           ],
         ),

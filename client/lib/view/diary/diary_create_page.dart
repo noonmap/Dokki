@@ -165,9 +165,9 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
     return Scaffold(
       body: (isEdit && dp.isDetailLoading)
           ? const OpacityLoading()
-          : InkWell(
+          : GestureDetector(
               onTap: () {
-                FocusScope.of(context).unfocus();
+                FocusManager.instance.primaryFocus?.unfocus();
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(28, 40, 28, 40),

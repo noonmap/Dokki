@@ -76,10 +76,10 @@ class _DiaryPageState extends State<DiaryPage> {
   Widget build(BuildContext context) {
     final dp = Provider.of<DiaryProvider>(context);
     return Scaffold(
-      backgroundColor: brandColor100,
+      backgroundColor: brandColor000,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: brandColor100,
+        backgroundColor: brandColor000,
         foregroundColor: grayColor600,
         centerTitle: true,
         title: const Paragraph(

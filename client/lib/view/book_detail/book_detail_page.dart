@@ -54,7 +54,7 @@ class _BookDetailPageState extends State<BookDetailPage>
     final bp = Provider.of<BookProvider>(context, listen: true);
     if (bp.book == null) {
       return Scaffold(
-        backgroundColor: brandColor100,
+        backgroundColor: brandColor200,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,

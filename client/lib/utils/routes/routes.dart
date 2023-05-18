@@ -24,8 +24,14 @@ class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutesName.main:
+        Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+
         return MaterialPageRoute(
-            builder: (BuildContext context) => const MainPage());
+          builder: (BuildContext context) => MainPage(
+            nickname: args["nickname"],
+            userId: args["userId"],
+          ),
+        );
 
       case RoutesName.home:
         Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
