@@ -109,8 +109,8 @@ public class BookService {
 	 * @param bookIdList 책 id 리스트
 	 * @return
 	 */
-	public List<BookEntity> getBookListByIdIn(List<String> bookIdList) {
-		return bookRepository.findByIdIn(bookIdList);
+	public List<BookEntity> getBookListByIdInOrderByIdList(List<String> bookIdList) {
+		return bookRepository.findByIdInOrderByIdList(bookIdList);
 	}
 
 
