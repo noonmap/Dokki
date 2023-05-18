@@ -2,7 +2,8 @@ package com.dokki.timer.redis;
 
 
 import com.dokki.timer.config.exception.CustomException;
-import com.dokki.timer.repository.RunTimerRedisRepository;
+import com.dokki.timer.redis.dto.RunTimerRedisDto;
+import com.dokki.timer.redis.repository.RunTimerRedisRepository;
 import com.dokki.util.common.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -29,5 +29,5 @@ public class DailyStatisticsEntity {
 	private Integer accumTime;
 	@Column(nullable = false)
 	private LocalDate recordDate;
-	
+
 }
