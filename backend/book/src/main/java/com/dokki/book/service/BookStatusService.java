@@ -117,6 +117,25 @@ public class BookStatusService {
 
 
 	/**
+	 * 도서 상태 삭제 (책 id로)
+	 */
+	@Transactional
+	public void deleteStatusByUserIdAndBookId(Long userId, String bookId) {
+		BookStatusEntity bookStatusEntity = getStatusByUserIdAndBookId(userId, bookId);
+
+		if (bookStatusEntity == null) {
+			throw new CustomException(ErrorCode.INVALID_REQUEST);
+		}
+
+		if (STATUS_IN_PROGRESS.equals(bookStatusEntity.getStatus())) {
+			bookTimerService.deleteBookTimer(bookStatusEntity);
+		} else {
+			deleteCollection(userId, bookStatusEntity);
+		}
+	}
+
+
+	/**
 	 * 도서 상태 변경
 	 * ⇒ 완독(컬렉션) → 진행중(타이머)
 	 */
