@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:dokki/common/constant/colors.dart';
@@ -7,14 +6,14 @@ import 'package:dokki/providers/timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BookItem extends StatefulWidget {
+class TimerRotateBookTimer extends StatefulWidget {
   final String imagePath;
   final String sideImagePath;
   final String backImagePath;
-  final double width, height, depth;
+  final double width, height, depth, rotateValue;
   final bool isDetail;
   final int bookStatusId;
-  const BookItem({
+  const TimerRotateBookTimer({
     Key? key,
     required this.width,
     required this.height,
@@ -24,16 +23,14 @@ class BookItem extends StatefulWidget {
     required this.backImagePath,
     required this.isDetail,
     this.bookStatusId = -1,
+    required this.rotateValue,
   }) : super(key: key);
 
   @override
-  State<BookItem> createState() => _BookItemState();
+  State<TimerRotateBookTimer> createState() => _TimerRotateBookTimerState();
 }
 
-class _BookItemState extends State<BookItem> {
-  late double _sry;
-  double rotateY = -0.6;
-
+class _TimerRotateBookTimerState extends State<TimerRotateBookTimer> {
   @override
   void initState() {
     super.initState();
@@ -41,6 +38,7 @@ class _BookItemState extends State<BookItem> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.rotateValue);
     late final front = Transform(
       transform: Matrix4.translationValues(0.0, 0.0, widget.depth / -2),
       child: Container(
@@ -90,77 +88,73 @@ class _BookItemState extends State<BookItem> {
     late final bottom = _buildSide(side: 2);
     late final port = _buildSide(side: 3);
     List<Widget> children = [bottom];
-    if (rotateY >= 0) {
-      if (rotateY < pi / 4) {
+    if (widget.rotateValue >= 0) {
+      if (widget.rotateValue < pi / 4) {
+        print("1");
         children = [starboard, front];
-      } else if (rotateY < pi / 2) {
+      } else if (widget.rotateValue < pi / 2) {
+        print("2");
         children = [front, starboard];
-      } else if (rotateY < 3 * pi / 4) {
+      } else if (widget.rotateValue < 3 * pi / 4) {
+        print("3");
         children = [back, starboard];
-      } else if (rotateY < pi) {
+      } else if (widget.rotateValue < pi) {
+        print("4");
         children = [starboard, back];
-      } else if (rotateY < 5 * pi / 4) {
+      } else if (widget.rotateValue < 5 * pi / 4) {
+        print("5");
         children = [port, back];
-      } else if (rotateY < 3 * pi / 2) {
+      } else if (widget.rotateValue < 3 * pi / 2) {
+        print("6");
         children = [back, port];
-      } else if (rotateY < 7 * pi / 4) {
+      } else if (widget.rotateValue < 7 * pi / 4) {
+        print("7");
         children = [front, port];
       } else {
+        print("8");
         children = [port, front];
       }
     } else {
-      if (rotateY > pi / 4 * -1) {
+      if (widget.rotateValue > pi / 4 * -1) {
         children = [port, front];
-      } else if (rotateY > pi / 2 * -1) {
+      } else if (widget.rotateValue > pi / 2 * -1) {
         children = [front, port];
-      } else if (rotateY > 3 * pi / 4 * -1) {
+      } else if (widget.rotateValue > 3 * pi / 4 * -1) {
         children = [back, port];
-      } else if (rotateY > -pi) {
+      } else if (widget.rotateValue > -pi) {
         children = [port, back];
-      } else if (rotateY > 5 * pi / 4 * -1) {
+      } else if (widget.rotateValue > 5 * pi / 4 * -1) {
         children = [starboard, back];
-      } else if (rotateY > 3 * pi / 2 * -1) {
+      } else if (widget.rotateValue > 3 * pi / 2 * -1) {
         children = [back, starboard];
-      } else if (rotateY > 7 * pi / 4 * -1) {
+      } else if (widget.rotateValue > 7 * pi / 4 * -1) {
         children = [front, starboard];
       } else {
         children = [starboard, front];
       }
     }
-    return GestureDetector(
-      onHorizontalDragStart: (e) {
-        setState(() {
-          _sry = e.localPosition.dx;
-        });
-      },
-      onHorizontalDragUpdate: (e) {
-        setState(() {
-          rotateY = (e.localPosition.dx - _sry) * -0.0174533;
-        });
-      },
-      child: Container(
-        width: double.infinity,
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..rotateX(-0.02)
+          ..rotateY(widget.rotateValue),
         alignment: Alignment.center,
-        decoration: const BoxDecoration(color: Colors.transparent),
-        child: Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateX(-0.02)
-            ..rotateY(rotateY),
-          alignment: Alignment.center,
-          child: Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: grayColor200,
-                    blurRadius: widget.isDetail ? 4.0 : 0,
-                    spreadRadius: widget.isDetail ? 1.0 : 0,
-                    offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Stack(children: children)),
-        ),
+        child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: grayColor200,
+                  blurRadius: widget.isDetail ? 4.0 : 0,
+                  spreadRadius: widget.isDetail ? 1.0 : 0,
+                  offset: widget.isDetail ? Offset(0, 4) : Offset(0, 0),
+                ),
+              ],
+            ),
+            child: Stack(children: children)),
       ),
     );
   }

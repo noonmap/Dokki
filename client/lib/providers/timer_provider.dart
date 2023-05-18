@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dokki/data/repository/timer_repository.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 class TimerProvider extends ChangeNotifier {
   final TimerRepository _timerRepository = TimerRepository();
   Timer? _timer;
+  Timer? _rotateTimer;
+  double rotateValue = 0.0;
   int currentTime = 0;
   int resumeTime = 0;
   int tempTime = 0;
@@ -20,6 +23,19 @@ class TimerProvider extends ChangeNotifier {
       currentTime++;
       notifyListeners();
     });
+  }
+
+  void rotateStart() {
+    _rotateTimer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+      if (rotateValue > 360 * pi / 180) rotateValue = 0.0;
+      rotateValue += 1 * pi / 180;
+      notifyListeners();
+    });
+  }
+
+  void rotatePause() {
+    _rotateTimer?.cancel();
+    notifyListeners();
   }
 
   void pause(int bookStatusId) async {
@@ -41,6 +57,7 @@ class TimerProvider extends ChangeNotifier {
   void initTimer() {
     _timer?.cancel();
     currentTime = 0;
+    rotateValue = 0.0;
     tempTime = 0;
     resumeTime = 0;
     timerList = [];

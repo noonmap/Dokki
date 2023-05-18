@@ -1,13 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dokki/common/constant/colors.dart';
-import 'package:dokki/providers/book_provider.dart';
 import 'package:dokki/providers/timer_provider.dart';
 import 'package:dokki/utils/utils.dart';
 import 'package:dokki/view/book_detail/widget/book_item.dart';
 import 'package:dokki/view/timer/widget/alert_dialog.dart';
 import 'package:dokki/view/timer/widget/dialog.dart';
+import 'package:dokki/view/timer/widget/timer_rotate_book_item.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 
 class TimerPage extends StatefulWidget {
@@ -34,7 +33,7 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  late AudioPlayer _audioPlayer;
+  final audioPlayer = AudioPlayer();
   late ScrollController _controller;
 
   @override
@@ -46,16 +45,21 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void initState() {
     super.initState();
+    setAudio();
     _controller = ScrollController();
-    _audioPlayer = AudioPlayer()
-      ..setReleaseMode(ReleaseMode.loop)
-      ..setSourceAsset("mp3/rain.mp3");
     context.read<TimerProvider>().initTimer();
+  }
+
+  Future setAudio() async {
+    audioPlayer.setReleaseMode(ReleaseMode.loop);
+
+    final player = AudioCache(prefix: "assets/mp3/");
+    final url = await player.load('rain.mp3');
+    audioPlayer.setSourceUrl(url.path);
   }
 
   @override
   Widget build(BuildContext context) {
-    print("aa");
     final clientWidth = MediaQuery.of(context).size.width;
     final clientHeight = MediaQuery.of(context).size.height;
     final tp = Provider.of<TimerProvider>(context);
@@ -66,7 +70,7 @@ class _TimerPageState extends State<TimerPage> {
         } else {
           if (tp.timerPlaying) {
             tp.pause(widget.bookStatusId);
-            await _audioPlayer.pause();
+            audioPlayer.pause();
             _controller.animateTo(_controller.position.maxScrollExtent + 100,
                 duration: const Duration(seconds: 1), curve: Curves.ease);
           }
@@ -101,7 +105,8 @@ class _TimerPageState extends State<TimerPage> {
               } else {
                 if (tp.timerPlaying) {
                   tp.pause(widget.bookStatusId);
-                  await _audioPlayer.pause();
+                  audioPlayer.pause();
+
                   _controller.animateTo(
                       _controller.position.maxScrollExtent + 100,
                       duration: const Duration(seconds: 1),
@@ -249,8 +254,9 @@ class _TimerPageState extends State<TimerPage> {
                                   if (provider.timerPlaying) {
                                     // 종료
                                     provider.pause(widget.bookStatusId);
+                                    provider.rotatePause();
 
-                                    await _audioPlayer.pause();
+                                    audioPlayer.pause();
 
                                     _controller.animateTo(
                                         _controller.position.maxScrollExtent +
@@ -259,7 +265,8 @@ class _TimerPageState extends State<TimerPage> {
                                         curve: Curves.ease);
                                   } else {
                                     provider.start(widget.bookStatusId);
-                                    await _audioPlayer.resume();
+                                    provider.rotateStart();
+                                    audioPlayer.resume();
                                   }
                                 },
                               ),
@@ -284,7 +291,8 @@ class _TimerPageState extends State<TimerPage> {
                                 onTap: () async {
                                   if (provider.timerPlaying) {
                                     provider.pause(widget.bookStatusId);
-                                    await _audioPlayer.pause();
+                                    audioPlayer.pause();
+
                                     _controller.animateTo(
                                         _controller.position.maxScrollExtent +
                                             100,
@@ -316,7 +324,7 @@ class _TimerPageState extends State<TimerPage> {
             ),
             Container(
               height: clientHeight * 0.28,
-              child: BookItem(
+              child: TimerRotateBookTimer(
                 imagePath: widget.bookCoverPath,
                 backImagePath: widget.bookCoverBackImagePath,
                 sideImagePath: widget.bookCoverSideImagePath,
@@ -324,7 +332,7 @@ class _TimerPageState extends State<TimerPage> {
                 height: clientWidth / 2,
                 isDetail: true,
                 depth: 50,
-                isPlaying: tp.timerPlaying,
+                rotateValue: tp.rotateValue,
               ),
             ),
           ],
