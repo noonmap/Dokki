@@ -58,7 +58,7 @@ class _TimerPageState extends State<TimerPage> {
     print("aa");
     final clientWidth = MediaQuery.of(context).size.width;
     final clientHeight = MediaQuery.of(context).size.height;
-    final tp = Provider.of<TimerProvider>(context, listen: false);
+    final tp = Provider.of<TimerProvider>(context);
     return WillPopScope(
       onWillPop: () async {
         if (tp.currentTime == 0) {
@@ -324,7 +324,7 @@ class _TimerPageState extends State<TimerPage> {
                 height: clientWidth / 2,
                 isDetail: true,
                 depth: 50,
-                isPlaying: context.watch<TimerProvider>().timerPlaying,
+                isPlaying: tp.timerPlaying,
               ),
             ),
           ],
@@ -334,32 +334,32 @@ class _TimerPageState extends State<TimerPage> {
   }
 }
 
-class BackgroundPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Colors.white.withOpacity(0.1);
-    final path = Path();
-
-    path.moveTo(0, 0);
-    path.lineTo(size.width * 0.25, 0);
-    path.lineTo(0, size.height * 0.5);
-    path.close();
-
-    final path2 = Path();
-
-    path2.moveTo(size.width, 0);
-    path2.lineTo(size.width * 0.79, 0);
-    path2.lineTo(size.width * 0.5, size.height);
-    path2.lineTo(size.width, size.height);
-    path2.close();
-
-    canvas.drawPath(path, paint);
-    canvas.drawPath(path2, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    return false;
-  }
-}
+// class BackgroundPainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint paint = Paint()..color = Colors.white.withOpacity(0.1);
+//     final path = Path();
+//
+//     path.moveTo(0, 0);
+//     path.lineTo(size.width * 0.25, 0);
+//     path.lineTo(0, size.height * 0.5);
+//     path.close();
+//
+//     final path2 = Path();
+//
+//     path2.moveTo(size.width, 0);
+//     path2.lineTo(size.width * 0.79, 0);
+//     path2.lineTo(size.width * 0.5, size.height);
+//     path2.lineTo(size.width, size.height);
+//     path2.close();
+//
+//     canvas.drawPath(path, paint);
+//     canvas.drawPath(path2, paint);
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+//     // TODO: implement shouldRepaint
+//     return false;
+//   }
+// }

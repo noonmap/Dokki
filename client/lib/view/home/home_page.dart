@@ -107,7 +107,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ListView.separated(
                                 itemBuilder: (_, index) {
                                   final item = sbp.readingBookList[index];
-                                  return ReadingBookItem.fromModel(model: item);
+                                  return ReadingBookItem.fromModel(
+                                    model: item,
+                                    userId: widget.userId,
+                                  );
                                 },
                                 separatorBuilder: (_, index) {
                                   return const SizedBox(height: 8.0);

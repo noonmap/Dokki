@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReadingBookItem extends StatelessWidget {
+  final String userId;
   final String bookId;
   final int bookStatusId;
   final String bookTitle;
@@ -25,10 +26,13 @@ class ReadingBookItem extends StatelessWidget {
     required this.bookCoverBackImagePath,
     required this.bookCoverSideImagePath,
     required this.bookId,
+    required this.userId,
   }) : super(key: key);
 
-  factory ReadingBookItem.fromModel({required BookTimerModel model}) {
+  factory ReadingBookItem.fromModel(
+      {required BookTimerModel model, required String userId}) {
     return ReadingBookItem(
+      userId: userId,
       bookStatusId: model.bookStatusId,
       bookTitle: model.bookTitle,
       accumReadTime: model.accumReadTime,
