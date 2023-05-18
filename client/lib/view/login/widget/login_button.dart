@@ -25,7 +25,7 @@ class LoginButton extends StatelessWidget {
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
             dynamic response = await dio.get(
-                "https://dokki.kr/users/login/oauth2/kakao",
+                "https://k8e2041.p.ssafy.io/users/login/oauth2/kakao",
                 queryParameters: {"token": token.accessToken});
             Utils.setLoginStorage(response, context);
           } catch (error) {
@@ -41,7 +41,7 @@ class LoginButton extends StatelessWidget {
             try {
               OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
               dynamic response = await dio.get(
-                  "https://dokki.kr/users/login/oauth2/kakao",
+                  "https://k8e2041.p.ssafy.io/users/login/oauth2/kakao",
                   queryParameters: {"token": token.accessToken});
               Utils.setLoginStorage(response, context);
 
@@ -54,7 +54,7 @@ class LoginButton extends StatelessWidget {
           try {
             OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
             dynamic response = await dio.get(
-                "https://dokki.kr/users/login/oauth2/kakao",
+                "https://k8e2041.p.ssafy.io/users/login/oauth2/kakao",
                 queryParameters: {"token": token.accessToken});
             Utils.setLoginStorage(response, context);
           } catch (error) {

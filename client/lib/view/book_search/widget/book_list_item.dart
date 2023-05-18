@@ -1,7 +1,9 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/thumb_image.dart';
+import 'package:dokki/providers/status_book_provider.dart';
 import 'package:dokki/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BookListItem extends StatelessWidget {
   final String loginUserId;
@@ -35,7 +37,12 @@ class BookListItem extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, RoutesName.bookDetail,
-              arguments: {"bookId": bookId, "loginUserId": loginUserId});
+              arguments: {"bookId": bookId, "loginUserId": loginUserId}).then(
+            (_) {
+              context.read<StatusBookProvider>().readingBookList = [];
+              context.read<StatusBookProvider>().getReadingBookList("0", "10");
+            },
+          );
         },
         child: Container(
           decoration: const BoxDecoration(

@@ -99,6 +99,11 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
 
       if (dp.isImageError) {
         Utils.flushBarErrorMessage('요청이 너무 많습니다. 다시 시도해주세요.', context);
+        setState(() {
+          isImageLoading = false;
+          selectClicked = false;
+          createClicked = true;
+        });
         return;
       }
 

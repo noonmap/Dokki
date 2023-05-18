@@ -26,7 +26,7 @@ class TimerProvider extends ChangeNotifier {
   }
 
   void rotateStart() {
-    _rotateTimer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _rotateTimer = Timer.periodic(Duration(milliseconds: 20), (timer) {
       if (rotateValue > 360 * pi / 180) rotateValue = 0.0;
       rotateValue += 1 * pi / 180;
       notifyListeners();
