@@ -1,0 +1,22 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    always_use_package_imports: error
+    avoid_empty_else: error
+    avoid_slow_async_io: error
+    avoid_types_as_parameter_names: error
+    empty_statements: error
+    library_prefixes: error
+    directives_ordering: error
+linter:
+  rules:
+    - always_use_package_imports
+    - avoid_empty_else
+    - avoid_slow_async_io
+    - avoid_types_as_parameter_names
+    - empty_statements
+    - library_prefixes
+    - directives_ordering
+
+
