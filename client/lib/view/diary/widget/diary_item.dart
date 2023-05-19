@@ -44,21 +44,24 @@ class DiaryItem extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Paragraph(
-                  text: diaryData.bookTitle,
-                  weightType: WeightType.semiBold,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Paragraph(
-                  text: DateFormat('yyyy.MM.dd').format(diaryData.created),
-                  size: 12,
-                  color: grayColor300,
-                ),
-              ],
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Paragraph(
+                    text: diaryData.bookTitle,
+                    weightType: WeightType.semiBold,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Paragraph(
+                    text: DateFormat('yyyy.MM.dd').format(diaryData.created),
+                    size: 12,
+                    color: grayColor300,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
