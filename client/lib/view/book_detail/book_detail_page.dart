@@ -425,9 +425,9 @@ class _BookDetailPageState extends State<BookDetailPage>
                       width: clientWidth / 2.5,
                       height: clientWidth / 2,
                       isDetail: true,
-                      depth: (bp.book!.bookTotalPage / 5.5 > 100
+                      depth: (bp.book!.bookTotalPage / 9 > 100
                               ? 100
-                              : bp.book!.bookTotalPage / 5.5)
+                              : bp.book!.bookTotalPage / 9)
                           .toDouble(),
                     ),
                   ),

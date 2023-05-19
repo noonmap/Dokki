@@ -29,16 +29,18 @@ class DiaryItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Image.network(
-                width: double.infinity,
-                height: 180,
-                diaryData.bookCoverPath,
-                fit: BoxFit.fill,
+            Expanded(
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Image.network(
+                  width: double.infinity,
+                  height: 180,
+                  diaryData.diaryImagePath,
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             const SizedBox(height: 6),
