@@ -178,10 +178,9 @@ class BookRepository {
   }
 
   // DELETE : /books/status/{bookStatusId} -> 도서 상태 삭제
-  Future<void> deleteBookStatusData(int bookStatusId) async {
+  Future<void> deleteBookStatusData(String bookId) async {
     try {
-      dynamic response =
-          await _apiService.delete("/books/status/$bookStatusId");
+      dynamic response = await _apiService.delete("/books/status/$bookId");
       return response;
     } catch (e) {
       rethrow;

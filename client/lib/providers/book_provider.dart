@@ -152,10 +152,10 @@ class BookProvider extends ChangeNotifier {
   }
 
   // 도서 상태 삭제
-  Future<void> deleteBookStatus(int bookStatusId) async {
+  Future<void> deleteBookStatus(String bookId) async {
     isPostLoading = true;
     try {
-      await _bookRepository.deleteBookStatusData(bookStatusId);
+      await _bookRepository.deleteBookStatusData(bookId);
       success = "도서 상태가 삭제 되었습니다.";
     } on DioError catch (e) {
       error = "도서 상태 삭제에 실패 했습니다.";

@@ -1,6 +1,8 @@
 import 'package:dokki/common/constant/colors.dart';
 import 'package:dokki/common/widget/bottom_sheet_modal.dart';
+import 'package:dokki/providers/book_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DetailAppBar extends StatefulWidget implements PreferredSizeWidget {
   const DetailAppBar({
@@ -79,7 +81,9 @@ class _DetailAppBarState extends State<DetailAppBar> {
                 color: brandColor300,
               )
             : IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<BookProvider>().deleteBookStatus(widget.bookId);
+                },
                 constraints: const BoxConstraints(),
                 padding: EdgeInsets.zero,
                 icon: const Icon(Icons.delete_forever_rounded),
