@@ -20,6 +20,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -125,8 +126,9 @@ public class CommentService {
 		commentRepository.save(comment);
 
 		// 도서 평균 점수 반영
-		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
-		bookClient.updateAverageScore(bookId, avgScore);
+		Optional<Float> avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		if (avgScore.isPresent())
+			bookClient.updateAverageScore(bookId, avgScore.get());
 		//		log.info("[CreateComment] avgScore : {}", avgScore);
 	}
 
@@ -150,8 +152,10 @@ public class CommentService {
 
 		// 도서 평균 점수 반영
 		String bookId = comment.getBookId();
-		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
-		bookClient.updateAverageScore(bookId, avgScore);
+		// 도서 평균 점수 반영
+		Optional<Float> avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		if (avgScore.isPresent())
+			bookClient.updateAverageScore(bookId, avgScore.get());
 		//		log.info("[UpdateComment] avgScore : {}", avgScore);
 	}
 
@@ -168,13 +172,15 @@ public class CommentService {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
 
-		// 도서 평균 점수 반영
-		String bookId = comment.getBookId();
-		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
-		bookClient.updateAverageScore(bookId, avgScore);
-
 		// 삭제
 		commentRepository.deleteById(commentId);
+
+		// 도서 평균 점수 반영
+		String bookId = comment.getBookId();
+		// 도서 평균 점수 반영
+		Optional<Float> avgScore = commentRepository.findAvgScoreByBookId(bookId);
+		if (avgScore.isPresent())
+			bookClient.updateAverageScore(bookId, avgScore.get());
 	}
 
 
