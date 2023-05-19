@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
@@ -22,6 +23,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 	void deleteById(Long commentId);
 
 	@Query("select avg(c.score) from CommentEntity c where c.bookId = :bookId")
-	float findAvgScoreByBookId(@Param(value = "bookId") String bookId);
+	Optional<Float> findAvgScoreByBookId(@Param(value = "bookId") String bookId);
 
 }
