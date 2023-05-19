@@ -1,0 +1,242 @@
+import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/constant/common.dart';
+import 'package:dokki/common/widget/opacity_loading.dart';
+import 'package:dokki/common/widget/paragraph.dart';
+import 'package:dokki/common/widget/pink_box.dart';
+import 'package:dokki/providers/user_provider.dart';
+import 'package:dokki/view/profile/widget/profile_menu.dart';
+import 'package:dokki/view/profile/widget/user_bio.dart';
+import 'package:dokki/view/profile/widget/user_month_calendar.dart';
+import 'package:dokki/view/profile/widget/user_year_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class ProfilePage extends StatefulWidget {
+  final String userId;
+
+  const ProfilePage({
+    super.key,
+    required this.userId,
+  });
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String myId = '';
+  bool isMine = false;
+
+  final GlobalKey calendarKey = GlobalKey();
+  final GlobalKey chartKey = GlobalKey();
+  Map<String, GlobalKey> keys = {};
+
+  int calendarYear = DateTime.now().year;
+  int calendarMonth = DateTime.now().month;
+  int chartYear = DateTime.now().year;
+
+  void getUserInfoFromStorage() async {
+    String? tmpId = await storage.read(key: 'userId');
+
+    if (tmpId != null) {
+      setState(() {
+        myId = tmpId;
+        isMine = widget.userId == myId;
+      });
+    }
+  }
+
+  void fetchUserData() {
+    final up = Provider.of<UserProvider>(context, listen: false);
+    Future.wait([
+      up.getUserBioById(widget.userId),
+      up.getUserMonthlyCalendar(
+          userId: widget.userId, year: calendarYear, month: calendarMonth),
+      up.getUserMonthlyCount(userId: widget.userId, year: calendarYear)
+    ]).then((_) {
+      setState(() {
+        keys = {
+          'calendar': calendarKey,
+          'chart': chartKey,
+        };
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfoFromStorage();
+    fetchUserData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final up = Provider.of<UserProvider>(context);
+
+    void onCalendarArrowTap(String direction) {
+      setState(() {
+        if (direction == 'left') {
+          if (calendarMonth == 1) {
+            calendarYear -= 1;
+            calendarMonth = 12;
+          } else {
+            calendarMonth -= 1;
+          }
+        } else if (direction == 'right') {
+          if (!(calendarMonth == DateTime.now().month &&
+              calendarYear == DateTime.now().year)) {
+            if (calendarMonth == 12) {
+              calendarYear += 1;
+              calendarMonth = 1;
+            } else {
+              calendarMonth += 1;
+            }
+          }
+        }
+      });
+    }
+
+    void onChartArrowTap(String direction) {
+      setState(() {
+        if (direction == 'left') {
+          chartYear -= 1;
+        } else if (direction == 'right' && chartYear < DateTime.now().year) {
+          chartYear += 1;
+        }
+      });
+    }
+
+    return Scaffold(
+      body: up.isLoading || up.isLoading2 || up.isLoading3 || up.userBio == null
+          ? const OpacityLoading()
+          : SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(28, 48, 28, 48),
+              child: Column(
+                children: [
+                  // 바이오
+                  userBio(
+                    up: up,
+                    userId: widget.userId,
+                    isMine: isMine,
+                  ),
+                  const SizedBox(height: 48),
+                  // 메뉴
+                  ProfileMenu(
+                      userId: widget.userId,
+                      nickname: up.userBio!.nickname,
+                      isMine: isMine,
+                      keys: keys),
+                  const SizedBox(height: 48),
+                  // 독서 달력
+                  PinkBox(
+                    key: calendarKey,
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Paragraph(
+                          text: '독서 달력',
+                          size: 20,
+                          weightType: WeightType.semiBold,
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => onCalendarArrowTap('left'),
+                              child: const Icon(
+                                Icons.arrow_back_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Paragraph(
+                                  text: '$calendarYear',
+                                  size: 14,
+                                  color: grayColor300,
+                                  weightType: WeightType.medium,
+                                ),
+                                Paragraph(
+                                  text: '$calendarMonth월',
+                                  size: 20,
+                                  weightType: WeightType.semiBold,
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => onCalendarArrowTap('right'),
+                              child: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        UserMonthCalendar(
+                          up: up,
+                          userId: widget.userId,
+                          year: calendarYear,
+                          month: calendarMonth,
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                  // 한 해 기록
+                  PinkBox(
+                    key: chartKey,
+                    width: double.infinity,
+                    height: 360.toDouble(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Paragraph(
+                          text: '한 해 기록',
+                          size: 20,
+                          weightType: WeightType.semiBold,
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () => onChartArrowTap('left'),
+                              child: const Icon(
+                                Icons.arrow_back_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                            Paragraph(
+                              text: '$chartYear',
+                              size: 20,
+                              weightType: WeightType.semiBold,
+                            ),
+                            GestureDetector(
+                              onTap: () => onChartArrowTap('right'),
+                              child: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: grayColor300,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        UserYearChart(
+                            up: up, userId: widget.userId, year: chartYear),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
