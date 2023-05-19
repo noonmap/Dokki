@@ -167,14 +167,14 @@ public class CommentService {
 		if (comment.getUserId().equals(userId) == false) {
 			throw new CustomException(ErrorCode.INVALID_REQUEST);
 		}
-		// 삭제
-		commentRepository.deleteById(commentId);
 
 		// 도서 평균 점수 반영
 		String bookId = comment.getBookId();
 		float avgScore = commentRepository.findAvgScoreByBookId(bookId);
 		bookClient.updateAverageScore(bookId, avgScore);
-		//		log.info("[DeleteComment] avgScore : {}", avgScore);
+
+		// 삭제
+		commentRepository.deleteById(commentId);
 	}
 
 
