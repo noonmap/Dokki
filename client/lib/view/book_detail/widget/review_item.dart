@@ -123,6 +123,7 @@ class ReviewItem extends StatelessWidget {
                                             } on DioError catch (e) {
                                               Utils.flushBarErrorMessage(
                                                   "에러", context);
+                                              Navigator.pop(context);
                                             }
                                           },
                                           question: "삭제하시겠습니까?",

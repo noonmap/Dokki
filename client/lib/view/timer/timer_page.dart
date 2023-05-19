@@ -154,7 +154,7 @@ class _TimerPageState extends State<TimerPage> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 70, 16, 10),
+                padding: const EdgeInsets.fromLTRB(16, 80, 16, 10),
                 child: Consumer<TimerProvider>(
                   builder: (context, provider, child) {
                     final time = provider.currentTime;
@@ -343,7 +343,7 @@ class _TimerPageState extends State<TimerPage> {
               ),
             ),
             Container(
-              height: clientHeight * 0.3,
+              height: clientHeight * 0.34,
               child: TimerRotateBookTimer(
                 imagePath: widget.bookCoverPath,
                 backImagePath: widget.bookCoverBackImagePath,

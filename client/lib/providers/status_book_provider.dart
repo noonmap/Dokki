@@ -14,6 +14,7 @@ class StatusBookProvider extends ChangeNotifier {
   List<BookTimerModel> _readingBookList = [];
   List<BookTimerModel> get readingBookList => _readingBookList;
   set readingBookList(List<BookTimerModel> list) => _readingBookList = list;
+  set likeBookList(List<Book> list) => _likeBookList = list;
   int _todayReadTime = 0;
   int get todayReadTime => _todayReadTime;
 

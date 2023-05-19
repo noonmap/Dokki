@@ -40,7 +40,9 @@ class BookListItem extends StatelessWidget {
               arguments: {"bookId": bookId, "loginUserId": loginUserId}).then(
             (_) {
               context.read<StatusBookProvider>().readingBookList = [];
+              context.read<StatusBookProvider>().likeBookList = [];
               context.read<StatusBookProvider>().getReadingBookList("0", "10");
+              context.read<StatusBookProvider>().getLikeBookList("0", "10");
             },
           );
         },

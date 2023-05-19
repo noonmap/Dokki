@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:dokki/common/constant/colors.dart';
+import 'package:dokki/common/widget/alert_dialog.dart';
 import 'package:dokki/common/widget/bottom_sheet_modal.dart';
 import 'package:dokki/providers/book_provider.dart';
+import 'package:dokki/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,7 +85,27 @@ class _DetailAppBarState extends State<DetailAppBar> {
               )
             : IconButton(
                 onPressed: () {
-                  context.read<BookProvider>().deleteBookStatus(widget.bookId);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomAlertDialog(
+                            onPressedFunction: () {
+                              context
+                                  .read<BookProvider>()
+                                  .deleteBookStatus(widget.bookId);
+                              context
+                                  .read<BookProvider>()
+                                  .getBookById(widget.bookId);
+                              Navigator.pop(context);
+                              Utils.flushBarSuccessMessage(
+                                  "삭제 되었습니다.", context);
+                            },
+                            question: widget.isReading
+                                ? "타이머에서 삭제할까요?"
+                                : "서재에서 삭제할까요 ?",
+                            commentId: 1,
+                            bookId: "0");
+                      });
                 },
                 constraints: const BoxConstraints(),
                 padding: EdgeInsets.zero,
@@ -96,10 +119,12 @@ class _DetailAppBarState extends State<DetailAppBar> {
               widget
                   .deleteLikeBook(widget.bookId)
                   .then((value) => widget.getBookById(widget.bookId));
+              Utils.flushBarErrorMessage("북마크가 취소되었습니다.", context);
             } else {
               widget
                   .addLikeBook(widget.bookId)
                   .then((value) => widget.getBookById(widget.bookId));
+              Utils.flushBarSuccessMessage("북마크가 저장되었습니다.", context);
             }
           },
           icon: widget.isBookMarked
