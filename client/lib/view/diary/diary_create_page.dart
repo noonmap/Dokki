@@ -44,6 +44,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
   bool notClicked = true;
   bool selectClicked = false;
   bool createClicked = false;
+  File? pickedImg;
 
   @override
   void initState() {
@@ -80,7 +81,6 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
   Widget build(BuildContext context) {
     final dp = Provider.of<DiaryProvider>(context);
     final ImagePicker imagePicker = ImagePicker();
-    File? pickedImg;
     double maxWidth = MediaQuery.of(context).size.width;
 
     Future<void> onCreateButtonPressed() async {
@@ -125,7 +125,8 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
         await dp.putDiary(
           diaryId: dp.diary!.diaryId,
           content: _textEditingController.text,
-          imagePath: dp.diaryImage!,
+          imagePath:
+              dp.diaryImage == null ? dp.diary!.diaryImagePath : dp.diaryImage!,
         );
       } else {
         await dp.postDiary(
@@ -201,7 +202,7 @@ class _DiaryCreatePageState extends State<DiaryCreatePage> {
                           ),
                         ),
                         Paragraph(
-                          text: isEdit ? '감정 일기 수정' : '감정 일기 생성',
+                          text: isEdit ? '감정 일기 수정' : '감정 일기 작성',
                           size: 18,
                           weightType: WeightType.medium,
                         ),
